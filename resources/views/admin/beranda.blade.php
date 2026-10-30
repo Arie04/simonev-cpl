@@ -26,6 +26,7 @@
                 ['label' => 'Data Dosen', 'route' => 'admin.dosen.index', 'ikon' => 'heroicon-o-user-group'],
                 ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'ikon' => 'heroicon-o-book-open'],
                 ['label' => 'Pemetaan Kurikulum', 'route' => 'admin.pemetaan.edit', 'ikon' => 'heroicon-o-table-cells'],
+                ['label' => 'Kelas Kuliah', 'route' => 'admin.kelas-kuliah.index', 'ikon' => 'heroicon-o-building-library'],
                 ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'ikon' => 'heroicon-o-users'],
             ] as $pintasan)
                 <a

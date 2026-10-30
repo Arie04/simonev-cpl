@@ -6,6 +6,7 @@ use App\Models\Dosen;
 use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
+use App\Models\PeriodeAkademik;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -103,6 +104,27 @@ class SeederTest extends TestCase
         }
     }
 
+    public function test_kelas_contoh_dari_dua_kurikulum_dengan_peserta_dua_angkatan_lebih(): void
+    {
+        $this->seed();
+
+        $this->assertDatabaseCount('periode_akademik', 2);
+        $this->assertDatabaseCount('kelas_kuliah', 5);
+        $this->assertSame('2026/2027 Ganjil', PeriodeAkademik::aktif()->nama());
+        $this->assertSame(
+            [2023, 2024, 2026],
+            Mahasiswa::has('pesertaKelas')->distinct()->orderBy('angkatan')->pluck('angkatan')->all(),
+        );
+
+        // Mahasiswa Demo mengikuti kelas dari kurikulum 2021 dan 2026.
+        $mahasiswaDemo = Mahasiswa::where('nim', '9992300001')->first();
+        $this->assertSame(
+            [2021, 2026],
+            $mahasiswaDemo->kelasKuliah()->with('mataKuliah.kurikulum')->get()
+                ->pluck('mataKuliah.kurikulum.tahun_berlaku')->unique()->sort()->values()->all(),
+        );
+    }
+
     public function test_seeder_bisa_dijalankan_ulang_tanpa_membuat_data_ganda(): void
     {
         $this->seed();
@@ -126,7 +148,8 @@ class SeederTest extends TestCase
             'roles', 'users', 'user_roles', 'dosen', 'mahasiswa', 'program_studi', 'kurikulum',
             'evaluasi_kurikulum', 'profil_lulusan', 'profesi', 'profil_lulusan_profesi', 'cpl',
             'bahan_kajian', 'mata_kuliah', 'cpmk', 'metode_penilaian', 'pemetaan_cpl_pl', 'pemetaan_cpl_bk',
-            'pemetaan_bk_mk', 'pemetaan_cpmk_mk', 'sub_cpmk', 'sub_cpmk_penilaian',
+            'pemetaan_bk_mk', 'pemetaan_cpmk_mk', 'sub_cpmk', 'sub_cpmk_penilaian', 'periode_akademik',
+            'kelas_kuliah', 'dosen_kelas', 'peserta_kelas',
         ];
 
         return collect($daftarTabel)->mapWithKeys(fn (string $tabel) => [$tabel => DB::table($tabel)->count()])->all();

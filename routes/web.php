@@ -7,12 +7,17 @@ use App\Http\Controllers\Admin\BerandaAdminController;
 use App\Http\Controllers\Admin\CplController;
 use App\Http\Controllers\Admin\CpmkController;
 use App\Http\Controllers\Admin\DosenController;
+use App\Http\Controllers\Admin\DosenPengampuController;
 use App\Http\Controllers\Admin\EvaluasiKurikulumController;
+use App\Http\Controllers\Admin\KelasKuliahController;
 use App\Http\Controllers\Admin\KurikulumController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\MetodePenilaianController;
 use App\Http\Controllers\Admin\PemetaanController;
+use App\Http\Controllers\Admin\PeriodeAkademikController;
+use App\Http\Controllers\Admin\PesertaKelasController;
+use App\Http\Controllers\Admin\PesertaPerAngkatanController;
 use App\Http\Controllers\Admin\ProfesiController;
 use App\Http\Controllers\Admin\ProfilLulusanController;
 use App\Http\Controllers\Admin\ProgramStudiController;
@@ -89,6 +94,15 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     // Pemetaan kurikulum dalam bentuk matriks (bagian 7.6.5).
     Route::get('pemetaan', [PemetaanController::class, 'edit'])->name('pemetaan.edit');
     Route::put('pemetaan', [PemetaanController::class, 'update'])->name('pemetaan.update');
+
+    // Perkuliahan: periode akademik, kelas, dosen pengampu, dan peserta (bagian 7.6.6).
+    Route::resource('periode-akademik', PeriodeAkademikController::class)->except('show')->parameters(['periode-akademik' => 'periodeAkademik']);
+    Route::resource('kelas-kuliah', KelasKuliahController::class)->parameters(['kelas-kuliah' => 'kelasKuliah']);
+    Route::post('kelas-kuliah/{kelasKuliah}/dosen', [DosenPengampuController::class, 'store'])->name('kelas-kuliah.dosen.store');
+    Route::delete('kelas-kuliah/{kelasKuliah}/dosen/{dosen}', [DosenPengampuController::class, 'destroy'])->name('kelas-kuliah.dosen.destroy');
+    Route::post('kelas-kuliah/{kelasKuliah}/peserta', [PesertaKelasController::class, 'store'])->name('kelas-kuliah.peserta.store');
+    Route::post('kelas-kuliah/{kelasKuliah}/peserta-angkatan', [PesertaPerAngkatanController::class, 'store'])->name('kelas-kuliah.peserta-angkatan.store');
+    Route::delete('kelas-kuliah/{kelasKuliah}/peserta/{peserta}', [PesertaKelasController::class, 'destroy'])->name('kelas-kuliah.peserta.destroy');
 
     // Akun pengguna: daftar, tambah/ubah, atur peran, dan reset password (bagian 7.6.4).
     Route::resource('akun', AkunController::class)->except('show')->parameters(['akun' => 'user']);

@@ -91,8 +91,19 @@ NIDN atau NPM:
 
 Data kurikulum contoh terdiri atas Kurikulum 2021 dan Kurikulum OBE 2026. Beberapa kode sengaja sama
 di keduanya (mis. CPL01 dan MK INF202). Setiap kurikulum sudah dipetakan (CPL–PL, CPL–BK, BK–MK, dan
-CPMK–MK), dan setiap pasangan CPMK–MK sudah punya Sub-CPMK. Semua data contoh adalah karangan, bukan
-data asli prodi.
+CPMK–MK), dan setiap pasangan CPMK–MK sudah punya Sub-CPMK.
+
+Data perkuliahan contoh terdiri atas periode 2025/2026 Genap dan 2026/2027 Ganjil, dengan lima kelas:
+
+| Kelas | Periode | Dosen pengampu | Peserta |
+|---|---|---|---|
+| INF201 Struktur Data (2021) A | 2025/2026 Genap | Dosen Demo | angkatan 2024 |
+| INF202 Basis Data (2021) A | 2026/2027 Ganjil | Dosen Demo | angkatan 2024 |
+| INF301 Pemrograman Web (2021) A | 2026/2027 Ganjil | Koprodi Merangkap Dosen, Fadli Ramadhan | angkatan 2023 (termasuk Mahasiswa Demo) |
+| INF101 Matematika Diskrit (2026) A | 2026/2027 Ganjil | Nurul Hidayah | angkatan 2026 dan Mahasiswa Demo |
+| INF102 Algoritma dan Pemrograman (2026) A | 2026/2027 Ganjil | Dosen Demo, Ahmad Syarif | angkatan 2026 |
+
+Semua data contoh adalah karangan, bukan data asli prodi.
 
 ## Mengembalikan data demo
 

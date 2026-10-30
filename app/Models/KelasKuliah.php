@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\KelasKuliahFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -54,5 +55,61 @@ class KelasKuliah extends Model
     public function rencanaAsesmen(): HasMany
     {
         return $this->hasMany(RencanaAsesmen::class, 'kelas_kuliah_id', 'kelas_kuliah_id');
+    }
+
+    /**
+     * Pencarian di halaman Kelas Kuliah: kode atau nama mata kuliah, atau nama kelas.
+     */
+    public function scopeCari(Builder $query, ?string $kataKunci): void
+    {
+        if (blank($kataKunci)) {
+            return;
+        }
+
+        $pola = '%'.addcslashes(trim($kataKunci), '\\%_').'%';
+
+        $query->where(function (Builder $query) use ($pola) {
+            $query->where('nama_kelas', 'like', $pola)
+                ->orWhereHas('mataKuliah', fn (Builder $query) => $query
+                    ->where('kode_mata_kuliah', 'like', $pola)
+                    ->orWhere('nama_mata_kuliah', 'like', $pola));
+        });
+    }
+
+    /**
+     * Nama kelas untuk tampilan, mis. "INF101 Matematika Diskrit – A".
+     */
+    public function nama(): string
+    {
+        return "{$this->mataKuliah->kode_mata_kuliah} {$this->mataKuliah->nama_mata_kuliah} – {$this->nama_kelas}";
+    }
+
+    /**
+     * Kelas lain untuk MK yang sama di periode yang sama, tempat mahasiswa ini sudah terdaftar.
+     * Seorang mahasiswa hanya boleh di satu kelas per MK per periode (KD-37).
+     */
+    public function kelasLainYangDiikuti(Mahasiswa $mahasiswa): ?self
+    {
+        return self::where('mata_kuliah_id', $this->mata_kuliah_id)
+            ->where('periode_akademik_id', $this->periode_akademik_id)
+            ->whereKeyNot($this->getKey())
+            ->whereHas('pesertaKelas', fn (Builder $query) => $query->where('mahasiswa_id', $mahasiswa->mahasiswa_id))
+            ->first();
+    }
+
+    /**
+     * Mata kuliah dan periode tidak bisa diganti setelah kelas berisi peserta atau rencana
+     * asesmen, karena Sub-CPMK asesmen dan aturan KD-37 bergantung pada keduanya (KD-57).
+     */
+    public function bisaGantiMataKuliahDanPeriode(): bool
+    {
+        return $this->pesertaKelas()->doesntExist() && $this->rencanaAsesmen()->doesntExist();
+    }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->rencanaAsesmen()->exists()
+            ? 'Kelas tidak bisa dihapus karena sudah punya rencana asesmen.'
+            : null;
     }
 }

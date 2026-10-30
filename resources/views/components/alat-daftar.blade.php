@@ -3,11 +3,13 @@
     'labelTambah' => 'Tambah Data',
     'daftarKurikulum' => null,
     'kurikulum' => null,
+    'daftarPeriode' => null,
+    'periode' => null,
 ])
 
-{{-- Bagian atas halaman daftar (bagian 7.6.4): dropdown Kurikulum untuk data yang bergantung pada
-     kurikulum, kotak "Cari data...", dan tombol "Tambah Data". Semuanya satu form GET, jadi kata
-     pencarian tetap terbawa saat kurikulum diganti. --}}
+{{-- Bagian atas halaman daftar (bagian 7.6.4): dropdown Kurikulum atau Periode untuk data yang
+     bergantung padanya, kotak "Cari data...", dan tombol "Tambah Data". Semuanya satu form GET,
+     jadi kata pencarian tetap terbawa saat kurikulum atau periode diganti. --}}
 <form method="GET" class="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
     <div class="md:w-72">
         @if ($daftarKurikulum !== null)
@@ -16,6 +18,14 @@
                 label="Kurikulum"
                 :pilihan="$daftarKurikulum->pluck('nama_kurikulum', 'kurikulum_id')"
                 :value="$kurikulum?->kurikulum_id"
+                x-on:change="$el.form.submit()"
+            />
+        @elseif ($daftarPeriode !== null)
+            <x-select
+                name="periode"
+                label="Periode Akademik"
+                :pilihan="$daftarPeriode"
+                :value="$periode?->periode_akademik_id"
                 x-on:change="$el.form.submit()"
             />
         @endif

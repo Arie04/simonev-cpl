@@ -7,6 +7,29 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 4: Periode akademik dan kelas kuliah] - 2026-10-30
+
+### Ditambahkan
+
+- Kelola Periode Akademik:
+  - format tahun akademik "2026/2027" dan tidak boleh ganda;
+  - urutan dari yang terbaru, dengan penanda periode aktif.
+- Kelola Kelas Kuliah per periode:
+  - kelas dari semua kurikulum;
+  - MK + periode + nama kelas tidak boleh ganda.
+- Detail kelas untuk mengatur dosen pengampu (boleh lebih dari satu) dan peserta. Peserta
+  ditambahkan lewat pencarian mahasiswa atau sekaligus per angkatan.
+- Mahasiswa tidak bisa didaftarkan ke dua kelas untuk MK yang sama dalam satu periode (KD-37).
+- Penghapusan yang dijaga:
+  - peserta yang sudah punya nilai, kelas yang sudah punya rencana asesmen, dan periode yang sudah
+    punya kelas tidak bisa dihapus;
+  - mata kuliah dan periode kelas yang sudah berisi tidak bisa diganti (KD-57).
+- Menu Perkuliahan (Periode Akademik, Kelas Kuliah) dan pintasan Kelas Kuliah di Beranda Admin.
+- Data contoh:
+  - periode 2025/2026 Genap dan 2026/2027 Ganjil;
+  - lima kelas dari kedua kurikulum dengan peserta tiga angkatan.
+- 17 test baru (total 205).
+
 ## [Iterasi 3: Pemetaan kurikulum dan Sub-CPMK] - 2026-10-30
 
 ### Ditambahkan

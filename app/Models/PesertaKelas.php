@@ -39,4 +39,11 @@ class PesertaKelas extends Pivot
     {
         return $this->hasMany(NilaiAsesmen::class, 'peserta_kelas_id', 'peserta_kelas_id');
     }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->nilaiAsesmen()->exists()
+            ? 'Peserta tidak bisa dihapus karena sudah punya nilai.'
+            : null;
+    }
 }
