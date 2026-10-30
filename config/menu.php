@@ -39,6 +39,7 @@ return [
                 ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa.index', 'aktif' => 'admin.mahasiswa.*'],
             ],
         ],
+        ['label' => 'Pemetaan Kurikulum', 'route' => 'admin.pemetaan.edit', 'aktif' => 'admin.pemetaan.*', 'ikon' => 'heroicon-o-table-cells'],
         ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'aktif' => 'admin.akun.*', 'ikon' => 'heroicon-o-users'],
     ],
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\KurikulumController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\MetodePenilaianController;
+use App\Http\Controllers\Admin\PemetaanController;
 use App\Http\Controllers\Admin\ProfesiController;
 use App\Http\Controllers\Admin\ProfilLulusanController;
 use App\Http\Controllers\Admin\ProgramStudiController;
@@ -74,6 +75,10 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     Route::resource('metode-penilaian', MetodePenilaianController::class)->except('show')->parameters(['metode-penilaian' => 'metodePenilaian']);
     Route::resource('dosen', DosenController::class)->except('show')->parameters(['dosen' => 'dosen']);
     Route::resource('mahasiswa', MahasiswaController::class)->except('show')->parameters(['mahasiswa' => 'mahasiswa']);
+
+    // Pemetaan kurikulum dalam bentuk matriks (bagian 7.6.5).
+    Route::get('pemetaan', [PemetaanController::class, 'edit'])->name('pemetaan.edit');
+    Route::put('pemetaan', [PemetaanController::class, 'update'])->name('pemetaan.update');
 
     // Akun pengguna: daftar, tambah/ubah, atur peran, dan reset password (bagian 7.6.4).
     Route::resource('akun', AkunController::class)->except('show')->parameters(['akun' => 'user']);
