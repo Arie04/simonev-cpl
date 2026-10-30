@@ -531,3 +531,18 @@ diumumkan bersamaan.
   - Jika AM belum ditetapkan, batang menampilkan rata-rata capaian berwarna biru.
 - **Alasan:** Mengikuti bagian 2, 7.2, 7.4, dan 7.6.9 tanpa paket tambahan selain Chart.js.
 - **Dampak:** Ukuran JavaScript bertambah sekitar 200 kB (sekitar 70 kB setelah gzip).
+
+## Keputusan teknis iterasi 9
+
+### KD-71 · Isi halaman Capaian Pembelajaran Mahasiswa
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Pilihan Periode dan Mata Kuliah hanya dari kelas yang diikuti mahasiswa itu. Bawaannya periode terbaru dan MK pertama menurut kode.
+  - Tiga kartu ringkasan: rata-rata capaian Sub-CPMK dan CPMK MK terpilih, serta rata-rata CPL kumulatif di kurikulum MK terpilih.
+  - Rincian CPL untuk MK terpilih adalah kontribusi MK itu saja. Ringkasan CPL kumulatif menampilkan semua CPL setiap kurikulum yang MK-nya pernah diikuti, termasuk yang "Belum ada nilai".
+  - Akun berperan Mahasiswa tanpa data mahasiswa mendapat 403.
+- **Alasan:**
+  - Bagian 7.6.10 meminta ringkasan CPL kumulatif yang dipisah per kurikulum.
+  - Menampilkan CPL yang belum terukur membantu mahasiswa memantau capaiannya sampai lulus (bagian 5.3).
+  - Rata-rata CPL dibatasi ke satu kurikulum supaya tidak menggabungkan CPL dua kurikulum (bagian 5.4).
+- **Dampak:** Alamat halaman tidak memuat id mahasiswa, jadi data mahasiswa lain tidak bisa dibuka. Halaman sambutan sementara tidak dipakai lagi dan sudah dihapus.
