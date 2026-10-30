@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BisaDicari;
 use Database\Factories\ProgramStudiFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProgramStudi extends Model
 {
     /** @use HasFactory<ProgramStudiFactory> */
-    use HasFactory, HasUuids;
+    use BisaDicari, HasFactory, HasUuids;
 
     protected $table = 'program_studi';
 
@@ -29,8 +30,18 @@ class ProgramStudi extends Model
         'misi_program_studi',
     ];
 
+    /** Kolom yang dicari lewat kotak "Cari data...". */
+    protected array $kolomPencarian = ['nama_program_studi', 'nama_fakultas', 'nama_perguruan_tinggi', 'jenjang_pendidikan'];
+
     public function kurikulum(): HasMany
     {
         return $this->hasMany(Kurikulum::class, 'program_studi_id', 'program_studi_id');
+    }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->kurikulum()->exists()
+            ? 'Program studi tidak bisa dihapus karena masih memiliki kurikulum.'
+            : null;
     }
 }

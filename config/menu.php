@@ -21,6 +21,22 @@ return [
 
     'ADMIN' => [
         ['label' => 'Beranda', 'route' => 'admin.beranda', 'aktif' => 'admin.beranda', 'ikon' => 'heroicon-o-home'],
+        [
+            'label' => 'Data Master',
+            'ikon' => 'heroicon-o-circle-stack',
+            'anak' => [
+                ['label' => 'Program Studi', 'route' => 'admin.program-studi.index', 'aktif' => 'admin.program-studi.*'],
+                ['label' => 'Kurikulum', 'route' => 'admin.kurikulum.index', 'aktif' => 'admin.kurikulum.*'],
+                ['label' => 'Evaluasi Kurikulum', 'route' => 'admin.evaluasi-kurikulum.index', 'aktif' => 'admin.evaluasi-kurikulum.*'],
+                ['label' => 'Profil Lulusan', 'route' => 'admin.profil-lulusan.index', 'aktif' => 'admin.profil-lulusan.*'],
+                ['label' => 'Profesi', 'route' => 'admin.profesi.index', 'aktif' => 'admin.profesi.*'],
+                ['label' => 'CPL', 'route' => 'admin.cpl.index', 'aktif' => 'admin.cpl.*'],
+                ['label' => 'Bahan Kajian', 'route' => 'admin.bahan-kajian.index', 'aktif' => 'admin.bahan-kajian.*'],
+                ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'aktif' => 'admin.mata-kuliah.*'],
+                ['label' => 'CPMK', 'route' => 'admin.cpmk.index', 'aktif' => 'admin.cpmk.*'],
+                ['label' => 'Metode Penilaian', 'route' => 'admin.metode-penilaian.index', 'aktif' => 'admin.metode-penilaian.*'],
+            ],
+        ],
     ],
 
     'KOPRODI' => [
