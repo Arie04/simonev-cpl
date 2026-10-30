@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
+use App\Http\Controllers\ProfilController;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,9 @@ Route::middleware('auth')->group(function () {
     // Halaman untuk semua peran: cukup sudah memilih peran aktif.
     Route::middleware('peran')->group(function () {
         Route::get('/', BerandaController::class)->name('beranda');
+        Route::get('/profil', [ProfilController::class, 'show'])->name('profil');
+        Route::get('/ubah-password', [PasswordController::class, 'edit'])->name('password.edit');
+        Route::put('/ubah-password', [PasswordController::class, 'update'])->name('password.update');
     });
 
     // Halaman utama tiap peran. Untuk sementara berupa halaman sambutan dan
