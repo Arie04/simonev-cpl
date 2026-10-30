@@ -35,8 +35,11 @@ return [
                 ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'aktif' => 'admin.mata-kuliah.*'],
                 ['label' => 'CPMK', 'route' => 'admin.cpmk.index', 'aktif' => 'admin.cpmk.*'],
                 ['label' => 'Metode Penilaian', 'route' => 'admin.metode-penilaian.index', 'aktif' => 'admin.metode-penilaian.*'],
+                ['label' => 'Dosen', 'route' => 'admin.dosen.index', 'aktif' => 'admin.dosen.*'],
+                ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa.index', 'aktif' => 'admin.mahasiswa.*'],
             ],
         ],
+        ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'aktif' => 'admin.akun.*', 'ikon' => 'heroicon-o-users'],
     ],
 
     'KOPRODI' => [

@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AkunController;
+use App\Http\Controllers\Admin\AkunPasswordController;
 use App\Http\Controllers\Admin\BahanKajianController;
 use App\Http\Controllers\Admin\CplController;
 use App\Http\Controllers\Admin\CpmkController;
+use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\EvaluasiKurikulumController;
 use App\Http\Controllers\Admin\KurikulumController;
+use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\MetodePenilaianController;
 use App\Http\Controllers\Admin\ProfesiController;
@@ -68,4 +72,10 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     Route::resource('mata-kuliah', MataKuliahController::class)->except('show')->parameters(['mata-kuliah' => 'mataKuliah']);
     Route::resource('cpmk', CpmkController::class)->except('show')->parameters(['cpmk' => 'cpmk']);
     Route::resource('metode-penilaian', MetodePenilaianController::class)->except('show')->parameters(['metode-penilaian' => 'metodePenilaian']);
+    Route::resource('dosen', DosenController::class)->except('show')->parameters(['dosen' => 'dosen']);
+    Route::resource('mahasiswa', MahasiswaController::class)->except('show')->parameters(['mahasiswa' => 'mahasiswa']);
+
+    // Akun pengguna: daftar, tambah/ubah, atur peran, dan reset password (bagian 7.6.4).
+    Route::resource('akun', AkunController::class)->except('show')->parameters(['akun' => 'user']);
+    Route::put('akun/{user}/password', [AkunPasswordController::class, 'update'])->name('akun.password.update');
 });
