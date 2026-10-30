@@ -2,7 +2,7 @@
 
 {{-- Tabel daftar (bagian 7.3 spesifikasi). Di layar < 768px setiap baris tampil sebagai kartu
      berisi pasangan label–nilai (bagian 7.4); labelnya diambil dari atribut data-label tiap sel. --}}
-<div class="overflow-x-auto md:rounded-lg md:border md:border-border">
+<div class="relative overflow-x-auto md:rounded-lg md:border md:border-border">
     <table {{ $attributes->class('w-full text-left text-sm max-md:block') }}>
         <thead class="bg-neutral-bg text-xs font-semibold text-text-muted max-md:sr-only">
             <tr>
