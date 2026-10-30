@@ -34,6 +34,7 @@ return [
                 ['label' => 'Bahan Kajian', 'route' => 'admin.bahan-kajian.index', 'aktif' => 'admin.bahan-kajian.*'],
                 ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'aktif' => 'admin.mata-kuliah.*'],
                 ['label' => 'CPMK', 'route' => 'admin.cpmk.index', 'aktif' => 'admin.cpmk.*'],
+                ['label' => 'Sub-CPMK', 'route' => 'admin.sub-cpmk.index', 'aktif' => 'admin.sub-cpmk.*'],
                 ['label' => 'Metode Penilaian', 'route' => 'admin.metode-penilaian.index', 'aktif' => 'admin.metode-penilaian.*'],
                 ['label' => 'Dosen', 'route' => 'admin.dosen.index', 'aktif' => 'admin.dosen.*'],
                 ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa.index', 'aktif' => 'admin.mahasiswa.*'],
