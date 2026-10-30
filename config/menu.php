@@ -41,6 +41,13 @@ return [
             ],
         ],
         ['label' => 'Pemetaan Kurikulum', 'route' => 'admin.pemetaan.edit', 'aktif' => 'admin.pemetaan.*', 'ikon' => 'heroicon-o-table-cells'],
+        [
+            'label' => 'Perkuliahan',
+            'ikon' => 'heroicon-o-building-library',
+            'anak' => [
+                ['label' => 'Periode Akademik', 'route' => 'admin.periode-akademik.index', 'aktif' => 'admin.periode-akademik.*'],
+            ],
+        ],
         ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'aktif' => 'admin.akun.*', 'ikon' => 'heroicon-o-users'],
     ],
 

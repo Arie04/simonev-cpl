@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kurikulum;
+use App\Models\PeriodeAkademik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -29,6 +30,27 @@ abstract class Controller
         }
 
         return $kurikulum;
+    }
+
+    /**
+     * Periode yang dipilih di dropdown Periode Akademik. Pilihan disimpan di session seperti
+     * kurikulum. Bawaannya periode aktif (KD-45), atau periode terbaru jika belum ada kelas.
+     */
+    protected function periodeTerpilih(Request $request): ?PeriodeAkademik
+    {
+        $periodeId = $request->query('periode', $request->session()->get('periode_terpilih'));
+
+        $periode = is_string($periodeId) && Str::isUuid($periodeId)
+            ? PeriodeAkademik::find($periodeId)
+            : null;
+
+        $periode ??= PeriodeAkademik::aktif() ?? PeriodeAkademik::urutTerbaru()->first();
+
+        if ($periode !== null) {
+            $request->session()->put('periode_terpilih', $periode->periode_akademik_id);
+        }
+
+        return $periode;
     }
 
     /**

@@ -58,4 +58,11 @@ class PeriodeAkademik extends Model
     {
         return "{$this->tahun_akademik} {$this->semester_periode}";
     }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->kelasKuliah()->exists()
+            ? 'Periode akademik tidak bisa dihapus karena sudah punya kelas.'
+            : null;
+    }
 }
