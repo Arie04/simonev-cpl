@@ -47,13 +47,14 @@
             @endforeach
         </div>
 
-        <div class="mt-6 flex items-center justify-center gap-6 text-sm">
+        {{-- min-h-11 dan px-3: target sentuh minimal 44×44 px di mobile (bagian 7.4). --}}
+        <div class="mt-4 flex items-center justify-center gap-2 text-sm">
             @if ($kodePeranAktif)
-                <a href="{{ route('beranda') }}" class="font-medium text-primary-700 hover:underline">Batal</a>
+                <a href="{{ route('beranda') }}" class="inline-flex min-h-11 items-center px-3 font-medium text-primary-700 hover:underline">Batal</a>
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="font-medium text-primary-700 hover:underline">Keluar</button>
+                <button type="submit" class="inline-flex min-h-11 items-center px-3 font-medium text-primary-700 hover:underline">Keluar</button>
             </form>
         </div>
     </x-kartu>

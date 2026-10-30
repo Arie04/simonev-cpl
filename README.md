@@ -33,7 +33,9 @@ Dicatat dari laptop pengembangan pada 30 Oktober 2026.
 | `@fontsource/plus-jakarta-sans` | 5.3.0 |
 | PHPUnit | 12.5.42 |
 
-Chart.js 4.6.1 dipasang di iterasi 8 untuk grafik dashboard dan laporan.
+Chart.js 4.6.1 dipasang di iterasi 8 untuk grafik dashboard dan laporan. `puppeteer-core` 25.16.0
+(hanya untuk pengembangan) dipasang di iterasi 10 untuk pengecekan tampilan. Paket ini memakai Google
+Chrome yang sudah terpasang (diuji dengan Chrome 156), jadi tidak mengunduh peramban sendiri.
 
 ## Persiapan database
 
@@ -123,14 +125,44 @@ dan harus diganti sesuai ketetapan program studi. Setelah nilainya diubah, jalan
 ## Menjalankan test dan merapikan kode
 
 ```bash
-php artisan test            # menjalankan semua test
-./vendor/bin/pint --test    # memeriksa format kode
-./vendor/bin/pint           # merapikan format kode
+php artisan test                                 # menjalankan semua test
+php artisan test --filter=SkenarioBlackBoxTest   # hanya 16 skenario uji black box (bagian 12)
+./vendor/bin/pint --test                         # memeriksa format kode
+./vendor/bin/pint                                # merapikan format kode
 ```
 
 Test memakai database `simonev_cpl_test` (lihat `phpunit.xml`) dan mengosongkannya setiap kali
 dijalankan. Test akan berhenti sendiri jika database yang terpakai bukan database test, misalnya karena
 config sedang di-cache. Jika itu terjadi, jalankan `php artisan config:clear`.
+
+## Pengecekan tampilan dan tangkapan layar
+
+`npm run cek:tampilan` membuka 51 halaman dari semua peran di Chrome tanpa jendela, pada lebar 360,
+768, dan 1280 px. Skrip ini memeriksa:
+
+- halaman tidak bergeser horizontal;
+- status HTTP benar dan tidak ada error JavaScript;
+- di mobile, font input minimal 16px dan target sentuh minimal 44×44 px.
+
+Tangkapan layar satu halaman penuh disimpan di `storage/app/tangkapan-layar/<lebar>/` (tidak
+di-commit) dan bisa dipakai untuk skripsi.
+
+```bash
+php artisan migrate:fresh --seed   # skrip memakai akun dan data demo
+npm run build
+php artisan serve                  # biarkan berjalan, lalu di terminal lain:
+npm run cek:tampilan
+```
+
+Jika Chrome tidak ada di `/usr/bin/google-chrome` atau aplikasi berjalan di alamat lain, atur
+lokasinya, misalnya:
+
+```bash
+CHROME_PATH=/usr/bin/chromium APP_URL=http://127.0.0.1:8001 npm run cek:tampilan
+```
+
+Hasil pengujian black box dan daftar tangkapan layar untuk Bab 4 ada di
+[docs/pengujian/black-box.md](docs/pengujian/black-box.md).
 
 ## Membuka dari HP di Wi-Fi yang sama
 
