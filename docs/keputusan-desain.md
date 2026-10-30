@@ -465,3 +465,28 @@ diumumkan bersamaan.
   - Halaman memberi peringatan jika pengguna meninggalkannya sebelum menyimpan.
 - **Alasan:** Mengikuti bagian 7.6.8 dan 7.4.
 - **Dampak:** `RencanaAsesmen::simpanNilai()` menyimpan dalam satu transaksi.
+
+## Keputusan teknis iterasi 7
+
+### KD-65 · Bentuk CapaianService
+- **Tanggal:** 2026-10-30
+- **Keputusan:** `CapaianService` bekerja pada baris `peserta_kelas` yang dimuat bersama relasinya (`RELASI_PESERTA`). Method publiknya:
+  - `hitungCapaianPeserta()` (rumus 1–3 dan 5);
+  - `hitungCapaianCpl()` (rumus 4);
+  - `pilihKelasPerMataKuliah()` (aturan mengulang);
+  - `capaianPerItem()` (capaian setiap mahasiswa per item untuk laporan);
+  - `rekap()`, `lulus()`, `tercapai()`, dan `ambang()`.
+  Hasil tiap item disimpan per id (`sub_cpmk_id`, `pemetaan_cpmk_mk_id`, `cpl_id`), bukan per kode.
+- **Alasan:**
+  - Satu tempat untuk semua rumus (bagian 5.4 dan 14).
+  - Perhitungan dilakukan langsung tanpa cache, dengan eager loading supaya tidak ada query berulang.
+  - Pengelompokan per id mencegah CPL dua kurikulum tergabung.
+- **Dampak:** Laporan, dashboard, dan halaman mahasiswa memanggil method yang sama dengan cakupan peserta yang berbeda. Filter periode dan cakupan dosen diterapkan pada daftar peserta sebelum dihitung.
+
+### KD-66 · Unit test CapaianService memakai database test
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Uji 1–6 ditulis di `tests/Unit/CapaianServiceTest.php`. Test ini memakai `Tests\TestCase` dan database `simonev_cpl_test`, karena service bekerja dengan model Eloquent.
+  - Data uji disusun dengan trait `Tests\Support\MembangunDataCapaian`.
+- **Alasan:** Data uji sama persis dengan bagian 5.5, dan jalur query yang dipakai sama dengan aplikasi.
+- **Dampak:** Trait pembantu yang sama dipakai lagi oleh feature test laporan (iterasi 8).

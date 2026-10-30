@@ -7,6 +7,24 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 7: Perhitungan capaian] - 2026-10-30
+
+### Ditambahkan
+
+- `App\Services\CapaianService` sebagai satu-satunya tempat rumus capaian (bagian 5):
+  - rumus 1–5 secara bertingkat: normalisasi → Sub-CPMK → CPMK per pasangan CPMK–MK → CPL → nilai
+    akhir MK;
+  - nilai yang belum diinput diabaikan, dan bobotnya dinormalisasi ulang per mahasiswa (KD-47);
+  - mahasiswa yang mengulang memakai kelas terbaru yang sudah bernilai (KD-24, KD-38);
+  - CPL dikelompokkan per kurikulum lewat id-nya;
+  - status Lulus (≥ AM) dan Tercapai (≥ AK) dibandingkan pada angka dua desimal (KD-39);
+  - agregat berupa % mahasiswa Lulus beserta rata-rata sebagai informasi pendukung;
+  - ambang dibaca dari config, dan yang tidak valid dicatat di log.
+- Unit test Uji 1–6 bagian 5.5 (termasuk data Tabel K APTIKOM), nilai sebagian/semua kosong, mahasiswa
+  mengulang, filter periode, pembulatan status, dan ambang tidak valid.
+- Test capaian dari data contoh (skenario uji 11).
+- 17 test baru (total 253).
+
 ## [Iterasi 6: Input nilai asesmen] - 2026-10-30
 
 ### Ditambahkan
