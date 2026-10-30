@@ -392,3 +392,27 @@ diumumkan bersamaan.
   - Tab Mata Kuliah menampilkan ringkasan bobot tiap MK yang bisa dibuka-tutup.
 - **Alasan:** Satu halaman read-only dengan pemilih kurikulum mengikuti bagian 7.6.12, tanpa memuat semua data sekaligus.
 - **Dampak:** Ringkasan bobot MK memakai komponen yang sama dengan detail Mata Kuliah di halaman Admin.
+
+## Keputusan teknis iterasi 4
+
+### KD-57 · Mata kuliah dan periode kelas terkunci setelah kelas terisi
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Mata kuliah dan periode sebuah kelas hanya bisa diganti selama kelas itu belum punya peserta dan rencana asesmen. Nama kelas tetap bisa diganti.
+- **Alasan:**
+  - Sub-CPMK pada rencana asesmen harus milik MK kelas itu (bagian 6).
+  - Aturan satu kelas per MK per periode (KD-37) dicek saat peserta ditambahkan. Mengganti MK atau periode belakangan bisa diam-diam melanggar keduanya.
+- **Dampak:** Form ubah kelas menampilkan pesan jika penggantian ditolak.
+
+### KD-58 · Pilihan periode diingat selama sesi
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Dropdown Periode Akademik di halaman Kelas Kuliah menyimpan pilihannya di session, seperti dropdown kurikulum (KD-51). Bawaannya periode aktif, atau periode terbaru jika belum ada kelas sama sekali.
+- **Alasan:** Admin biasanya menyiapkan kelas satu periode sampai selesai.
+- **Dampak:** Method `periodeTerpilih()` di `app/Http/Controllers/Controller.php`. Kelas baru otomatis memakai periode terpilih.
+
+### KD-59 · Dua cara menambah peserta
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Peserta ditambahkan lewat pencarian satu mahasiswa (NPM atau nama) atau sekaligus per angkatan.
+  - Penambahan per angkatan melewati mahasiswa yang sudah mengikuti MK itu pada periode yang sama, lalu melaporkan jumlah yang ditambahkan dan dilewati.
+- **Alasan:** Mengikuti bagian 7.6.6 tanpa memblokir seluruh angkatan hanya karena beberapa mahasiswa sudah terdaftar di kelas paralel (KD-37).
+- **Dampak:** Pesan sukses menyebut jumlah mahasiswa yang ditambahkan dan yang dilewati.
