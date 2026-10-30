@@ -38,22 +38,60 @@
     <nav class="flex-1 overflow-y-auto py-4">
         <ul class="space-y-1">
             @foreach ($daftarMenu as $menu)
-                @php($aktif = request()->routeIs($menu['route']))
-                <li>
-                    <a
-                        href="{{ route($menu['route']) }}"
-                        @click="tutupDrawer()"
-                        @class([
-                            'flex min-h-11 items-center gap-3 border-l-[3px] px-4 text-sm font-medium',
-                            'border-accent bg-primary-50 text-primary-900' => $aktif,
-                            'border-transparent text-text-muted hover:bg-bg hover:text-text' => ! $aktif,
-                        ])
-                        @if ($aktif) aria-current="page" @endif
-                    >
-                        <x-dynamic-component :component="$menu['ikon']" class="size-5 shrink-0" />
-                        {{ $menu['label'] }}
-                    </a>
-                </li>
+                @isset($menu['anak'])
+                    {{-- Grup menu yang bisa dibuka-tutup; terbuka otomatis jika salah satu anaknya aktif. --}}
+                    @php($grupAktif = collect($menu['anak'])->contains(fn ($anak) => request()->routeIs($anak['aktif'])))
+                    <li x-data="{ terbuka: @js($grupAktif) }">
+                        <button
+                            type="button"
+                            x-on:click="terbuka = ! terbuka"
+                            x-bind:aria-expanded="terbuka"
+                            class="flex min-h-11 w-full items-center gap-3 border-l-[3px] border-transparent px-4 text-left text-sm font-medium text-text-muted hover:bg-bg hover:text-text"
+                        >
+                            <x-dynamic-component :component="$menu['ikon']" class="size-5 shrink-0" />
+                            <span class="flex-1">{{ $menu['label'] }}</span>
+                            <x-heroicon-o-chevron-down class="size-4 shrink-0 transition-transform" x-bind:class="terbuka && 'rotate-180'" />
+                        </button>
+                        <ul x-show="terbuka" @unless ($grupAktif) x-cloak @endunless class="pb-1">
+                            @foreach ($menu['anak'] as $anak)
+                                @php($aktif = request()->routeIs($anak['aktif']))
+                                <li>
+                                    <a
+                                        href="{{ route($anak['route']) }}"
+                                        x-on:click="tutupDrawer()"
+                                        @class([
+                                            'flex min-h-11 items-center gap-3 border-l-[3px] py-2 pr-4 pl-12 text-sm',
+                                            'border-accent bg-primary-50 font-medium text-primary-900' => $aktif,
+                                            'border-transparent text-text-muted hover:bg-bg hover:text-text' => ! $aktif,
+                                        ])
+                                        @if ($aktif) aria-current="page" @endif
+                                    >
+                                        {{-- Sub-menu bertanda titik (bagian 7.1 spesifikasi) --}}
+                                        <span class="size-1.5 shrink-0 rounded-full bg-current"></span>
+                                        {{ $anak['label'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @else
+                    @php($aktif = request()->routeIs($menu['aktif']))
+                    <li>
+                        <a
+                            href="{{ route($menu['route']) }}"
+                            x-on:click="tutupDrawer()"
+                            @class([
+                                'flex min-h-11 items-center gap-3 border-l-[3px] px-4 text-sm font-medium',
+                                'border-accent bg-primary-50 text-primary-900' => $aktif,
+                                'border-transparent text-text-muted hover:bg-bg hover:text-text' => ! $aktif,
+                            ])
+                            @if ($aktif) aria-current="page" @endif
+                        >
+                            <x-dynamic-component :component="$menu['ikon']" class="size-5 shrink-0" />
+                            {{ $menu['label'] }}
+                        </a>
+                    </li>
+                @endisset
             @endforeach
         </ul>
     </nav>

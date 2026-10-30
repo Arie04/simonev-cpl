@@ -35,9 +35,9 @@ class PeranAktifTest extends TestCase
         $this->get(route('peran-aktif.create'))->assertRedirect(route('beranda'));
         $this->get(route('beranda'))->assertRedirect(route($routeHalamanUtama));
 
+        // Nama peran aktif tampil di top bar.
         $this->get(route($routeHalamanUtama))
             ->assertOk()
-            ->assertSee('Anda masuk sebagai')
             ->assertSee(Role::DAFTAR_PERAN[$kodeRole]);
         $this->assertSame($kodeRole, session('peran_aktif'));
     }

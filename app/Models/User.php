@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -76,5 +77,76 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn (string $kata) => Str::upper(Str::substr($kata, 0, 1)))
             ->implode('');
+    }
+
+    /**
+     * Pencarian di halaman Akun Pengguna: nama, email, NIDN, atau NPM.
+     */
+    public function scopeCari(Builder $query, ?string $kataKunci): void
+    {
+        if (blank($kataKunci)) {
+            return;
+        }
+
+        $pola = '%'.addcslashes(trim($kataKunci), '\\%_').'%';
+
+        $query->where(function (Builder $query) use ($pola) {
+            $query->where('nama', 'like', $pola)
+                ->orWhere('email', 'like', $pola)
+                ->orWhereHas('dosen', fn (Builder $query) => $query->where('nidn', 'like', $pola))
+                ->orWhereHas('mahasiswa', fn (Builder $query) => $query->where('nim', 'like', $pola));
+        });
+    }
+
+    /**
+     * Peran yang boleh dicentang untuk akun ini (KD-36). ADMIN dan KOPRODI selalu boleh;
+     * DOSEN dan MAHASISWA hanya untuk akun yang punya data dosen/mahasiswa.
+     *
+     * @return list<string>
+     */
+    public function peranYangBoleh(): array
+    {
+        $daftarPeran = [Role::ADMIN, Role::KOPRODI];
+
+        if ($this->dosen !== null) {
+            $daftarPeran[] = Role::DOSEN;
+        }
+
+        if ($this->mahasiswa !== null) {
+            $daftarPeran[] = Role::MAHASISWA;
+        }
+
+        return $daftarPeran;
+    }
+
+    /**
+     * Mengganti seluruh peran akun dengan daftar kode peran yang dipilih.
+     *
+     * @param  list<string>  $daftarKodeRole
+     */
+    public function simpanPeran(array $daftarKodeRole): void
+    {
+        $this->roles()->sync(
+            collect($daftarKodeRole)->map(fn (string $kodeRole) => Role::ambil($kodeRole)->role_id)
+        );
+    }
+
+    /**
+     * Mencabut satu peran. Jika akun tidak punya peran lagi, akunnya dihapus (KD-36).
+     */
+    public function cabutPeranLaluHapusJikaKosong(string $kodeRole): void
+    {
+        $this->roles()->detach(Role::ambil($kodeRole));
+
+        if ($this->roles()->doesntExist()) {
+            $this->delete();
+        }
+    }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->dosen()->exists() || $this->mahasiswa()->exists()
+            ? 'Akun ini terhubung ke data dosen atau mahasiswa. Hapus lewat menu Data Master Dosen atau Mahasiswa.'
+            : null;
     }
 }

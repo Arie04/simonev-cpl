@@ -18,5 +18,6 @@
     </div>
 
     <x-toast />
+    <x-modal-hapus />
 </body>
 </html>

@@ -224,3 +224,143 @@ Catatan setiap keputusan desain beserta tanggal, alasan, dan dampaknya.
 - **Keputusan:** `config/capaian.php` dan baris ambang di `.env.example` dibuat di iterasi 1 sebagai bagian setup, lalu dipakai `CapaianService` mulai iterasi 7.
 - **Alasan:** `.env` sudah lengkap sejak awal, sehingga tidak perlu menyalin ulang `.env.example` di iterasi berikutnya.
 - **Dampak:** Belum ada kode yang membaca ambang sampai iterasi 7.
+
+## Hasil klarifikasi sebelum iterasi 2–10
+
+Sebelum iterasi 2, sembilan hal yang ambigu diajukan beserta rekomendasinya (30 Oktober 2026). User
+meminta pekerjaan dilanjutkan sampai semua iterasi selesai tanpa mengoreksi rekomendasi itu, jadi
+rekomendasinya dipakai (KD-35 sampai KD-43). KD-44 sampai KD-48 adalah keputusan kecil yang
+diumumkan bersamaan.
+
+### KD-35 · Sub-CPMK dikelola di iterasi 3
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Kelola Sub-CPMK, rincian penilaiannya (`sub_cpmk_penilaian`), dan ringkasan bobot di detail Mata Kuliah dipindah dari iterasi 2 ke iterasi 3. Ketiganya dikerjakan setelah matriks pemetaan CPMK–MK.
+- **Alasan:** Sub-CPMK menempel ke pasangan CPMK–MK (`pemetaan_cpmk_mk`), dan pasangan itu baru bisa dibuat di matriks pemetaan.
+- **Dampak:** Bagian 11 spesifikasi diperbarui. Iterasi 2 berisi seluruh data master selain Sub-CPMK.
+
+### KD-36 · Aturan akun dan peran
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Peran DOSEN dan MAHASISWA hanya untuk akun yang punya data dosen/mahasiswa. Akun seperti itu dibuat lewat Data Master Dosen/Mahasiswa.
+  - Menu Akun Pengguna dipakai untuk membuat akun Admin/Koprodi (email wajib), mengatur peran, dan reset password.
+  - Setiap akun minimal punya satu peran.
+  - Akun hanya bisa dihapus di Akun Pengguna jika tidak punya data dosen/mahasiswa.
+  - Menghapus data Dosen/Mahasiswa ikut menghapus akunnya. Jika akun itu masih punya peran lain, akun tetap ada dan hanya peran DOSEN/MAHASISWA yang dicabut.
+  - Admin tidak bisa mencabut peran ADMIN miliknya atau menghapus akunnya sendiri.
+- **Alasan:** Halaman Dosen dan Mahasiswa membutuhkan baris `dosen`/`mahasiswa`. Akun berperan Dosen tanpa data dosen tidak akan punya kelas. Larangan untuk akun sendiri mencegah sistem kehilangan Admin.
+- **Dampak:** Bagian 6 dan 7.6 spesifikasi diperbarui. Koprodi yang juga dosen dibuat lewat Data Dosen, lalu diberi peran KOPRODI di Akun Pengguna.
+
+### KD-37 · Satu kelas per MK per periode untuk setiap mahasiswa
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Mahasiswa tidak bisa didaftarkan ke dua kelas untuk MK yang sama dalam satu periode.
+- **Alasan:** Aturan MK yang diulang (KD-24) memilih kelas terbaru. Jika ada dua kelas dalam periode yang sama, kelas terbaru tidak punya jawaban tunggal.
+- **Dampak:** Validasi di halaman detail kelas (iterasi 4).
+
+### KD-38 · Aturan MK yang diulang juga untuk tab CPMK dan Sub-CPMK
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Laporan tab CPMK dan Sub-CPMK memakai aturan kelas yang sama dengan CPL (KD-24). Setiap mahasiswa dihitung sekali per MK.
+- **Alasan:** Jika dihitung per kelas, mahasiswa yang mengulang terhitung dua kali pada laporan "Semua periode".
+- **Dampak:** Bagian 5.4 dan 13 spesifikasi diperbarui. `CapaianService` memilih kelas per mahasiswa per MK sebelum menghitung semua tab.
+
+### KD-39 · Status dibandingkan dengan nilai yang dibulatkan dua desimal
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Status Lulus (capaian ≥ AM) dan Tercapai (% Lulus ≥ AK) dibandingkan memakai angka yang sudah dibulatkan 2 desimal. Perhitungan berantai tetap presisi penuh.
+- **Alasan:** Angka yang tampil dan statusnya selalu konsisten. Tidak ada capaian "50,01" yang berstatus Belum Lulus karena nilai sebenarnya 50,006.
+- **Dampak:** Bagian 5.3 spesifikasi diperbarui. Diuji di iterasi 7.
+
+### KD-40 · Kategori "Belum ada nilai" di ringkasan CPL dashboard
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Donut dan tabel Ringkasan Capaian CPL di Dashboard Koprodi punya kategori ketiga, "Belum ada nilai" (abu), untuk CPL yang belum punya nilai sama sekali.
+- **Alasan:** CPL seperti itu belum bisa dinilai Tercapai maupun Tidak Tercapai. Warna abu sesuai aturan 7.2 untuk status yang belum bisa dinilai.
+- **Dampak:** Bagian 7.6 spesifikasi diperbarui.
+
+### KD-41 · Arti `bobot_bk_mk` dan batas semua bobot
+- **Tanggal:** 2026-10-30
+- **Keputusan:** `bobot_bk_mk` adalah porsi BK dalam MK dalam persen (0–100), hanya dokumentasi kurikulum, dan jumlahnya per MK tidak diperiksa. Semua bobot persen lainnya divalidasi 0–100.
+- **Alasan:** Spesifikasi tidak menyebut arti `bobot_bk_mk`, dan bagian 6 tidak punya aturan jumlah untuknya. Bobot lain adalah persen nilai akhir MK (bagian 5.1), jadi tidak mungkin lebih dari 100.
+- **Dampak:** Bagian 4 dan 6 spesifikasi diperbarui.
+
+### KD-42 · Isian teks bersaran dan batas semester/SKS
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - `jenis_mata_kuliah`, `level_bloom_mk`, dan `kategori_cpl` berupa teks bebas dengan saran di form (Wajib/Pilihan; C1–C6; Sikap/Pengetahuan/Keterampilan Umum/Keterampilan Khusus).
+  - Semester mata kuliah 1–8 dan jumlah SKS 1–24.
+- **Alasan:** Sama dengan `kategori_bk` (KD-22): saran mempercepat pengisian tanpa membatasi data asli prodi. 24 SKS adalah beban maksimal satu semester.
+- **Dampak:** Bagian 6 spesifikasi diperbarui. Form memakai `<datalist>`.
+
+### KD-43 · Data demo bertahap dan akun demo tambahan
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Data contoh bagian 10 diisi bertahap mengikuti iterasi yang membutuhkannya: data master, pemetaan dan Sub-CPMK, kelas dan peserta, rencana asesmen, lalu nilai.
+  - Dosen dan mahasiswa contoh selain lima akun demo utama tidak punya email. Mereka login dengan NIDN/NPM dan password `dosen123` atau `mahasiswa123`.
+- **Alasan:** Setiap PR bisa dicoba dengan data yang cukup. Password tetap mudah diketik (KD-33).
+- **Dampak:** Bagian 10 spesifikasi diperbarui. Daftar data contoh ada di README.
+
+### KD-44 · Orientasi matriks pemetaan
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Baris matriks adalah sisi kiri nama pemetaan dan kolomnya sisi kanan: CPL × Profil Lulusan, CPL × Bahan Kajian, Bahan Kajian × Mata Kuliah, CPMK × Mata Kuliah.
+- **Alasan:** Satu aturan yang sama untuk keempat matriks, sehingga mudah dibaca dan dijelaskan.
+- **Dampak:** Matriks yang lebar bisa digeser horizontal, dengan kolom pertama dan baris header menempel (bagian 7.4).
+
+### KD-45 · "Periode terbaru" di Beranda Admin dan Dashboard Dosen
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Kartu kelas di Beranda Admin dan Dashboard Dosen memakai periode aktif, yaitu periode terbaru yang sudah memiliki kelas (bagian 13).
+- **Alasan:** Satu definisi periode untuk semua halaman. Periode yang baru dibuat tetapi belum berisi kelas tidak membuat kartu kosong.
+- **Dampak:** `PeriodeAkademik::aktif()` dipakai di semua halaman.
+
+### KD-46 · CPL di laporan Dosen hanya dari kelas yang diampu
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Tab CPL di laporan Dosen dihitung hanya dari kelas yang ia ampu, yaitu kontribusi MK-nya ke CPL (KF-14).
+- **Alasan:** Dosen hanya boleh melihat data kelasnya sendiri (bagian 3 dan 6).
+- **Dampak:** Laporan Dosen dan Koprodi memakai service yang sama dengan cakupan kelas berbeda.
+
+### KD-47 · Penyebut saat nilai belum lengkap
+- **Tanggal:** 2026-10-30
+- **Keputusan:** BSub dan BCPMK (rumus 3 dan 4) dihitung per mahasiswa, hanya dari bobot kontribusi asesmen yang sudah punya nilai.
+- **Alasan:** Bagian 5.4 meminta penyebut hanya memakai bobot yang punya nilai. Dengan cara ini hasilnya tetap sama dengan Σ skor / Σ skor maks APTIKOM pada asesmen yang sudah dinilai.
+- **Dampak:** Bagian 5.4 spesifikasi diperjelas. Diuji di iterasi 7 dengan kasus nilai sebagian kosong.
+
+### KD-48 · Nilai maksimum tidak bisa diturunkan di bawah nilai yang ada
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Saat rencana asesmen diubah, `nilai_maksimum` tidak boleh lebih kecil dari nilai tertinggi yang sudah diinput untuk asesmen itu.
+- **Alasan:** Aturan 0 ≤ nilai ≤ `nilai_maksimum` (bagian 6) harus tetap berlaku untuk nilai yang sudah tersimpan.
+- **Dampak:** Bagian 6 spesifikasi diperbarui. Validasi ada di iterasi 5.
+
+### KD-49 · PR iterasi 2–10 di-merge oleh Claude
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Atas permintaan user, PR setiap iterasi di-merge sendiri ke `main` setelah semua test lulus dan Pint bersih, lalu pekerjaan berlanjut ke iterasi berikutnya.
+- **Alasan:** User ingin semua iterasi selesai dalam satu rangkaian kerja.
+- **Dampak:** Branch dan PR tetap dibuat per iterasi (bagian 15), sehingga riwayat dan catatannya bisa dibaca belakangan.
+
+## Keputusan teknis iterasi 2
+
+### KD-50 · CPL milik CPMK yang sudah dipetakan tidak bisa diganti
+- **Tanggal:** 2026-10-30
+- **Keputusan:** CPL sebuah CPMK hanya bisa diganti selama CPMK itu belum dipetakan ke mata kuliah.
+- **Alasan:** Jika CPMK yang sudah dipakai kelas dipindah ke CPL lain, capaian CPL kelas yang sudah berjalan ikut berubah diam-diam. Hal ini bertentangan dengan prinsip KD-08.
+- **Dampak:** Form CPMK menampilkan pesan "CPL tidak bisa diganti karena CPMK ini sudah dipetakan ke mata kuliah."
+
+### KD-51 · Pilihan kurikulum diingat selama sesi
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Dropdown Kurikulum di halaman data master menyimpan pilihannya di session, sehingga tetap sama saat berpindah halaman. Bawaannya kurikulum terbaru.
+  - Data baru masuk ke kurikulum terpilih lewat isian tersembunyi.
+  - Kurikulum data lama tidak bisa dipindah lewat form ubah.
+- **Alasan:** Admin biasanya mengisi satu kurikulum sampai selesai. Memindah data antarkurikulum akan merusak pemetaan dan capaian.
+- **Dampak:** Method `kurikulumTerpilih()` di `app/Http/Controllers/Controller.php` dipakai semua controller data kurikulum.
+
+### KD-52 · Pemeriksaan sebelum hapus ada di model
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Setiap model yang bisa dihapus punya method `alasanTidakBisaDihapus()`. Method ini mengembalikan pesan jika data masih dipakai, atau `null` jika boleh dihapus. Controller menampilkan pesan itu sebagai toast. Foreign key restrict di database tetap menjadi pengaman terakhir.
+- **Alasan:** Pesannya lebih jelas daripada error database, dan aturannya ada di satu tempat per model sehingga mudah dijelaskan.
+- **Dampak:** Menghapus kurikulum, CPL, MK, CPMK, metode penilaian, dosen, mahasiswa, atau akun yang masih dipakai ditolak dengan pesan yang menyebut alasannya.
+
+### KD-53 · Komponen tabel, pencarian, dan modal hapus bersama
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Tabel daftar memakai komponen `x-tabel`, `x-tabel.baris`, `x-tabel.sel`, dan `x-tabel.aksi`. Setiap sel membawa `data-label`, sehingga di layar < 768px baris tampil sebagai kartu.
+  - Pencarian memakai trait `BisaDicari` dengan daftar kolom `$kolomPencarian` di tiap model.
+  - Modal konfirmasi hapus dipasang sekali di layout dan dibuka lewat event Alpine `konfirmasi-hapus`.
+  - Setiap halaman daftar punya satu form untuk tambah dan ubah (`form.blade.php`).
+- **Alasan:** Tiga belas halaman data master berbentuk sama. Komponen dan trait mencegah duplikasi (bagian 14 spesifikasi) tanpa pola yang berlebihan.
+- **Dampak:** Halaman daftar di iterasi berikutnya cukup memakai komponen yang sama.

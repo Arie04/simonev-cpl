@@ -38,4 +38,16 @@ class Role extends Model
             ->using(UserRole::class)
             ->withTimestamps();
     }
+
+    /**
+     * Mengambil peran berdasarkan kodenya. Peran bersifat tetap (bagian 10), jadi dibuat
+     * jika belum ada, mis. di database test yang belum menjalankan seeder.
+     */
+    public static function ambil(string $kodeRole): self
+    {
+        return self::firstOrCreate(
+            ['kode_role' => $kodeRole],
+            ['nama_role' => self::DAFTAR_PERAN[$kodeRole]],
+        );
+    }
 }

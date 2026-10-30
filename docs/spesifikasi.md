@@ -87,7 +87,7 @@ Aturan umum:
 ### C. Pemetaan Kurikulum
 - `pemetaan_cpl_pl`: pemetaan_cpl_pl_id, cpl_id (FK), profil_lulusan_id (FK), UQ(cpl_id, profil_lulusan_id)
 - `pemetaan_cpl_bk`: pemetaan_cpl_bk_id, cpl_id (FK), bahan_kajian_id (FK), UQ(cpl_id, bahan_kajian_id)
-- `pemetaan_bk_mk`: pemetaan_bk_mk_id, bahan_kajian_id (FK), mata_kuliah_id (FK), bobot_bk_mk, UQ(bahan_kajian_id, mata_kuliah_id)
+- `pemetaan_bk_mk`: pemetaan_bk_mk_id, bahan_kajian_id (FK), mata_kuliah_id (FK), bobot_bk_mk, UQ(bahan_kajian_id, mata_kuliah_id). `bobot_bk_mk` adalah porsi BK dalam MK dalam persen (0–100), hanya dokumentasi kurikulum, dan jumlahnya per MK tidak diperiksa.
 - `pemetaan_cpmk_mk`: pemetaan_cpmk_mk_id, cpmk_id (FK), mata_kuliah_id (FK), bobot_cpmk, UQ(cpmk_id, mata_kuliah_id)
 
 ### D. Pelaksanaan Perkuliahan
@@ -167,6 +167,7 @@ Dengan BSub dan BCPMK seperti di atas, rumus 3 dan 4 menghasilkan angka yang sam
 ### 5.3 Status ketercapaian dan agregat (catatan RPS APTIKOM, Lampiran 8)
 
 - **Ambang Batas Kelulusan Mahasiswa (AM)**: nilai minimal yang harus dicapai seorang mahasiswa. Seorang mahasiswa dinyatakan **Lulus** pada suatu Sub-CPMK/CPMK/CPL jika capaiannya ≥ AM.
+- Status Lulus dan Tercapai dibandingkan memakai angka yang sudah dibulatkan 2 desimal, yaitu angka yang tampil di layar. Dengan begitu tidak ada capaian yang tampil "50,01" tetapi berstatus Belum Lulus. Perhitungan berantai (Sub-CPMK → CPMK → CPL) tetap memakai presisi penuh.
 - **Ambang Batas Ketercapaian (AK)**: persentase minimal mahasiswa yang Lulus. Sebuah Sub-CPMK/CPMK (di satu kelas atau MK) atau CPL (pada satu angkatan atau periode) dinyatakan **Tercapai** jika % mahasiswa Lulus ≥ AK.
 - Agregat **bukan** rata-rata nilai. Agregat adalah persentase jumlah mahasiswa yang lulus, sesuai APTIKOM: "persen ketercapaian jumlah mahasiswa yang lulus dalam setiap CPL Prodi". Rata-rata capaian tetap ditampilkan sebagai informasi pendukung.
 - AM dan AK **disimpan di file `.env`**, bukan di database, sehingga ERD tidak berubah:
@@ -185,8 +186,8 @@ Dengan BSub dan BCPMK seperti di atas, rumus 3 dan 4 menghasilkan angka yang sam
 
 ### 5.4 Aturan teknis
 
-- **Nilai belum diinput** diabaikan: penyebut hanya memakai bobot yang punya nilai. Jika tidak ada nilai sama sekali, hasilnya `null` dan ditampilkan "Belum ada nilai", bukan 0. Mahasiswa dengan hasil `null` tidak ikut dihitung dalam persentase agregat.
-- Jika mahasiswa punya lebih dari satu kelas untuk MK yang sama (mengulang), capaian CPL memakai kelas terbaru tempat mahasiswa itu sudah punya minimal satu nilai asesmen. Jika kelas terbaru belum punya nilai sama sekali, pakai kelas sebelumnya yang sudah punya nilai. Begitu kelas terbaru punya nilai, kelas itu yang dipakai (nilai parsial tetap dihitung sesuai aturan nilai kosong di atas). Tujuannya agar capaian CPL tidak tiba-tiba hilang di awal semester saat mahasiswa mengulang.
+- **Nilai belum diinput** diabaikan: penyebut hanya memakai bobot yang punya nilai. Jika tidak ada nilai sama sekali, hasilnya `null` dan ditampilkan "Belum ada nilai", bukan 0. Mahasiswa dengan hasil `null` tidak ikut dihitung dalam persentase agregat. Karena itu BSub dan BCPMK di 5.2 dihitung per mahasiswa dari bobot kontribusi asesmen yang sudah punya nilai. Hasilnya tetap sama dengan Σ skor / Σ skor maks APTIKOM pada asesmen yang sudah dinilai.
+- Jika mahasiswa punya lebih dari satu kelas untuk MK yang sama (mengulang), capaian CPL memakai kelas terbaru tempat mahasiswa itu sudah punya minimal satu nilai asesmen. Jika kelas terbaru belum punya nilai sama sekali, pakai kelas sebelumnya yang sudah punya nilai. Begitu kelas terbaru punya nilai, kelas itu yang dipakai (nilai parsial tetap dihitung sesuai aturan nilai kosong di atas). Tujuannya agar capaian CPL tidak tiba-tiba hilang di awal semester saat mahasiswa mengulang. Aturan yang sama dipakai di tab CPMK dan Sub-CPMK laporan, sehingga setiap mahasiswa dihitung sekali per MK.
 - CPL dari kurikulum berbeda tidak pernah digabung, walaupun kodenya sama (mis. CPL01 kurikulum 2021 dan CPL01 kurikulum 2026). Semua perhitungan dan pengelompokan memakai id, bukan kode. Jika seorang mahasiswa mengikuti MK dari dua kurikulum (masa transisi), capaian CPL-nya ditampilkan terpisah per kurikulum.
 - Hitung dengan presisi penuh, tampilkan 2 desimal.
 - Implementasikan dalam satu service class (mis. `App\Services\CapaianService`) yang dipakai dashboard, laporan, dan halaman mahasiswa. Jangan menduplikasi rumus di controller/view. Hitung on-the-fly dengan eager loading; cache boleh ditambahkan belakangan.
@@ -249,7 +250,8 @@ Tambahkan juga test untuk kasus nilai belum lengkap (sebagian asesmen kosong, da
 - Membuka fitur di luar peran → 403.
 - Dosen hanya bisa membuka/mengubah kelas yang ia ampu; mahasiswa hanya datanya sendiri (cek lewat Policy).
 - Nilai harus numerik dan 0 ≤ nilai ≤ `nilai_maksimum` asesmen.
-- `nilai_maksimum` > 0; semua bobot ≥ 0.
+- `nilai_maksimum` > 0; semua bobot ≥ 0. Bobot dalam persen (`bobot_bk_mk`, `bobot_cpmk`, `bobot_sub_cpmk`, `bobot_asesmen`, `bobot_kontribusi`) juga ≤ 100. `nilai_maksimum` tidak bisa diturunkan di bawah nilai tertinggi yang sudah diinput untuk asesmen itu.
+- Semester mata kuliah 1–8 dan jumlah SKS 1–24. `jenis_mata_kuliah`, `level_bloom_mk`, dan `kategori_cpl` berupa teks bebas. Form menampilkan saran: Wajib/Pilihan; C1–C6; Sikap/Pengetahuan/Keterampilan Umum/Keterampilan Khusus.
 - Nilai ambang dari `.env` dianggap valid hanya jika berupa angka 0–100. Selain itu, perlakukan sebagai belum ditetapkan (lihat 5.3) dan catat peringatan di log.
 - Saat menyimpan rencana asesmen, Σ `bobot_kontribusi` ke Sub-CPMK harus sama dengan `bobot_asesmen` (diblokir jika berbeda, karena keduanya diisi di form yang sama).
 - Sub-CPMK yang bisa dipetakan ke asesmen hanya Sub-CPMK milik MK kelas tersebut (`sub_cpmk → pemetaan_cpmk_mk.mata_kuliah_id = kelas_kuliah.mata_kuliah_id`). Satu asesmen boleh dipetakan ke beberapa Sub-CPMK.
@@ -258,6 +260,12 @@ Tambahkan juga test untuk kasus nilai belum lengkap (sebagian asesmen kosong, da
 - Kode PL, CPL, BK, MK, dan CPMK tidak boleh ganda dalam satu kurikulum, tetapi boleh sama di kurikulum lain. Kode Sub-CPMK tidak boleh ganda dalam satu pasangan CPMK–MK.
 - Setiap pemetaan (CPL–PL, CPL–BK, BK–MK, CPMK–MK) dan relasi Profil Lulusan–Profesi hanya boleh menghubungkan data dari kurikulum yang sama.
 - Periode akademik (tahun_akademik + semester_periode) dan kelas (MK + periode + nama_kelas) tidak boleh ganda. Ini divalidasi di aplikasi karena ERD tidak memberi UQ untuk keduanya.
+- Seorang mahasiswa hanya boleh terdaftar di satu kelas untuk MK yang sama dalam satu periode. Dengan begitu aturan MK yang diulang (5.4) selalu punya satu kelas terbaru.
+- Akun dan peran:
+  - Peran DOSEN dan MAHASISWA hanya untuk akun yang punya data dosen/mahasiswa. Akun seperti itu dibuat lewat Data Master Dosen/Mahasiswa.
+  - Setiap akun minimal punya satu peran.
+  - Admin tidak bisa mencabut peran ADMIN miliknya sendiri atau menghapus akunnya sendiri.
+  - Akun hanya bisa dihapus di menu Akun Pengguna jika tidak punya data dosen/mahasiswa.
 - Peringatan (tidak memblokir), ditampilkan di halaman terkait:
   - Σ `bobot_asesmen` per kelas ≠ 100.
   - Σ `bobot_kontribusi` ke suatu Sub-CPMK dalam satu kelas ≠ `bobot_sub_cpmk`.
@@ -345,17 +353,17 @@ Menu mengikuti use case dan KF. Menu di mockup yang tidak ada di use case (Monit
 ### 7.6 Halaman
 
 1. **Login** (semua, Gambar 3.7): top bar biru dengan judul aplikasi; latar `bg` dengan ornamen lingkaran tipis berwarna `primary-50` (opsional); kartu putih di tengah (lebar maks. 400px) berisi logo, nama SIMONEV-CPL, judul "Masuk ke Sistem", input "Email / NPM / NIDN" dengan ikon pengguna, input password dengan ikon gembok dan tombol tampil/sembunyikan, serta tombol utama "Login" selebar kartu. NPM dicocokkan ke `mahasiswa.nim` dan NIDN ke `dosen.nidn`, lalu ke akun `users` miliknya. Setelah berhasil, pengguna diarahkan sesuai peran.
-2. **Dashboard Monitoring** (Koprodi, Gambar 3.8): dropdown Kurikulum di kanan atas (default kurikulum terbaru). Enam kartu statistik: jumlah mahasiswa, jumlah mata kuliah, jumlah kelas aktif, jumlah CPMK, jumlah CPL, dan periode akademik aktif; jumlah MK, CPMK, CPL, dan kelas aktif mengikuti kurikulum terpilih. Di bawahnya kartu "Ringkasan Capaian CPL": donut Tercapai (hijau) vs Tidak Tercapai (merah) berdasarkan aturan 5.3 dengan filter angkatan (default semua angkatan), dan di sebelahnya tabel Kategori, Jumlah CPL, Persentase, dan Total. Label kategori menyebut ambang yang berlaku, mis. "Tercapai (≥ 85% mahasiswa lulus)". Jika ambang di `.env` belum diisi, ganti donut dengan pemberitahuan "Ambang ketercapaian belum ditetapkan program studi". Ringkasan capaian CPL di dashboard selalu kumulatif dari semua periode, mengikuti filter kurikulum dan angkatan (lihat 5.3).
+2. **Dashboard Monitoring** (Koprodi, Gambar 3.8): dropdown Kurikulum di kanan atas (default kurikulum terbaru). Enam kartu statistik: jumlah mahasiswa, jumlah mata kuliah, jumlah kelas aktif, jumlah CPMK, jumlah CPL, dan periode akademik aktif; jumlah MK, CPMK, CPL, dan kelas aktif mengikuti kurikulum terpilih. Di bawahnya kartu "Ringkasan Capaian CPL": donut Tercapai (hijau) vs Tidak Tercapai (merah) berdasarkan aturan 5.3 dengan filter angkatan (default semua angkatan), dan di sebelahnya tabel Kategori, Jumlah CPL, Persentase, dan Total. Label kategori menyebut ambang yang berlaku, mis. "Tercapai (≥ 85% mahasiswa lulus)". CPL yang belum punya nilai sama sekali masuk kategori ketiga "Belum ada nilai" berwarna abu (`neutral`). Jika ambang di `.env` belum diisi, ganti donut dengan pemberitahuan "Ambang ketercapaian belum ditetapkan program studi". Ringkasan capaian CPL di dashboard selalu kumulatif dari semua periode, mengikuti filter kurikulum dan angkatan (lihat 5.3).
 3. **Beranda Admin**: kartu jumlah mahasiswa, dosen, mata kuliah (kurikulum terbaru), dan kelas (periode terbaru), ditambah pintasan ke menu yang sering dipakai. Tidak menampilkan data capaian.
 4. **Kelola Data Master** (Admin, Gambar 3.9): judul "Kelola Data Master <Entitas>"; di kanan atas kotak pencarian "Cari data..." dan tombol "Tambah Data"; tabel dengan kolom Aksi (ubah, hapus) dan paginasi. Entitas: Program Studi, Kurikulum, Evaluasi Kurikulum, Profil Lulusan, Profesi, CPL, Bahan Kajian, Mata Kuliah, CPMK, Sub-CPMK, Metode Penilaian, Dosen, Mahasiswa.
    - Tabel Mahasiswa berkolom NPM, Nama Mahasiswa, Angkatan, Aksi. Kolom Status di mockup tidak dibuat karena tidak ada di ERD.
    - Halaman data yang bergantung pada kurikulum (Evaluasi Kurikulum, Profil Lulusan, Profesi, CPL, Bahan Kajian, Mata Kuliah, CPMK, Sub-CPMK) punya dropdown Kurikulum di atas tabel; data baru otomatis masuk ke kurikulum terpilih.
    - Evaluasi Kurikulum: baris-baris hasil evaluasi per kurikulum (tahap_evaluasi, kinerja_mutu, standar_kinerja_mutu, kesenjangan, tindak_lanjut), diisi dari dokumen evaluasi kurikulum prodi sesuai format Tabel B APTIKOM.
-   - Form Dosen/Mahasiswa sekaligus membuat akun `users` dan memberi peran. Nama disimpan sama di `users.nama` dan `dosen.nama`/`mahasiswa.nama`.
+   - Form Dosen/Mahasiswa sekaligus membuat akun `users` dan memberi peran. Nama disimpan sama di `users.nama` dan `dosen.nama`/`mahasiswa.nama`. Menghapus data Dosen/Mahasiswa ikut menghapus akunnya. Jika akun itu masih punya peran lain (mis. KOPRODI), akun tetap ada dan hanya peran DOSEN/MAHASISWA yang dicabut.
    - Relasi Profil Lulusan–Profesi diisi lewat multi-select di form Profil Lulusan.
    - Form Sub-CPMK memilih pasangan CPMK–MK; rincian penilaian Sub-CPMK (`sub_cpmk_penilaian`: metode, teknik, instrumen, kriteria) dikelola di halaman detail Sub-CPMK.
    - Halaman detail Mata Kuliah menampilkan ringkasan bobot CPMK dan Sub-CPMK beserta totalnya (harus 100), mirip Tabel 19 APTIKOM.
-   - Akun Pengguna (menu tersendiri): daftar user, tambah/ubah, atur peran, reset password.
+   - Akun Pengguna (menu tersendiri): daftar user, tambah/ubah, atur peran, reset password. Tambah akun di menu ini untuk akun Admin/Koprodi (email wajib). Peran DOSEN dan MAHASISWA hanya bisa dicentang untuk akun yang punya data dosen/mahasiswa (lihat bagian 6).
 5. **Pemetaan Kurikulum** (Admin, Gambar 3.10): kartu filter berisi dropdown Jenis Pemetaan (CPL–Profil Lulusan, CPL–Bahan Kajian, Bahan Kajian–Mata Kuliah, CPMK–Mata Kuliah) dan dropdown Kurikulum. Kartu matriks berisi baris × kolom dengan lingkaran yang bisa diklik (terisi biru = terhubung, kosong = tidak). Untuk BK–MK dan CPMK–MK, sel yang terhubung menampilkan input bobot. Tombol utama "Simpan Pemetaan" di kanan bawah (menempel di bawah layar pada mobile).
 6. **Periode Akademik & Kelas Kuliah** (Admin, Gambar 3.11): CRUD periode akademik. Halaman kelas: dropdown Periode Akademik dan tombol "Tambah Kelas"; tabel Mata Kuliah, Kelas, Dosen, Peserta (jumlah), Aksi (lihat detail, ubah). Di detail kelas, Admin mengatur dosen pengampu (boleh lebih dari satu) dan peserta (cari mahasiswa, atau tambah sekaligus per angkatan).
 7. **Kelola Rencana Asesmen** (Dosen, Gambar 3.12): tiga kartu info ber-ikon (Mata Kuliah, Kelas, Periode) dan tombol "Tambah Asesmen". Tabel Asesmen, Metode, Bobot (%), Sub-CPMK (kode), Nilai Maks, Tanggal, Aksi. Form: metode penilaian, nama asesmen, bobot asesmen, nilai maksimum, tanggal, lalu pilih satu atau lebih Sub-CPMK beserta bobot kontribusinya (dalam % nilai akhir MK). Di bawah tabel tampilkan **matriks bobot** seperti bagian Penilaian RPS APTIKOM: baris = Sub-CPMK (dikelompokkan per CPMK), kolom = asesmen, sel = `bobot_kontribusi`, lengkap dengan total per baris/kolom, target (`bobot_sub_cpmk`, 100), dan tanda kuning (`warning`) jika tidak cocok.
@@ -382,7 +390,7 @@ KRS, KHS, jadwal kuliah, keuangan, dan administrasi akademik lain; evaluasi dose
 
 - Roles: ADMIN, KOPRODI, DOSEN, MAHASISWA.
 - Akun demo untuk tiap peran, plus satu akun yang memiliki peran KOPRODI dan DOSEN sekaligus. Password sederhana untuk pengembangan lokal saja, dengan pola bagian email sebelum `@` ditambah `123` (mis. `admin123`), supaya mudah diketik saat mencoba aplikasi.
-- Data contoh secukupnya agar dashboard dan laporan terisi: 1 program studi, 2 kurikulum (2021 sebagai kurikulum lama dan 2026 sebagai kurikulum baru, dengan beberapa kode yang sama di keduanya, mis. CPL01 dan satu kode MK), beberapa baris evaluasi kurikulum, beberapa Profil Lulusan, CPL, Bahan Kajian, mata kuliah (mis. Matematika Diskrit, Algoritma, Basis Data, Struktur Data, Pemrograman Web), CPMK, Sub-CPMK, metode penilaian (Kuis, Tugas, UTS, UAS, Proyek, Praktikum), periode 2026/2027 Ganjil, kelas dari kedua kurikulum, peserta dari minimal dua angkatan, rencana asesmen, dan nilai. **Semua bobot di seeder harus memenuhi aturan 5.1.**
+- Data contoh secukupnya agar dashboard dan laporan terisi: 1 program studi, 2 kurikulum (2021 sebagai kurikulum lama dan 2026 sebagai kurikulum baru, dengan beberapa kode yang sama di keduanya, mis. CPL01 dan satu kode MK), beberapa baris evaluasi kurikulum, beberapa Profil Lulusan, CPL, Bahan Kajian, mata kuliah (mis. Matematika Diskrit, Algoritma, Basis Data, Struktur Data, Pemrograman Web), CPMK, Sub-CPMK, metode penilaian (Kuis, Tugas, UTS, UAS, Proyek, Praktikum), periode 2026/2027 Ganjil, kelas dari kedua kurikulum, peserta dari minimal dua angkatan, rencana asesmen, dan nilai. **Semua bobot di seeder harus memenuhi aturan 5.1.** Data contoh diisi bertahap mengikuti iterasi yang membutuhkannya. Dosen dan mahasiswa contoh selain akun demo utama tidak punya email; mereka login dengan NIDN/NPM dan password `dosen123` atau `mahasiswa123`.
 - Data kurikulum asli prodi akan saya masukkan sendiri nanti.
 - `.env.example` memuat `AMBANG_KELULUSAN_MAHASISWA=50.01` dan `AMBANG_KETERCAPAIAN=85` (contoh APTIKOM, hanya untuk pengembangan), dengan komentar bahwa nilainya harus diganti sesuai ketetapan prodi.
 
@@ -391,8 +399,8 @@ KRS, KHS, jadwal kuliah, keuangan, dan administrasi akademik lain; evaluasi dose
 Kerjakan per iterasi. Di setiap iterasi: tulis test → tulis kode → refactor → jalankan test. Sebelum berhenti, perbarui `CHANGELOG.md`, tulis catatan partisi di `docs/catatan-kode/`, catat keputusan baru di `docs/keputusan-desain.md`, lalu commit, push, dan buat Pull Request (bagian 15 dan 16). Setelah itu berhenti dan beri ringkasan: apa yang selesai, cara mencobanya, dan apa yang perlu saya putuskan sebelum lanjut.
 
 1. Inisialisasi repositori (README.md, CHANGELOG.md, folder `docs/`), setup proyek, migrasi semua tabel dengan PK UUID, model + relasi, seeder peran & akun demo, login, middleware peran, pilih/ganti peran aktif. Termasuk Profil & Ubah Password (7.6.13), halaman error 403/404/419/500 (7.6.14), dan halaman sambutan sementara sebagai halaman utama tiap peran.
-2. Kelola akun pengguna, Dosen, Mahasiswa, dan seluruh data master kurikulum, termasuk evaluasi kurikulum dan validasi kode unik per kurikulum. Termasuk Beranda Admin (7.6.3).
-3. Pemetaan kurikulum (matriks), termasuk halaman Data Kurikulum Koprodi yang read-only (7.6.12) dengan memakai ulang tampilan matriks.
+2. Kelola akun pengguna, Dosen, Mahasiswa, dan seluruh data master kurikulum kecuali Sub-CPMK, termasuk evaluasi kurikulum dan validasi kode unik per kurikulum. Termasuk Beranda Admin (7.6.3).
+3. Pemetaan kurikulum (matriks), lalu data master Sub-CPMK beserta rincian penilaiannya dan ringkasan bobot di detail Mata Kuliah (Sub-CPMK menempel ke pasangan CPMK–MK hasil pemetaan). Termasuk halaman Data Kurikulum Koprodi yang read-only (7.6.12) dengan memakai ulang tampilan matriks.
 4. Periode akademik, kelas kuliah, dosen pengampu, peserta kelas.
 5. Rencana asesmen + pemetaan asesmen ke Sub-CPMK + matriks bobot (Dosen). Termasuk Dashboard Dosen dan halaman Mata Kuliah Dosen (7.6.11, KF-07).
 6. Input nilai asesmen.
@@ -432,7 +440,7 @@ Daftar ini juga menjadi isi awal `docs/keputusan-desain.md` (bagian 15).
 - Metode perhitungan dan arti bobot mengikuti contoh APTIKOM (bagian 5): semua bobot dalam % nilai akhir MK, CPL = Σ skor / Σ skor maks, SKS tidak dipakai sebagai bobot.
 - Status memakai dua ambang (AM dan AK) yang disimpan di `.env` dan berlaku global, sehingga ERD tidak berubah. Nilainya ditetapkan prodi dan diisi pengelola server; `.env.example` memakai contoh APTIKOM (50.01 dan 85).
 - Nilai kosong diabaikan (bobot dinormalisasi ulang), bukan dihitung 0.
-- Mahasiswa yang mengulang MK: dipakai kelas terbaru yang sudah punya minimal satu nilai asesmen (lihat 5.4).
+- Mahasiswa yang mengulang MK: dipakai kelas terbaru yang sudah punya minimal satu nilai asesmen (lihat 5.4), untuk CPL maupun tab CPMK dan Sub-CPMK laporan.
 - "Periode akademik aktif" = periode terbaru yang sudah memiliki kelas (ERD tidak punya kolom status aktif). Periode yang dibuat lebih awal tetapi belum berisi kelas tidak mengubah periode aktif.
 - Sistem menangani lebih dari satu kurikulum (sekarang dan yang akan datang). Kurikulum mahasiswa tidak disimpan; CPL mahasiswa mengikuti kurikulum dari MK yang ia ikuti.
 - Perhitungan memakai bobot dari rencana asesmen tiap kelas. Bobot Sub-CPMK dan CPMK di kurikulum hanya target untuk validasi, sehingga revisi bobot tidak mengubah laporan lama.

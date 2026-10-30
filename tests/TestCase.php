@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use RuntimeException;
 
@@ -30,5 +31,18 @@ abstract class TestCase extends BaseTestCase
         }
 
         return $app;
+    }
+
+    /**
+     * Login sebagai pengguna dengan peran aktif tertentu, mis. masukSebagai(Role::ADMIN).
+     * Jika $user tidak diberikan, dibuat akun baru dengan peran itu.
+     */
+    protected function masukSebagai(string $kodeRole, ?User $user = null): User
+    {
+        $user ??= User::factory()->denganPeran($kodeRole)->create();
+
+        $this->actingAs($user)->withSession(['peran_aktif' => $kodeRole]);
+
+        return $user;
     }
 }

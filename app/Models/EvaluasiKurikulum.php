@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BisaDicari;
 use Database\Factories\EvaluasiKurikulumFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class EvaluasiKurikulum extends Model
 {
     /** @use HasFactory<EvaluasiKurikulumFactory> */
-    use HasFactory, HasUuids;
+    use BisaDicari, HasFactory, HasUuids;
 
     protected $table = 'evaluasi_kurikulum';
 
@@ -25,6 +26,9 @@ class EvaluasiKurikulum extends Model
         'kesenjangan',
         'tindak_lanjut',
     ];
+
+    /** Kolom yang dicari lewat kotak "Cari data...". */
+    protected array $kolomPencarian = ['tahap_evaluasi', 'kinerja_mutu', 'standar_kinerja_mutu', 'kesenjangan', 'tindak_lanjut'];
 
     public function kurikulum(): BelongsTo
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BisaDicari;
 use Database\Factories\BahanKajianFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class BahanKajian extends Model
 {
     /** @use HasFactory<BahanKajianFactory> */
-    use HasFactory, HasUuids;
+    use BisaDicari, HasFactory, HasUuids;
 
     protected $table = 'bahan_kajian';
 
@@ -29,6 +30,9 @@ class BahanKajian extends Model
         'ka_core',
         'referensi',
     ];
+
+    /** Kolom yang dicari lewat kotak "Cari data...". */
+    protected array $kolomPencarian = ['kode_bk', 'nama_bahan_kajian', 'kategori_bk', 'referensi'];
 
     protected function casts(): array
     {

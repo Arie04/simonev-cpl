@@ -5,6 +5,7 @@
     'ikon' => null,
     'value' => null,
     'keterangan' => null,
+    'saran' => [],
 ])
 
 @php
@@ -32,6 +33,7 @@
                 type="{{ $type }}"
                 value="{{ old($name, $value) }}"
             @endif
+            @if ($saran) list="{{ $id }}-saran" @endif
             @if ($adaError) aria-invalid="true" aria-describedby="{{ $id }}-error" @endif
             {{-- text-base (16px) di mobile agar Safari iOS tidak memperbesar halaman (bagian 7.4) --}}
             {{ $attributes->except('id')->class([
@@ -41,6 +43,15 @@
                 $adaError ? 'border-danger' : 'border-border',
             ]) }}
         >
+
+        {{-- Saran isian (mis. kategori CPL); pengguna tetap boleh mengetik nilai lain (KD-42). --}}
+        @if ($saran)
+            <datalist id="{{ $id }}-saran">
+                @foreach ($saran as $pilihan)
+                    <option value="{{ $pilihan }}"></option>
+                @endforeach
+            </datalist>
+        @endif
 
         @if ($jenisPassword)
             <button

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BisaDicari;
 use Database\Factories\ProfesiFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,13 +13,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Profesi extends Model
 {
     /** @use HasFactory<ProfesiFactory> */
-    use HasFactory, HasUuids;
+    use BisaDicari, HasFactory, HasUuids;
 
     protected $table = 'profesi';
 
     protected $primaryKey = 'profesi_id';
 
     protected $fillable = ['kurikulum_id', 'nama_profesi'];
+
+    /** Kolom yang dicari lewat kotak "Cari data...". */
+    protected array $kolomPencarian = ['nama_profesi'];
 
     public function kurikulum(): BelongsTo
     {
