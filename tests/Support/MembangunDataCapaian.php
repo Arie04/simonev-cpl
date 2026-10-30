@@ -70,11 +70,14 @@ trait MembangunDataCapaian
             ->for($periode ?? PeriodeAkademik::factory()->create(['tahun_akademik' => '2026/2027', 'semester_periode' => 'Ganjil']))
             ->create();
 
-        foreach ($daftarAsesmen as $namaAsesmen => $data) {
+        foreach (array_keys($daftarAsesmen) as $urutan => $namaAsesmen) {
+            $data = $daftarAsesmen[$namaAsesmen];
             $rencanaAsesmen = RencanaAsesmen::factory()->for($kelas)->create([
                 'nama_asesmen' => $namaAsesmen,
                 'bobot_asesmen' => $data['bobot'],
                 'nilai_maksimum' => $data['maks'],
+                // Tanggal berurutan supaya urutan asesmen di halaman sama dengan urutan penulisan.
+                'tanggal_asesmen' => now()->setDate(2026, 9, 1)->addWeeks($urutan)->toDateString(),
             ]);
 
             $kontribusi = [];
