@@ -15,7 +15,7 @@
  * Tailwind dimatikan agar view hanya memakai token di bawah (KD-32).
  * Contoh pemakaian: bg-primary-900, text-text-muted, border-border, bg-bg.
  */
-@theme {
+@theme static {
     --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
 
     --color-*: initial;
