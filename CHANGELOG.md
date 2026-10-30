@@ -7,6 +7,25 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 6: Input nilai asesmen] - 2026-10-30
+
+### Ditambahkan
+
+- Halaman Input Nilai Asesmen dengan filter bertingkat Mata Kuliah → Periode → Kelas → Rencana
+  Asesmen. Isinya hanya kelas yang diampu, dan pilihan tunggal dipilih otomatis.
+- Simpan nilai seluruh peserta sekaligus:
+  - nilai boleh berkoma desimal;
+  - harus 0 sampai nilai maksimum;
+  - jika ada yang tidak valid, tidak ada yang disimpan dan barisnya ditandai merah;
+  - isian kosong menghapus nilai (KD-29).
+- Badge status Tersimpan/Belum per mahasiswa.
+- Tampilan mobile: setiap mahasiswa tampil sebagai kartu, panel filter bisa dibuka-tutup, tombol
+  Simpan Nilai menempel di bawah layar, dan ada peringatan sebelum meninggalkan halaman.
+- Tautan Input Nilai di Dashboard Dosen dan di tabel Rencana Asesmen; menu Asesmen › Input Nilai.
+- Data contoh nilai yang dibuat dengan rumus tetap. Sebagian sengaja kosong (UAS Basis Data 2021 dan
+  dua nilai UTS INF102).
+- 11 test baru (total 236).
+
 ## [Iterasi 5: Rencana asesmen dan halaman dosen] - 2026-10-30
 
 ### Ditambahkan

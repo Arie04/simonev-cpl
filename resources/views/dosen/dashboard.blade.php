@@ -36,6 +36,10 @@
                             <x-heroicon-o-clipboard-document-list class="size-5" />
                             Rencana Asesmen
                         </x-tombol>
+                        <x-tombol varian="outline" :href="route('dosen.nilai.edit', ['kelas' => $kelas])">
+                            <x-heroicon-o-pencil-square class="size-5" />
+                            Input Nilai
+                        </x-tombol>
                     </div>
                 </x-kartu>
             @endforeach

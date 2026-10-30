@@ -7,6 +7,7 @@ use App\Models\KelasKuliah;
 use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
+use App\Models\NilaiAsesmen;
 use App\Models\PeriodeAkademik;
 use App\Models\Role;
 use App\Models\User;
@@ -144,6 +145,21 @@ class SeederTest extends TestCase
         }
     }
 
+    public function test_nilai_contoh_sesuai_batas_dan_sebagian_sengaja_kosong(): void
+    {
+        $this->seed();
+
+        // Jumlah nilai = asesmen × peserta per kelas, dikurangi yang sengaja kosong:
+        // INF201 4×8, INF202 (UAS belum dinilai) 3×8, INF301 4×8, INF101 4×9, INF102 5×8 − 2.
+        $this->assertDatabaseCount('rencana_asesmen', 21);
+        $this->assertDatabaseCount('nilai_asesmen', 32 + 24 + 32 + 36 + 38);
+
+        foreach (NilaiAsesmen::with('rencanaAsesmen')->get() as $nilai) {
+            $this->assertGreaterThanOrEqual(0, (float) $nilai->nilai);
+            $this->assertLessThanOrEqual((float) $nilai->rencanaAsesmen->nilai_maksimum, (float) $nilai->nilai);
+        }
+    }
+
     public function test_seeder_bisa_dijalankan_ulang_tanpa_membuat_data_ganda(): void
     {
         $this->seed();
@@ -169,6 +185,7 @@ class SeederTest extends TestCase
             'bahan_kajian', 'mata_kuliah', 'cpmk', 'metode_penilaian', 'pemetaan_cpl_pl', 'pemetaan_cpl_bk',
             'pemetaan_bk_mk', 'pemetaan_cpmk_mk', 'sub_cpmk', 'sub_cpmk_penilaian', 'periode_akademik',
             'kelas_kuliah', 'dosen_kelas', 'peserta_kelas', 'rencana_asesmen', 'rencana_asesmen_sub_cpmk',
+            'nilai_asesmen',
         ];
 
         return collect($daftarTabel)->mapWithKeys(fn (string $tabel) => [$tabel => DB::table($tabel)->count()])->all();

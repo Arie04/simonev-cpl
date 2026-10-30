@@ -444,3 +444,24 @@ diumumkan bersamaan.
   - metode asesmen tidak termasuk metode yang direncanakan di `sub_cpmk_penilaian`.
 - **Alasan:** Peringatan ini menyangkut validasi bobot, bukan perhitungan capaian. Karena itu tempatnya di luar CapaianService, tetapi tetap di satu class supaya tidak tersebar di view.
 - **Dampak:** Revisi target bobot di kurikulum langsung memunculkan peringatan di kelas yang sudah berjalan (Uji 5), tanpa mengubah rencana asesmen kelas itu.
+
+## Keputusan teknis iterasi 6
+
+### KD-63 · Filter bertingkat Input Nilai
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Dropdown Mata Kuliah → Periode → Kelas → Rencana Asesmen memuat ulang halaman setiap kali diganti (form GET). Isinya hanya kelas yang diampu dosen.
+  - Pilihan yang tidak cocok dengan tingkat di atasnya dikosongkan. Tingkat yang hanya punya satu pilihan dipilih otomatis.
+  - Tautan langsung cukup membawa `?kelas=` (dan `?asesmen=`), lalu mata kuliah dan periodenya mengikuti kelas itu.
+- **Alasan:** Tanpa API JavaScript, sesuai keputusan kecil sebelum iterasi 2. Pilihan otomatis mengurangi klik saat dosen hanya mengampu satu kelas.
+- **Dampak:** Dashboard Dosen dan halaman Rencana Asesmen punya tautan langsung ke Input Nilai.
+
+### KD-64 · Nilai disimpan sekaligus
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Seluruh nilai satu asesmen dikirim dalam satu form `nilai[id peserta_kelas]`.
+  - Jika satu nilai tidak valid, Form Request menolak seluruhnya: tidak ada yang disimpan, dan baris yang salah ditandai merah.
+  - Isian kosong menghapus nilai yang tersimpan (KD-29).
+  - Halaman memberi peringatan jika pengguna meninggalkannya sebelum menyimpan.
+- **Alasan:** Mengikuti bagian 7.6.8 dan 7.4.
+- **Dampak:** `RencanaAsesmen::simpanNilai()` menyimpan dalam satu transaksi.

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class RencanaAsesmen extends Model
 {
@@ -89,5 +90,33 @@ class RencanaAsesmen extends Model
         $this->subCpmk()->sync(
             collect($kontribusi)->map(fn ($bobot) => ['bobot_kontribusi' => $bobot])->all()
         );
+    }
+
+    /**
+     * Menyimpan nilai seluruh peserta sekaligus. Isian kosong berarti nilai belum diinput,
+     * jadi barisnya dihapus (KD-29).
+     *
+     * @param  array<string, float|string|null>  $nilaiPerPeserta  id peserta_kelas => nilai
+     * @return array{terisi: int, kosong: int}
+     */
+    public function simpanNilai(array $nilaiPerPeserta): array
+    {
+        return DB::transaction(function () use ($nilaiPerPeserta) {
+            $hasil = ['terisi' => 0, 'kosong' => 0];
+
+            foreach ($nilaiPerPeserta as $pesertaKelasId => $nilai) {
+                if ($nilai === null || $nilai === '') {
+                    $this->nilaiAsesmen()->where('peserta_kelas_id', $pesertaKelasId)->delete();
+                    $hasil['kosong']++;
+
+                    continue;
+                }
+
+                $this->nilaiAsesmen()->updateOrCreate(['peserta_kelas_id' => $pesertaKelasId], ['nilai' => $nilai]);
+                $hasil['terisi']++;
+            }
+
+            return $hasil;
+        });
     }
 }
