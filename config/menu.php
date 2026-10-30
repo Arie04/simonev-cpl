@@ -56,6 +56,7 @@ return [
     'KOPRODI' => [
         ['label' => 'Dashboard', 'route' => 'koprodi.dashboard', 'aktif' => 'koprodi.dashboard', 'ikon' => 'heroicon-o-chart-pie'],
         ['label' => 'Data Kurikulum', 'route' => 'koprodi.kurikulum', 'aktif' => 'koprodi.kurikulum', 'ikon' => 'heroicon-o-book-open'],
+        ['label' => 'Laporan Capaian', 'route' => 'koprodi.laporan', 'aktif' => 'koprodi.laporan', 'ikon' => 'heroicon-o-chart-bar'],
     ],
 
     'DOSEN' => [
@@ -69,6 +70,7 @@ return [
                 ['label' => 'Input Nilai', 'route' => 'dosen.nilai.edit', 'aktif' => 'dosen.nilai.*'],
             ],
         ],
+        ['label' => 'Laporan Capaian', 'route' => 'dosen.laporan', 'aktif' => 'dosen.laporan', 'ikon' => 'heroicon-o-chart-bar'],
     ],
 
     'MAHASISWA' => [

@@ -30,7 +30,9 @@ use App\Http\Controllers\Dosen\InputNilaiController;
 use App\Http\Controllers\Dosen\KelasDiampuController;
 use App\Http\Controllers\Dosen\MataKuliahDosenController;
 use App\Http\Controllers\Dosen\RencanaAsesmenController;
+use App\Http\Controllers\Koprodi\DashboardKoprodiController;
 use App\Http\Controllers\Koprodi\DataKurikulumController;
+use App\Http\Controllers\LaporanCapaianController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
 use App\Http\Controllers\ProfilController;
@@ -57,11 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/ubah-password', [PasswordController::class, 'update'])->name('password.update');
     });
 
-    // Halaman utama peran lain. Untuk sementara berupa halaman sambutan dan
-    // diganti di iterasi 8 (Koprodi) dan 9 (Mahasiswa).
-    Route::view('/koprodi', 'beranda.sementara', ['judul' => 'Dashboard', 'iterasi' => 8])
-        ->middleware('peran:'.Role::KOPRODI)
-        ->name('koprodi.dashboard');
+    // Halaman utama Mahasiswa. Untuk sementara berupa halaman sambutan dan diganti di iterasi 9.
     Route::view('/mahasiswa', 'beranda.sementara', ['judul' => 'Capaian Pembelajaran', 'iterasi' => 9])
         ->middleware('peran:'.Role::MAHASISWA)
         ->name('mahasiswa.capaian');
@@ -113,7 +111,9 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
 
 // Halaman Koprodi: read-only seluruh prodi (bagian 3 spesifikasi).
 Route::middleware(['auth', 'peran:'.Role::KOPRODI])->prefix('koprodi')->name('koprodi.')->group(function () {
+    Route::get('/', DashboardKoprodiController::class)->name('dashboard');
     Route::get('kurikulum', DataKurikulumController::class)->name('kurikulum');
+    Route::get('laporan', LaporanCapaianController::class)->name('laporan');
 });
 
 // Halaman Dosen: hanya kelas yang ia ampu, dicek lewat KelasKuliahPolicy (bagian 3 dan 6 spesifikasi).
@@ -133,4 +133,7 @@ Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.
     // Input nilai asesmen (KF-10).
     Route::get('nilai', [InputNilaiController::class, 'edit'])->name('nilai.edit');
     Route::put('nilai/{rencanaAsesmen}', [InputNilaiController::class, 'update'])->name('nilai.update');
+
+    // Laporan capaian kelas yang diampu (KF-14, KF-16).
+    Route::get('laporan', LaporanCapaianController::class)->name('laporan');
 });

@@ -490,3 +490,44 @@ diumumkan bersamaan.
   - Data uji disusun dengan trait `Tests\Support\MembangunDataCapaian`.
 - **Alasan:** Data uji sama persis dengan bagian 5.5, dan jalur query yang dipakai sama dengan aplikasi.
 - **Dampak:** Trait pembantu yang sama dipakai lagi oleh feature test laporan (iterasi 8).
+
+## Keputusan teknis iterasi 8
+
+### KD-67 · Pembagian kerja laporan
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Laporan disusun oleh tiga class:
+  - `CapaianService`: rumus dan status;
+  - `LaporanCapaian`: cakupan peserta, baris per tab, label, urutan, dan kartu ringkasan;
+  - `FilterLaporan`: pilihan dan isian sembilan filter.
+  Koprodi dan Dosen memakai satu `LaporanCapaianController`. Cakupannya ditentukan peran aktif: Dosen hanya kelas yang ia ampu.
+- **Alasan:** Rumus tetap di satu tempat (bagian 14), sedangkan logika tampilan laporan tidak membuat `CapaianService` membengkak. Satu controller mencegah dua salinan halaman yang sama.
+- **Dampak:** Nilai filter dari alamat yang tidak termasuk pilihan diabaikan, jadi Dosen tidak bisa membuka kelas lain lewat alamat.
+
+### KD-68 · Kartu ringkasan laporan
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Empat kartu dihitung dari rata-rata setiap item yang sudah punya nilai:
+  - Rata-rata Capaian: rata-rata dari rata-rata item;
+  - Capaian Tertinggi dan Terendah: item dengan rata-rata terbesar dan terkecil, beserta kodenya;
+  - Jumlah Item.
+- **Alasan:** Bagian 7.6.9 tidak merinci rumus kartu. Item tanpa nilai tidak ikut supaya tidak terhitung 0.
+- **Dampak:** Kartu kosong ("–") jika belum ada item bernilai.
+
+### KD-69 · Item yang tampil di laporan
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Tab CPL Koprodi menampilkan semua CPL kurikulum, termasuk yang "Belum ada nilai".
+  - Tab CPL Dosen hanya menampilkan CPL yang didukung MK yang ia ampu.
+  - Tab CPMK dan Sub-CPMK menampilkan item dari MK yang punya kelas dalam cakupan filter.
+  - Untuk Dosen, pilihan filter CPL/CPMK juga dibatasi ke MK yang ia ampu.
+- **Alasan:** Koprodi perlu melihat CPL yang belum terukur. Dosen hanya melihat kontribusi kelasnya (KD-46).
+- **Dampak:** Laporan Dosen tidak memperlihatkan CPMK mata kuliah dosen lain.
+
+### KD-70 · Grafik dengan Chart.js
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Chart.js 4 dipasang lewat npm. Warnanya dibaca dari variabel CSS token (`@theme static`), jadi tidak ada hex di JavaScript atau view.
+  - Label angka di atas batang memakai plugin kecil.
+  - Di layar < 768px dengan lebih dari 6 item, batang dibuat mendatar dan labelnya dipecah dua baris.
+  - Jika AM belum ditetapkan, batang menampilkan rata-rata capaian berwarna biru.
+- **Alasan:** Mengikuti bagian 2, 7.2, 7.4, dan 7.6.9 tanpa paket tambahan selain Chart.js.
+- **Dampak:** Ukuran JavaScript bertambah sekitar 200 kB (sekitar 70 kB setelah gzip).
