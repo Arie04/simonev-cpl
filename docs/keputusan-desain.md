@@ -364,3 +364,31 @@ diumumkan bersamaan.
   - Setiap halaman daftar punya satu form untuk tambah dan ubah (`form.blade.php`).
 - **Alasan:** Tiga belas halaman data master berbentuk sama. Komponen dan trait mencegah duplikasi (bagian 14 spesifikasi) tanpa pola yang berlebihan.
 - **Dampak:** Halaman daftar di iterasi berikutnya cukup memakai komponen yang sama.
+
+## Keputusan teknis iterasi 3
+
+### KD-54 · Pasangan CPMK–MK milik Sub-CPMK yang sudah dipakai tidak bisa diganti
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Pasangan CPMK–MK sebuah Sub-CPMK hanya bisa diganti selama Sub-CPMK itu belum dipakai rencana asesmen. Sub-CPMK yang sudah dipakai juga tidak bisa dihapus, dan pasangan CPMK–MK yang sudah punya Sub-CPMK tidak bisa dilepas dari matriks.
+- **Alasan:** Ketiganya akan mengubah capaian kelas yang sudah berjalan secara diam-diam (KD-08, KD-20).
+- **Dampak:** Form dan matriks menampilkan pesan yang menyebut alasannya.
+
+### KD-55 · Matriks pemetaan disimpan sekaligus
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Satu matriks disimpan sekaligus dengan `sync()`: sel yang dicentang dihubungkan dan sisanya dilepas.
+  - Isian bobot hanya aktif (dan ikut terkirim) untuk sel yang terhubung.
+  - Class `App\Services\MatriksPemetaan` menyusun data matriks untuk halaman Admin dan Koprodi.
+- **Alasan:**
+  - Admin melihat dan mengubah seluruh hubungan di satu layar, sesuai Gambar 3.10.
+  - Mengirim bobot hanya untuk sel terhubung menjaga jumlah isian tetap kecil, di bawah batas `max_input_vars` PHP.
+- **Dampak:** Komponen `x-matriks-pemetaan` dipakai dalam dua mode: bisa diubah dan read-only.
+
+### KD-56 · Data Kurikulum Koprodi berbentuk tab
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Halaman Data Kurikulum Koprodi berisi tab Ringkasan, Evaluasi, Profil Lulusan, CPL, Bahan Kajian, Mata Kuliah, CPMK, Sub-CPMK, dan Pemetaan.
+  - Setiap tab hanya memuat datanya sendiri.
+  - Tab Mata Kuliah menampilkan ringkasan bobot tiap MK yang bisa dibuka-tutup.
+- **Alasan:** Satu halaman read-only dengan pemilih kurikulum mengikuti bagian 7.6.12, tanpa memuat semua data sekaligus.
+- **Dampak:** Ringkasan bobot MK memakai komponen yang sama dengan detail Mata Kuliah di halaman Admin.

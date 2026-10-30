@@ -90,7 +90,9 @@ NIDN atau NPM:
 | 8 mahasiswa angkatan 2026 | NPM `9992600001` sampai `9992600008` | `mahasiswa123` |
 
 Data kurikulum contoh terdiri atas Kurikulum 2021 dan Kurikulum OBE 2026. Beberapa kode sengaja sama
-di keduanya (mis. CPL01 dan MK INF202). Semua data contoh adalah karangan, bukan data asli prodi.
+di keduanya (mis. CPL01 dan MK INF202). Setiap kurikulum sudah dipetakan (CPL–PL, CPL–BK, BK–MK, dan
+CPMK–MK), dan setiap pasangan CPMK–MK sudah punya Sub-CPMK. Semua data contoh adalah karangan, bukan
+data asli prodi.
 
 ## Mengembalikan data demo
 
