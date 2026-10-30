@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\SubCpmkController;
 use App\Http\Controllers\Admin\SubCpmkPenilaianController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Dosen\KelasDiampuController;
+use App\Http\Controllers\Dosen\RencanaAsesmenController;
 use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
@@ -112,4 +114,13 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
 // Halaman Koprodi: read-only seluruh prodi (bagian 3 spesifikasi).
 Route::middleware(['auth', 'peran:'.Role::KOPRODI])->prefix('koprodi')->name('koprodi.')->group(function () {
     Route::get('kurikulum', DataKurikulumController::class)->name('kurikulum');
+});
+
+// Halaman Dosen: hanya kelas yang ia ampu, dicek lewat KelasKuliahPolicy (bagian 3 dan 6 spesifikasi).
+Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.')->group(function () {
+    // Rencana asesmen per kelas (KF-08, KF-09).
+    Route::get('rencana-asesmen', KelasDiampuController::class)->name('rencana-asesmen');
+    Route::resource('kelas.rencana-asesmen', RencanaAsesmenController::class)
+        ->except('show')
+        ->parameters(['kelas' => 'kelasKuliah', 'rencana-asesmen' => 'rencanaAsesmen']);
 });

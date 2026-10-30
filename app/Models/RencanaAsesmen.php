@@ -60,4 +60,34 @@ class RencanaAsesmen extends Model
     {
         return $this->hasMany(NilaiAsesmen::class, 'rencana_asesmen_id', 'rencana_asesmen_id');
     }
+
+    /**
+     * Nilai tertinggi yang sudah diinput untuk asesmen ini. nilai_maksimum tidak boleh
+     * diturunkan di bawah angka ini (KD-48).
+     */
+    public function nilaiTertinggi(): ?float
+    {
+        $nilai = $this->nilaiAsesmen()->max('nilai');
+
+        return $nilai === null ? null : (float) $nilai;
+    }
+
+    public function alasanTidakBisaDihapus(): ?string
+    {
+        return $this->nilaiAsesmen()->exists()
+            ? 'Asesmen tidak bisa dihapus karena sudah punya nilai.'
+            : null;
+    }
+
+    /**
+     * Menyimpan Sub-CPMK yang diukur asesmen ini beserta bobot kontribusinya.
+     *
+     * @param  array<string, float|string>  $kontribusi  id Sub-CPMK => bobot kontribusi (% nilai akhir MK)
+     */
+    public function petakanSubCpmk(array $kontribusi): void
+    {
+        $this->subCpmk()->sync(
+            collect($kontribusi)->map(fn ($bobot) => ['bobot_kontribusi' => $bobot])->all()
+        );
+    }
 }

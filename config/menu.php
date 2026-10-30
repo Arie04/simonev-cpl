@@ -11,8 +11,9 @@
 |
 | Setiap menu berisi:
 | - 'label' dan 'ikon' (Heroicons outline);
-| - 'route' untuk tautan, dan 'aktif' berupa pola nama route yang membuat
-|   menu ini ditandai aktif (mis. 'admin.cpl.*' juga aktif di form CPL);
+| - 'route' untuk tautan, dan 'aktif' berupa pola nama route (satu teks atau
+|   daftar) yang membuat menu ini ditandai aktif (mis. 'admin.cpl.*' juga aktif
+|   di form CPL);
 | - atau 'anak' untuk grup menu yang bisa dibuka-tutup (mis. Data Master).
 |
 */
@@ -59,6 +60,13 @@ return [
 
     'DOSEN' => [
         ['label' => 'Dashboard', 'route' => 'dosen.dashboard', 'aktif' => 'dosen.dashboard', 'ikon' => 'heroicon-o-squares-2x2'],
+        [
+            'label' => 'Asesmen',
+            'ikon' => 'heroicon-o-clipboard-document-list',
+            'anak' => [
+                ['label' => 'Rencana Asesmen', 'route' => 'dosen.rencana-asesmen', 'aktif' => ['dosen.rencana-asesmen', 'dosen.kelas.rencana-asesmen.*']],
+            ],
+        ],
     ],
 
     'MAHASISWA' => [
