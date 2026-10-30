@@ -43,13 +43,15 @@ rumusnya tidak tersebar di controller atau view.
 app/
   Http/
     Controllers/          controller tipis (Auth/LoginController, PeranAktifController, ...)
-      Admin/              halaman Admin: data master, akun pengguna, beranda
+      Admin/              halaman Admin: data master, pemetaan, akun pengguna, beranda
+      Koprodi/            halaman Koprodi (read-only)
       Controller.php      method bersama: kurikulum terpilih, pencarian, jumlah per halaman
     Middleware/CekPeran.php
     Requests/             Form Request untuk validasi (Admin/ untuk form Admin)
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
     Concerns/BisaDicari.php  trait pencarian "Cari data..."
-  Services/               CapaianService (mulai iterasi 7)
+  Services/               MatriksPemetaan; CapaianService (mulai iterasi 7)
+  Support/Angka.php       format angka berkoma desimal ("78,40")
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
 config/
   capaian.php             ambang batas capaian dari .env
@@ -65,10 +67,11 @@ resources/
   views/
     components/           Blade component: layouts, top-bar, sidebar, kartu, tombol, input, tabel,
                           paginasi, modal-hapus, select, badge, kartu-statistik, ...
-    admin/                halaman Admin, satu folder per data (index + form)
+    admin/                halaman Admin, satu folder per data (index + form), pemetaan
+    koprodi/              halaman Koprodi
     auth/, peran-aktif/, profil/, password/, beranda/, errors/
 routes/web.php            semua route halaman
-tests/Feature/            test fitur (Auth, Akun, Admin, Database)
+tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Database)
 docs/                     spesifikasi, keputusan desain, catatan kode
 ```
 

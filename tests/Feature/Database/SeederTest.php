@@ -5,6 +5,7 @@ namespace Tests\Feature\Database;
 use App\Models\Dosen;
 use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -86,6 +87,22 @@ class SeederTest extends TestCase
         $this->assertDatabaseCount('metode_penilaian', 6);
     }
 
+    public function test_bobot_pemetaan_contoh_memenuhi_aturan_5_1(): void
+    {
+        $this->seed();
+
+        $this->assertDatabaseCount('pemetaan_cpmk_mk', 16);
+        $this->assertDatabaseCount('sub_cpmk', 25);
+
+        foreach (MataKuliah::with('pemetaanCpmkMk.subCpmk')->get() as $mataKuliah) {
+            $this->assertEqualsWithDelta(100, $mataKuliah->totalBobotCpmk(), 0.001, "Total bobot CPMK {$mataKuliah->kode_mata_kuliah} bukan 100.");
+
+            foreach ($mataKuliah->pemetaanCpmkMk as $pemetaan) {
+                $this->assertEqualsWithDelta((float) $pemetaan->bobot_cpmk, $pemetaan->totalBobotSubCpmk(), 0.001, "Bobot Sub-CPMK {$pemetaan->label()} tidak sama dengan bobot CPMK-nya.");
+            }
+        }
+    }
+
     public function test_seeder_bisa_dijalankan_ulang_tanpa_membuat_data_ganda(): void
     {
         $this->seed();
@@ -108,7 +125,8 @@ class SeederTest extends TestCase
         $daftarTabel = [
             'roles', 'users', 'user_roles', 'dosen', 'mahasiswa', 'program_studi', 'kurikulum',
             'evaluasi_kurikulum', 'profil_lulusan', 'profesi', 'profil_lulusan_profesi', 'cpl',
-            'bahan_kajian', 'mata_kuliah', 'cpmk', 'metode_penilaian',
+            'bahan_kajian', 'mata_kuliah', 'cpmk', 'metode_penilaian', 'pemetaan_cpl_pl', 'pemetaan_cpl_bk',
+            'pemetaan_bk_mk', 'pemetaan_cpmk_mk', 'sub_cpmk', 'sub_cpmk_penilaian',
         ];
 
         return collect($daftarTabel)->mapWithKeys(fn (string $tabel) => [$tabel => DB::table($tabel)->count()])->all();

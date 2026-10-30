@@ -7,6 +7,26 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 3: Pemetaan kurikulum dan Sub-CPMK] - 2026-10-30
+
+### Ditambahkan
+
+- Matriks Pemetaan Kurikulum untuk CPL–Profil Lulusan, CPL–Bahan Kajian, Bahan Kajian–Mata Kuliah
+  (dengan bobot), dan CPMK–Mata Kuliah (dengan bobot). Matriks memberi peringatan jika total bobot
+  CPMK sebuah MK bukan 100.
+- Kelola Sub-CPMK per pasangan CPMK–MK, beserta rincian penilaiannya (metode, teknik, instrumen,
+  kriteria) di halaman detail Sub-CPMK.
+- Detail Mata Kuliah dengan ringkasan bobot CPMK dan Sub-CPMK, mirip Tabel 19 APTIKOM.
+- Halaman Data Kurikulum untuk Koprodi (read-only) dengan tab dan pemilih kurikulum.
+- Komponen tab, kotak peringatan, matriks pemetaan, dan ringkasan bobot mata kuliah.
+- Data contoh pemetaan dan 25 Sub-CPMK yang semua bobotnya memenuhi aturan 5.1.
+- 32 test baru (total 188).
+
+### Diubah
+
+- Pasangan CPMK–MK yang sudah punya Sub-CPMK tidak bisa dilepas dari matriks.
+- Sub-CPMK yang sudah dipakai rencana asesmen tidak bisa dihapus atau dipindah pasangannya (KD-54).
+
 ## [Iterasi 2: Akun pengguna dan data master] - 2026-10-30
 
 ### Ditambahkan

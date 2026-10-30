@@ -34,16 +34,19 @@ return [
                 ['label' => 'Bahan Kajian', 'route' => 'admin.bahan-kajian.index', 'aktif' => 'admin.bahan-kajian.*'],
                 ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'aktif' => 'admin.mata-kuliah.*'],
                 ['label' => 'CPMK', 'route' => 'admin.cpmk.index', 'aktif' => 'admin.cpmk.*'],
+                ['label' => 'Sub-CPMK', 'route' => 'admin.sub-cpmk.index', 'aktif' => 'admin.sub-cpmk.*'],
                 ['label' => 'Metode Penilaian', 'route' => 'admin.metode-penilaian.index', 'aktif' => 'admin.metode-penilaian.*'],
                 ['label' => 'Dosen', 'route' => 'admin.dosen.index', 'aktif' => 'admin.dosen.*'],
                 ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa.index', 'aktif' => 'admin.mahasiswa.*'],
             ],
         ],
+        ['label' => 'Pemetaan Kurikulum', 'route' => 'admin.pemetaan.edit', 'aktif' => 'admin.pemetaan.*', 'ikon' => 'heroicon-o-table-cells'],
         ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'aktif' => 'admin.akun.*', 'ikon' => 'heroicon-o-users'],
     ],
 
     'KOPRODI' => [
         ['label' => 'Dashboard', 'route' => 'koprodi.dashboard', 'aktif' => 'koprodi.dashboard', 'ikon' => 'heroicon-o-chart-pie'],
+        ['label' => 'Data Kurikulum', 'route' => 'koprodi.kurikulum', 'aktif' => 'koprodi.kurikulum', 'ikon' => 'heroicon-o-book-open'],
     ],
 
     'DOSEN' => [

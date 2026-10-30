@@ -46,4 +46,20 @@ class PemetaanCpmkMk extends Pivot
     {
         return $this->hasMany(SubCpmk::class, 'pemetaan_cpmk_mk_id', 'pemetaan_cpmk_mk_id');
     }
+
+    /**
+     * Label pasangan untuk tampilan, mis. "CPMK021 · INF101" (KD-25).
+     */
+    public function label(): string
+    {
+        return $this->cpmk->kode_cpmk.' · '.$this->mataKuliah->kode_mata_kuliah;
+    }
+
+    /**
+     * Jumlah bobot Sub-CPMK milik pasangan ini. Seharusnya sama dengan bobot_cpmk (bagian 6).
+     */
+    public function totalBobotSubCpmk(): float
+    {
+        return (float) $this->subCpmk->sum('bobot_sub_cpmk');
+    }
 }

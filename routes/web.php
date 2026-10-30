@@ -12,11 +12,15 @@ use App\Http\Controllers\Admin\KurikulumController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\MetodePenilaianController;
+use App\Http\Controllers\Admin\PemetaanController;
 use App\Http\Controllers\Admin\ProfesiController;
 use App\Http\Controllers\Admin\ProfilLulusanController;
 use App\Http\Controllers\Admin\ProgramStudiController;
+use App\Http\Controllers\Admin\SubCpmkController;
+use App\Http\Controllers\Admin\SubCpmkPenilaianController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
 use App\Http\Controllers\ProfilController;
@@ -69,13 +73,29 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     Route::resource('profesi', ProfesiController::class)->except('show')->parameters(['profesi' => 'profesi']);
     Route::resource('cpl', CplController::class)->except('show')->parameters(['cpl' => 'cpl']);
     Route::resource('bahan-kajian', BahanKajianController::class)->except('show')->parameters(['bahan-kajian' => 'bahanKajian']);
-    Route::resource('mata-kuliah', MataKuliahController::class)->except('show')->parameters(['mata-kuliah' => 'mataKuliah']);
+    Route::resource('mata-kuliah', MataKuliahController::class)->parameters(['mata-kuliah' => 'mataKuliah']);
     Route::resource('cpmk', CpmkController::class)->except('show')->parameters(['cpmk' => 'cpmk']);
+    Route::resource('sub-cpmk', SubCpmkController::class)->parameters(['sub-cpmk' => 'subCpmk']);
+
+    // Rincian penilaian Sub-CPMK, dikelola di halaman detail Sub-CPMK.
+    Route::post('sub-cpmk/{subCpmk}/penilaian', [SubCpmkPenilaianController::class, 'store'])->name('sub-cpmk.penilaian.store');
+    Route::get('sub-cpmk/{subCpmk}/penilaian/{penilaian}/edit', [SubCpmkPenilaianController::class, 'edit'])->name('sub-cpmk.penilaian.edit');
+    Route::put('sub-cpmk/{subCpmk}/penilaian/{penilaian}', [SubCpmkPenilaianController::class, 'update'])->name('sub-cpmk.penilaian.update');
+    Route::delete('sub-cpmk/{subCpmk}/penilaian/{penilaian}', [SubCpmkPenilaianController::class, 'destroy'])->name('sub-cpmk.penilaian.destroy');
     Route::resource('metode-penilaian', MetodePenilaianController::class)->except('show')->parameters(['metode-penilaian' => 'metodePenilaian']);
     Route::resource('dosen', DosenController::class)->except('show')->parameters(['dosen' => 'dosen']);
     Route::resource('mahasiswa', MahasiswaController::class)->except('show')->parameters(['mahasiswa' => 'mahasiswa']);
 
+    // Pemetaan kurikulum dalam bentuk matriks (bagian 7.6.5).
+    Route::get('pemetaan', [PemetaanController::class, 'edit'])->name('pemetaan.edit');
+    Route::put('pemetaan', [PemetaanController::class, 'update'])->name('pemetaan.update');
+
     // Akun pengguna: daftar, tambah/ubah, atur peran, dan reset password (bagian 7.6.4).
     Route::resource('akun', AkunController::class)->except('show')->parameters(['akun' => 'user']);
     Route::put('akun/{user}/password', [AkunPasswordController::class, 'update'])->name('akun.password.update');
+});
+
+// Halaman Koprodi: read-only seluruh prodi (bagian 3 spesifikasi).
+Route::middleware(['auth', 'peran:'.Role::KOPRODI])->prefix('koprodi')->name('koprodi.')->group(function () {
+    Route::get('kurikulum', DataKurikulumController::class)->name('kurikulum');
 });

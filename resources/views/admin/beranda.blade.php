@@ -20,11 +20,12 @@
     </div>
 
     <x-kartu judul="Pintasan" class="mt-6">
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ([
                 ['label' => 'Data Mahasiswa', 'route' => 'admin.mahasiswa.index', 'ikon' => 'heroicon-o-academic-cap'],
                 ['label' => 'Data Dosen', 'route' => 'admin.dosen.index', 'ikon' => 'heroicon-o-user-group'],
                 ['label' => 'Mata Kuliah', 'route' => 'admin.mata-kuliah.index', 'ikon' => 'heroicon-o-book-open'],
+                ['label' => 'Pemetaan Kurikulum', 'route' => 'admin.pemetaan.edit', 'ikon' => 'heroicon-o-table-cells'],
                 ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'ikon' => 'heroicon-o-users'],
             ] as $pintasan)
                 <a
