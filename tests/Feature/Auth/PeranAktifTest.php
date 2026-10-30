@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +30,14 @@ class PeranAktifTest extends TestCase
     #[DataProvider('peranDanHalamanUtama')]
     public function test_pengguna_berperan_satu_langsung_diarahkan_ke_halaman_utama_perannya(string $kodeRole, string $routeHalamanUtama): void
     {
-        User::factory()->denganPeran($kodeRole)->create(['email' => 'pengguna@contoh.test']);
+        $user = User::factory()->denganPeran($kodeRole)->create(['email' => 'pengguna@contoh.test']);
+
+        // Peran Dosen dan Mahasiswa selalu disertai datanya (KD-36).
+        match ($kodeRole) {
+            Role::DOSEN => Dosen::factory()->for($user)->create(),
+            Role::MAHASISWA => Mahasiswa::factory()->for($user)->create(),
+            default => null,
+        };
 
         $this->post('/login', ['identitas' => 'pengguna@contoh.test', 'password' => 'password'])
             ->assertRedirect(route('peran-aktif.create'));

@@ -46,14 +46,15 @@ app/
     Controllers/          controller tipis (Auth/LoginController, PeranAktifController, ...)
       Admin/              halaman Admin: data master, pemetaan, akun pengguna, beranda
       Koprodi/            halaman Koprodi (read-only)
-      Dosen/              halaman Dosen: dashboard, mata kuliah, rencana asesmen
+      Dosen/              halaman Dosen: dashboard, mata kuliah, rencana asesmen, input nilai
+      Mahasiswa/          halaman Capaian Pembelajaran Mahasiswa
       Controller.php      method bersama: kurikulum terpilih, pencarian, jumlah per halaman
     Middleware/CekPeran.php
     Requests/             Form Request untuk validasi (Admin/ dan Dosen/)
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
     Concerns/BisaDicari.php  trait pencarian "Cari data..."
   Policies/               KelasKuliahPolicy, MataKuliahPolicy (hak akses dosen)
-  Services/               CapaianService (semua rumus capaian), LaporanCapaian, FilterLaporan,
+  Services/               CapaianService (semua rumus capaian), LaporanCapaian, FilterLaporan, CapaianMahasiswa,
                           MatriksPemetaan, MatriksBobotKelas
   Support/Angka.php       format angka berkoma desimal ("78,40")
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
@@ -75,9 +76,10 @@ resources/
     koprodi/              halaman Koprodi
     dosen/                halaman Dosen
     laporan/              Laporan Capaian (dipakai Koprodi dan Dosen)
-    auth/, peran-aktif/, profil/, password/, beranda/, errors/
+    mahasiswa/            Capaian Pembelajaran Mahasiswa
+    auth/, peran-aktif/, profil/, password/, errors/
 routes/web.php            semua route halaman
-tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Database)
+tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Mahasiswa, Database, laporan)
 tests/Unit/               unit test CapaianService (Uji 1–6)
 tests/Support/            trait pembantu menyusun data uji
 docs/                     spesifikasi, keputusan desain, catatan kode

@@ -7,6 +7,26 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 9: Capaian pembelajaran mahasiswa] - 2026-10-30
+
+### Ditambahkan
+
+- Halaman Capaian Pembelajaran Mahasiswa (read-only, hanya data milik sendiri):
+  - kartu identitas serta pilihan periode dan mata kuliah;
+  - tiga kartu ringkasan;
+  - Detail Nilai Asesmen;
+  - capaian Sub-CPMK, CPMK, dan kontribusi MK ke CPL, dengan badge Lulus/Belum Lulus;
+  - CPL kumulatif yang dipisah per kurikulum.
+- Komponen badge status Lulus/Belum Lulus.
+- 8 test baru (total 273), termasuk skenario uji 15.
+
+### Diubah
+
+- Halaman utama Mahasiswa bukan lagi halaman sambutan sementara. View halaman sambutan dihapus karena
+  semua peran sudah punya halaman utama.
+- Pembantu test `MembangunDataCapaian` memberi tanggal asesmen berurutan, supaya urutan asesmen di
+  halaman bisa ditebak.
+
 ## [Iterasi 8: Dashboard Koprodi dan laporan capaian] - 2026-10-30
 
 ### Ditambahkan
