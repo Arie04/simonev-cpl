@@ -8,14 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Mengisi data awal untuk pengembangan lokal (bagian 10 spesifikasi).
-     * Data kurikulum, kelas, asesmen, dan nilai ditambahkan di iterasi yang
-     * membuat fiturnya.
+     * Data contoh ditambahkan bertahap di iterasi yang membuat fiturnya (KD-43).
      */
     public function run(): void
     {
         $this->call([
             RoleSeeder::class,
             AkunDemoSeeder::class,
+            DataMasterDemoSeeder::class,
         ]);
     }
 }
