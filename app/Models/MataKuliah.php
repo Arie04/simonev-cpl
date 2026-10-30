@@ -86,4 +86,12 @@ class MataKuliah extends Model
 
         return null;
     }
+
+    /**
+     * Jumlah bobot CPMK di mata kuliah ini. Seharusnya 100 (bagian 6 spesifikasi).
+     */
+    public function totalBobotCpmk(): float
+    {
+        return (float) $this->pemetaanCpmkMk->sum('bobot_cpmk');
+    }
 }

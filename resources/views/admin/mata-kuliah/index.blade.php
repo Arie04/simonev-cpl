@@ -27,6 +27,7 @@
                         <x-tabel.sel label="SKS">{{ $mataKuliah->jumlah_sks }}</x-tabel.sel>
                         <x-tabel.sel label="Jenis">{{ $mataKuliah->jenis_mata_kuliah }}</x-tabel.sel>
                         <x-tabel.aksi>
+                            <x-tombol-ikon ikon="heroicon-o-eye" :label="'Lihat detail '.$mataKuliah->kode_mata_kuliah" :href="route('admin.mata-kuliah.show', $mataKuliah)" />
                             <x-tombol-ikon ikon="heroicon-o-pencil-square" :label="'Ubah '.$mataKuliah->kode_mata_kuliah" :href="route('admin.mata-kuliah.edit', $mataKuliah)" />
                             <x-tombol-hapus :aksi="route('admin.mata-kuliah.destroy', $mataKuliah)" :nama="$mataKuliah->kode_mata_kuliah" />
                         </x-tabel.aksi>

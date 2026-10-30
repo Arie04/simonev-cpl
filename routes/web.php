@@ -72,7 +72,7 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     Route::resource('profesi', ProfesiController::class)->except('show')->parameters(['profesi' => 'profesi']);
     Route::resource('cpl', CplController::class)->except('show')->parameters(['cpl' => 'cpl']);
     Route::resource('bahan-kajian', BahanKajianController::class)->except('show')->parameters(['bahan-kajian' => 'bahanKajian']);
-    Route::resource('mata-kuliah', MataKuliahController::class)->except('show')->parameters(['mata-kuliah' => 'mataKuliah']);
+    Route::resource('mata-kuliah', MataKuliahController::class)->parameters(['mata-kuliah' => 'mataKuliah']);
     Route::resource('cpmk', CpmkController::class)->except('show')->parameters(['cpmk' => 'cpmk']);
     Route::resource('sub-cpmk', SubCpmkController::class)->parameters(['sub-cpmk' => 'subCpmk']);
 

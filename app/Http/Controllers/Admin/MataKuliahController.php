@@ -49,6 +49,17 @@ class MataKuliahController extends Controller
         return redirect()->route('admin.mata-kuliah.index')->with('sukses', 'Mata kuliah berhasil ditambahkan.');
     }
 
+    /**
+     * Detail mata kuliah beserta ringkasan bobot CPMK dan Sub-CPMK, mirip Tabel 19 APTIKOM
+     * (bagian 7.6.4 spesifikasi).
+     */
+    public function show(MataKuliah $mataKuliah): View
+    {
+        $mataKuliah->load(['kurikulum', 'bahanKajian', 'pemetaanCpmkMk.cpmk.cpl', 'pemetaanCpmkMk.subCpmk']);
+
+        return view('admin.mata-kuliah.show', ['mataKuliah' => $mataKuliah]);
+    }
+
     public function edit(MataKuliah $mataKuliah): View
     {
         return view('admin.mata-kuliah.form', [
