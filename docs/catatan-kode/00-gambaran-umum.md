@@ -79,10 +79,13 @@ resources/
     mahasiswa/            Capaian Pembelajaran Mahasiswa
     auth/, peran-aktif/, profil/, password/, errors/
 routes/web.php            semua route halaman
+scripts/cek-tampilan.mjs  pengecekan tampilan semua halaman di Chrome (npm run cek:tampilan)
 tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Mahasiswa, Database, laporan)
+  SkenarioBlackBoxTest.php  16 skenario uji black box (bagian 12 spesifikasi) dengan data demo
 tests/Unit/               unit test CapaianService (Uji 1–6)
 tests/Support/            trait pembantu menyusun data uji
 docs/                     spesifikasi, keputusan desain, catatan kode
+  pengujian/black-box.md  hasil pengujian black box untuk Bab 4
 ```
 
 ## 3. Daftar tabel dan model
@@ -138,4 +141,6 @@ php artisan migrate --seed                         # membuat tabel dan akun demo
 npm run dev                                        # terminal 1
 php artisan serve                                  # terminal 2, buka http://localhost:8000
 php artisan test                                   # menjalankan test (database simonev_cpl_test)
+php artisan test --filter=SkenarioBlackBoxTest     # hanya 16 skenario uji black box
+npm run cek:tampilan                               # cek tampilan semua halaman (aplikasi harus berjalan)
 ```

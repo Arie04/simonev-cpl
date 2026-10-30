@@ -7,6 +7,26 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 10: Pengujian black box dan tampilan mobile] - 2026-10-30
+
+### Ditambahkan
+
+- `SkenarioBlackBoxTest`: 16 feature test, satu untuk setiap skenario uji di bagian 12, dengan
+  langkah dan data uji dari data demo (KD-72).
+- Skrip `npm run cek:tampilan` (`scripts/cek-tampilan.mjs`):
+  - memeriksa 51 halaman di lebar 360, 768, dan 1280 px: geser horizontal, status, error
+    JavaScript, font input, dan target sentuh;
+  - menyimpan tangkapan layarnya (KD-73).
+- Dokumen hasil pengujian `docs/pengujian/black-box.md` untuk Bab 4: tabel 16 skenario, pemetaan ke
+  test, hasil uji mutasi, dan daftar tangkapan layar desktop dan mobile.
+- Paket pengembangan `puppeteer-core` 25.16.0.
+- README: cara menjalankan skenario uji dan pengecekan tampilan.
+
+### Diperbaiki
+
+- Tautan Batal dan tombol Keluar di halaman Pilih Peran diperbesar menjadi target sentuh minimal
+  44×44 px (semula 42×20 px di mobile).
+
 ## [Iterasi 9: Capaian pembelajaran mahasiswa] - 2026-10-30
 
 ### Ditambahkan

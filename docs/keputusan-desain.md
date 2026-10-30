@@ -546,3 +546,34 @@ diumumkan bersamaan.
   - Menampilkan CPL yang belum terukur membantu mahasiswa memantau capaiannya sampai lulus (bagian 5.3).
   - Rata-rata CPL dibatasi ke satu kurikulum supaya tidak menggabungkan CPL dua kurikulum (bagian 5.4).
 - **Dampak:** Alamat halaman tidak memuat id mahasiswa, jadi data mahasiswa lain tidak bisa dibuka. Halaman sambutan sementara tidak dipakai lagi dan sudah dihapus.
+
+## Keputusan teknis iterasi 10
+
+### KD-72 · Test penerimaan black box memakai data demo
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Ke-16 skenario di bagian 12 diuji dalam satu kelas, `tests/Feature/SkenarioBlackBoxTest.php`, dengan satu test per skenario.
+  - Setiap test mengisi data demo dari seeder, lalu menjalankan langkah dan data uji yang sama dengan tabel di `docs/pengujian/black-box.md`.
+  - Kasus tepi tetap di test fitur masing-masing.
+- **Alasan:**
+  - Tabel Bab 4 harus diisi dari hasil feature test (bagian 12).
+  - Dengan data demo, setiap baris tabel bisa diulang secara manual di aplikasi dan dipotret untuk skripsi.
+  - Angka di tabel, mis. rata-rata capaian 67,38, diperiksa langsung oleh test, sehingga tabel dan aplikasi tidak bisa berbeda tanpa ketahuan.
+- **Dampak:**
+  - Kelas test ini lebih lambat (±25 detik) karena data demo diisi ulang di setiap test.
+  - Jika data demo diubah, angka di test dan di tabel pengujian perlu disesuaikan bersama.
+
+### KD-73 · Pengecekan tampilan otomatis dengan puppeteer-core
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Skenario 16 dan bagian 7.4 diperiksa dengan `scripts/cek-tampilan.mjs` (`npm run cek:tampilan`).
+  - Skrip ini membuka 51 halaman di lebar 360, 768, dan 1280 px dengan Chrome tanpa jendela. Ia memeriksa geser horizontal, status HTTP, dan error JavaScript. Di mobile ia juga memeriksa font input (≥ 16px) dan target sentuh tombol, tautan ikon, dan lingkaran matriks (≥ 44×44 px).
+  - Tangkapan layar disimpan di `storage/app/tangkapan-layar/`, yang tidak di-commit.
+  - Paket `puppeteer-core` ditambahkan sebagai devDependency.
+- **Alasan:**
+  - 153 pemeriksaan tidak praktis dilakukan manual setiap kali tampilan berubah.
+  - Tangkapan layarnya langsung bisa dipakai untuk Bab 4.
+  - `puppeteer-core` memakai Chrome yang sudah terpasang (tidak mengunduh Chromium) dan hanya dipakai saat pengembangan, sehingga tidak memengaruhi aplikasi (bagian 14: paket tambahan hanya jika jelas menghemat pekerjaan).
+- **Dampak:**
+  - Skrip butuh Google Chrome, data demo, dan aplikasi yang sedang berjalan.
+  - Pemeriksaan pertama menemukan tombol Keluar di Pilih Peran yang hanya 42×20 px; tombol itu sudah diperbesar.
