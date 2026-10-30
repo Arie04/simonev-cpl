@@ -43,9 +43,12 @@ rumusnya tidak tersebar di controller atau view.
 app/
   Http/
     Controllers/          controller tipis (Auth/LoginController, PeranAktifController, ...)
+      Admin/              halaman Admin: data master, akun pengguna, beranda
+      Controller.php      method bersama: kurikulum terpilih, pencarian, jumlah per halaman
     Middleware/CekPeran.php
-    Requests/             Form Request untuk validasi
+    Requests/             Form Request untuk validasi (Admin/ untuk form Admin)
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
+    Concerns/BisaDicari.php  trait pencarian "Cari data..."
   Services/               CapaianService (mulai iterasi 7)
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
 config/
@@ -60,10 +63,12 @@ resources/
   css/app.css             Tailwind CSS v4 + token warna (bagian 7.2 spesifikasi)
   js/app.js               Alpine.js (sidebar/drawer)
   views/
-    components/           Blade component: layouts, top-bar, sidebar, kartu, tombol, input, ...
+    components/           Blade component: layouts, top-bar, sidebar, kartu, tombol, input, tabel,
+                          paginasi, modal-hapus, select, badge, kartu-statistik, ...
+    admin/                halaman Admin, satu folder per data (index + form)
     auth/, peran-aktif/, profil/, password/, beranda/, errors/
 routes/web.php            semua route halaman
-tests/Feature/            test fitur (Auth, Akun, Database)
+tests/Feature/            test fitur (Auth, Akun, Admin, Database)
 docs/                     spesifikasi, keputusan desain, catatan kode
 ```
 

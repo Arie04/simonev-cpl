@@ -331,3 +331,36 @@ diumumkan bersamaan.
 - **Keputusan:** Atas permintaan user, PR setiap iterasi di-merge sendiri ke `main` setelah semua test lulus dan Pint bersih, lalu pekerjaan berlanjut ke iterasi berikutnya.
 - **Alasan:** User ingin semua iterasi selesai dalam satu rangkaian kerja.
 - **Dampak:** Branch dan PR tetap dibuat per iterasi (bagian 15), sehingga riwayat dan catatannya bisa dibaca belakangan.
+
+## Keputusan teknis iterasi 2
+
+### KD-50 · CPL milik CPMK yang sudah dipetakan tidak bisa diganti
+- **Tanggal:** 2026-10-30
+- **Keputusan:** CPL sebuah CPMK hanya bisa diganti selama CPMK itu belum dipetakan ke mata kuliah.
+- **Alasan:** Jika CPMK yang sudah dipakai kelas dipindah ke CPL lain, capaian CPL kelas yang sudah berjalan ikut berubah diam-diam. Hal ini bertentangan dengan prinsip KD-08.
+- **Dampak:** Form CPMK menampilkan pesan "CPL tidak bisa diganti karena CPMK ini sudah dipetakan ke mata kuliah."
+
+### KD-51 · Pilihan kurikulum diingat selama sesi
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Dropdown Kurikulum di halaman data master menyimpan pilihannya di session, sehingga tetap sama saat berpindah halaman. Bawaannya kurikulum terbaru.
+  - Data baru masuk ke kurikulum terpilih lewat isian tersembunyi.
+  - Kurikulum data lama tidak bisa dipindah lewat form ubah.
+- **Alasan:** Admin biasanya mengisi satu kurikulum sampai selesai. Memindah data antarkurikulum akan merusak pemetaan dan capaian.
+- **Dampak:** Method `kurikulumTerpilih()` di `app/Http/Controllers/Controller.php` dipakai semua controller data kurikulum.
+
+### KD-52 · Pemeriksaan sebelum hapus ada di model
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Setiap model yang bisa dihapus punya method `alasanTidakBisaDihapus()`. Method ini mengembalikan pesan jika data masih dipakai, atau `null` jika boleh dihapus. Controller menampilkan pesan itu sebagai toast. Foreign key restrict di database tetap menjadi pengaman terakhir.
+- **Alasan:** Pesannya lebih jelas daripada error database, dan aturannya ada di satu tempat per model sehingga mudah dijelaskan.
+- **Dampak:** Menghapus kurikulum, CPL, MK, CPMK, metode penilaian, dosen, mahasiswa, atau akun yang masih dipakai ditolak dengan pesan yang menyebut alasannya.
+
+### KD-53 · Komponen tabel, pencarian, dan modal hapus bersama
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Tabel daftar memakai komponen `x-tabel`, `x-tabel.baris`, `x-tabel.sel`, dan `x-tabel.aksi`. Setiap sel membawa `data-label`, sehingga di layar < 768px baris tampil sebagai kartu.
+  - Pencarian memakai trait `BisaDicari` dengan daftar kolom `$kolomPencarian` di tiap model.
+  - Modal konfirmasi hapus dipasang sekali di layout dan dibuka lewat event Alpine `konfirmasi-hapus`.
+  - Setiap halaman daftar punya satu form untuk tambah dan ubah (`form.blade.php`).
+- **Alasan:** Tiga belas halaman data master berbentuk sama. Komponen dan trait mencegah duplikasi (bagian 14 spesifikasi) tanpa pola yang berlebihan.
+- **Dampak:** Halaman daftar di iterasi berikutnya cukup memakai komponen yang sama.

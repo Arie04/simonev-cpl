@@ -79,6 +79,19 @@ sebelum `@` ditambah `123`.
 
 Akun Koprodi + Dosen diminta memilih peran setelah login dan bisa berganti peran lewat menu akun.
 
+Selain lima akun di atas, data contoh berisi dosen dan mahasiswa tanpa email. Mereka login dengan
+NIDN atau NPM:
+
+| Data contoh | Login dengan | Password |
+|---|---|---|
+| 3 dosen | NIDN `9990000003` sampai `9990000005` | `dosen123` |
+| 7 mahasiswa angkatan 2023 | NPM `9992300002` sampai `9992300008` | `mahasiswa123` |
+| 8 mahasiswa angkatan 2024 | NPM `9992400001` sampai `9992400008` | `mahasiswa123` |
+| 8 mahasiswa angkatan 2026 | NPM `9992600001` sampai `9992600008` | `mahasiswa123` |
+
+Data kurikulum contoh terdiri atas Kurikulum 2021 dan Kurikulum OBE 2026. Beberapa kode sengaja sama
+di keduanya (mis. CPL01 dan MK INF202). Semua data contoh adalah karangan, bukan data asli prodi.
+
 ## Mengembalikan data demo
 
 ```bash

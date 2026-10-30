@@ -7,6 +7,35 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 2: Akun pengguna dan data master] - 2026-10-30
+
+### Ditambahkan
+
+- Kelola data master Program Studi, Kurikulum, Evaluasi Kurikulum, Profil Lulusan (beserta
+  profesinya), Profesi, CPL, Bahan Kajian, Mata Kuliah, CPMK, dan Metode Penilaian, dengan
+  pencarian, paginasi, dan dropdown Kurikulum.
+- Validasi kode PL, CPL, BK, MK, dan CPMK unik per kurikulum tanpa membedakan huruf besar/kecil.
+- Kelola Dosen dan Mahasiswa yang sekaligus membuat akun login.
+- Menu Akun Pengguna untuk akun Admin/Koprodi, pengaturan peran, dan reset password.
+- Beranda Admin berisi jumlah mahasiswa, dosen, mata kuliah, dan kelas, beserta pintasan menu.
+- Pesan yang jelas saat menghapus data yang masih dipakai data lain.
+- Komponen baru:
+  - tabel responsif yang tampil sebagai kartu di layar kecil;
+  - paginasi dan modal konfirmasi hapus;
+  - select, textarea, kotak centang, badge, dan kartu statistik.
+- Menu sidebar bergrup yang bisa dibuka-tutup.
+- Data contoh:
+  - program studi serta kurikulum 2021 dan 2026;
+  - PL, profesi, CPL, BK, MK, CPMK, dan metode penilaian;
+  - 3 dosen dan 23 mahasiswa contoh.
+- 78 test baru (total 156).
+
+### Diubah
+
+- Spesifikasi diperbarui dengan hasil klarifikasi sebelum iterasi 2–10 (KD-35 sampai KD-49). Kelola
+  Sub-CPMK pindah ke iterasi 3.
+- Halaman utama Admin bukan lagi halaman sambutan sementara.
+
 ## [Iterasi 1: Setup proyek, autentikasi, dan peran] - 2026-10-30
 
 ### Ditambahkan
