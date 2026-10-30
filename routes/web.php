@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AkunController;
 use App\Http\Controllers\Admin\AkunPasswordController;
 use App\Http\Controllers\Admin\BahanKajianController;
+use App\Http\Controllers\Admin\BerandaAdminController;
 use App\Http\Controllers\Admin\CplController;
 use App\Http\Controllers\Admin\CpmkController;
 use App\Http\Controllers\Admin\DosenController;
@@ -57,8 +58,7 @@ Route::middleware('auth')->group(function () {
 
 // Halaman Admin (bagian 3 dan 7.5 spesifikasi).
 Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.')->group(function () {
-    // Beranda Admin masih halaman sambutan sementara sampai akhir iterasi 2.
-    Route::view('/', 'beranda.sementara', ['judul' => 'Beranda', 'iterasi' => 2])->name('beranda');
+    Route::get('/', BerandaAdminController::class)->name('beranda');
 
     // Data master. Nama parameter ditulis sendiri karena Laravel menebak bentuk tunggal
     // dari kata bahasa Inggris (mis. "profesi" bisa berubah menjadi "profesus").
