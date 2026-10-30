@@ -46,6 +46,7 @@ return [
             'ikon' => 'heroicon-o-building-library',
             'anak' => [
                 ['label' => 'Periode Akademik', 'route' => 'admin.periode-akademik.index', 'aktif' => 'admin.periode-akademik.*'],
+                ['label' => 'Kelas Kuliah', 'route' => 'admin.kelas-kuliah.index', 'aktif' => 'admin.kelas-kuliah.*'],
             ],
         ],
         ['label' => 'Akun Pengguna', 'route' => 'admin.akun.index', 'aktif' => 'admin.akun.*', 'ikon' => 'heroicon-o-users'],
