@@ -66,6 +66,7 @@ return [
             'ikon' => 'heroicon-o-clipboard-document-list',
             'anak' => [
                 ['label' => 'Rencana Asesmen', 'route' => 'dosen.rencana-asesmen', 'aktif' => ['dosen.rencana-asesmen', 'dosen.kelas.rencana-asesmen.*']],
+                ['label' => 'Input Nilai', 'route' => 'dosen.nilai.edit', 'aktif' => 'dosen.nilai.*'],
             ],
         ],
     ],

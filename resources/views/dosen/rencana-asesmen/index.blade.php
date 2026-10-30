@@ -44,6 +44,7 @@
                             <x-tabel.sel label="Nilai Maks">{{ Angka::ringkas($asesmen->nilai_maksimum) }}</x-tabel.sel>
                             <x-tabel.sel label="Tanggal" class="whitespace-nowrap">{{ $asesmen->tanggal_asesmen?->translatedFormat('d M Y') ?? '–' }}</x-tabel.sel>
                             <x-tabel.aksi>
+                                <x-tombol-ikon ikon="heroicon-o-document-check" :label="'Input nilai '.$asesmen->nama_asesmen" :href="route('dosen.nilai.edit', ['kelas' => $kelas, 'asesmen' => $asesmen])" />
                                 <x-tombol-ikon ikon="heroicon-o-pencil-square" :label="'Ubah '.$asesmen->nama_asesmen" :href="route('dosen.kelas.rencana-asesmen.edit', [$kelas, $asesmen])" />
                                 <x-tombol-hapus :aksi="route('dosen.kelas.rencana-asesmen.destroy', [$kelas, $asesmen])" :nama="$asesmen->nama_asesmen" />
                             </x-tabel.aksi>

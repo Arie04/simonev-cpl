@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\SubCpmkPenilaianController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\Dosen\DashboardDosenController;
+use App\Http\Controllers\Dosen\InputNilaiController;
 use App\Http\Controllers\Dosen\KelasDiampuController;
 use App\Http\Controllers\Dosen\MataKuliahDosenController;
 use App\Http\Controllers\Dosen\RencanaAsesmenController;
@@ -128,4 +129,8 @@ Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.
     Route::resource('kelas.rencana-asesmen', RencanaAsesmenController::class)
         ->except('show')
         ->parameters(['kelas' => 'kelasKuliah', 'rencana-asesmen' => 'rencanaAsesmen']);
+
+    // Input nilai asesmen (KF-10).
+    Route::get('nilai', [InputNilaiController::class, 'edit'])->name('nilai.edit');
+    Route::put('nilai/{rencanaAsesmen}', [InputNilaiController::class, 'update'])->name('nilai.update');
 });

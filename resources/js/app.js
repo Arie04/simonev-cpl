@@ -52,5 +52,22 @@ Alpine.data('formAsesmen', (awal) => ({
     },
 }));
 
+/*
+ * Form input nilai (bagian 7.4): memberi peringatan jika pengguna meninggalkan halaman
+ * sebelum menyimpan nilai yang sudah diubah.
+ */
+Alpine.data('formNilai', () => ({
+    berubah: false,
+
+    init() {
+        window.addEventListener('beforeunload', (event) => {
+            if (this.berubah) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();
