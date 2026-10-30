@@ -53,7 +53,7 @@ app/
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
     Concerns/BisaDicari.php  trait pencarian "Cari data..."
   Policies/               KelasKuliahPolicy, MataKuliahPolicy (hak akses dosen)
-  Services/               MatriksPemetaan, MatriksBobotKelas; CapaianService (mulai iterasi 7)
+  Services/               CapaianService (semua rumus capaian), MatriksPemetaan, MatriksBobotKelas
   Support/Angka.php       format angka berkoma desimal ("78,40")
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
 config/
@@ -76,6 +76,8 @@ resources/
     auth/, peran-aktif/, profil/, password/, beranda/, errors/
 routes/web.php            semua route halaman
 tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Database)
+tests/Unit/               unit test CapaianService (Uji 1–6)
+tests/Support/            trait pembantu menyusun data uji
 docs/                     spesifikasi, keputusan desain, catatan kode
 ```
 

@@ -5,6 +5,7 @@ namespace Tests\Feature\Dosen;
 use App\Models\Dosen;
 use App\Models\KelasKuliah;
 use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
 use App\Models\NilaiAsesmen;
 use App\Models\PesertaKelas;
 use App\Models\RencanaAsesmen;
@@ -134,24 +135,29 @@ class InputNilaiTest extends TestCase
     public function test_dosen_tidak_bisa_menginput_nilai_kelas_yang_tidak_diampu(): void
     {
         $asesmenKelasLain = RencanaAsesmen::factory()->create();
-        $peserta = PesertaKelas::factory()->for($asesmenKelasLain->kelasKuliah)->create();
+        $peserta = PesertaKelas::factory()
+            ->for($asesmenKelasLain->kelasKuliah)
+            ->for(Mahasiswa::factory()->state(['nama' => 'Peserta Kelas Lain']))
+            ->create();
 
         $this->put(route('dosen.nilai.update', $asesmenKelasLain), ['nilai' => [$peserta->peserta_kelas_id => '50']])
             ->assertForbidden();
 
         $this->get(route('dosen.nilai.edit', ['kelas' => $asesmenKelasLain->kelas_kuliah_id, 'asesmen' => $asesmenKelasLain->rencana_asesmen_id]))
             ->assertOk()
-            ->assertDontSee($peserta->mahasiswa->nama);
+            ->assertDontSee('Peserta Kelas Lain');
     }
 
     public function test_filter_bertingkat_hanya_berisi_kelas_yang_diampu(): void
     {
-        $kelasLain = KelasKuliah::factory()->create();
+        // Nama ditulis langsung karena MataKuliahFactory memilih nama secara acak dari lima nama.
+        $this->kelas->mataKuliah->update(['nama_mata_kuliah' => 'Mata Kuliah Saya']);
+        KelasKuliah::factory()->for(MataKuliah::factory()->state(['nama_mata_kuliah' => 'Mata Kuliah Orang Lain']))->create();
 
         $this->get(route('dosen.nilai.edit'))
             ->assertOk()
-            ->assertSee($this->kelas->mataKuliah->nama_mata_kuliah)
-            ->assertDontSee($kelasLain->mataKuliah->nama_mata_kuliah);
+            ->assertSee('Mata Kuliah Saya')
+            ->assertDontSee('Mata Kuliah Orang Lain');
     }
 
     public function test_pilihan_yang_hanya_satu_dipilih_otomatis(): void

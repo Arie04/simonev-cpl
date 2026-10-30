@@ -65,4 +65,13 @@ class PeriodeAkademik extends Model
             ? 'Periode akademik tidak bisa dihapus karena sudah punya kelas.'
             : null;
     }
+
+    /**
+     * Kunci urutan waktu, mis. "2026/2027-1" untuk Ganjil dan "2026/2027-2" untuk Genap.
+     * Kunci yang lebih besar berarti periode yang lebih baru (bagian 4 spesifikasi).
+     */
+    public function urutan(): string
+    {
+        return $this->tahun_akademik.'-'.($this->semester_periode === self::GENAP ? '2' : '1');
+    }
 }
