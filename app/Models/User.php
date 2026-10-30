@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -62,5 +63,18 @@ class User extends Authenticatable
     public function punyaPeran(string $kodeRole): bool
     {
         return $this->roles->contains('kode_role', $kodeRole);
+    }
+
+    /**
+     * Inisial nama (maksimal dua huruf) untuk avatar di top bar, mis. "DD" untuk "Dosen Demo".
+     */
+    public function inisial(): string
+    {
+        return Str::of($this->nama)
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $kata) => Str::upper(Str::substr($kata, 0, 1)))
+            ->implode('');
     }
 }

@@ -1,9 +1,69 @@
 @import 'tailwindcss';
 
+/* Font di-bundle lewat npm supaya tidak bergantung CDN (bagian 7.3 spesifikasi). */
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/*
+ * Token warna SIMONEV-CPL (bagian 7.2 spesifikasi): biru dari gelombang laut
+ * pada lambang Unkhair, kuning dari bendera dan jas almamater. Palet bawaan
+ * Tailwind dimatikan agar view hanya memakai token di bawah (KD-32).
+ * Contoh pemakaian: bg-primary-900, text-text-muted, border-border, bg-bg.
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+    --color-*: initial;
+    --color-white: #ffffff;
+
+    --color-primary-900: #1e3a8a; /* top bar, teks menu aktif */
+    --color-primary-800: #1e40af; /* hover tombol utama */
+    --color-primary-700: #1d4ed8; /* tombol utama, tautan, tab aktif, ring fokus */
+    --color-primary-100: #dbeafe; /* lingkaran ikon pada kartu statistik */
+    --color-primary-50: #eff6ff; /* latar menu aktif dan baris terpilih */
+
+    --color-accent: #facc15; /* garis penanda menu aktif dan aksen kecil, bukan untuk teks di atas putih */
+    --color-on-accent: #422006; /* teks di atas warna accent */
+
+    --color-bg: #f8fafc; /* latar area konten */
+    --color-surface: #ffffff; /* kartu, sidebar, tabel, modal */
+    --color-border: #e2e8f0; /* garis kartu, tabel, dan input */
+    --color-text: #0f172a; /* teks utama */
+    --color-text-muted: #475569; /* label, keterangan, header tabel */
+
+    --color-success: #166534; /* Tercapai, Lulus, Tersimpan */
+    --color-success-bg: #dcfce7;
+    --color-success-chart: #16a34a;
+    --color-danger: #991b1b; /* Tidak Tercapai, Belum Lulus, tombol hapus, pesan error */
+    --color-danger-bg: #fee2e2;
+    --color-danger-chart: #dc2626;
+    --color-warning: #92400e; /* peringatan bobot tidak sesuai target */
+    --color-warning-bg: #fef3c7;
+    --color-neutral: #475569; /* Belum ada nilai, Ambang belum ditetapkan */
+    --color-neutral-bg: #f1f5f9;
+}
+
+@layer base {
+    /* Tailwind v4 memakai currentColor untuk garis; samakan dengan token border. */
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-border);
+    }
+
+    body {
+        @apply bg-bg font-sans text-text antialiased;
+    }
+}
+
+/* Elemen Alpine.js yang bertanda x-cloak disembunyikan sampai Alpine siap. */
+[x-cloak] {
+    display: none !important;
 }
