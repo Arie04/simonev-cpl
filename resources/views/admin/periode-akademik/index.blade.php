@@ -13,10 +13,12 @@
                 @foreach ($daftarPeriode as $periode)
                     <x-tabel.baris>
                         <x-tabel.sel label="Tahun Akademik" class="font-medium">
-                            {{ $periode->tahun_akademik }}
-                            @if ($periodeAktif?->is($periode))
-                                <x-badge varian="info" class="ml-1">Aktif</x-badge>
-                            @endif
+                            <span>
+                                {{ $periode->tahun_akademik }}
+                                @if ($periodeAktif?->is($periode))
+                                    <x-badge varian="info" class="ml-1">Aktif</x-badge>
+                                @endif
+                            </span>
                         </x-tabel.sel>
                         <x-tabel.sel label="Semester">{{ $periode->semester_periode }}</x-tabel.sel>
                         <x-tabel.sel label="Jumlah Kelas">{{ $periode->kelas_kuliah_count }}</x-tabel.sel>

@@ -33,6 +33,7 @@ use App\Http\Controllers\Dosen\RencanaAsesmenController;
 use App\Http\Controllers\Koprodi\DashboardKoprodiController;
 use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\LaporanCapaianController;
+use App\Http\Controllers\Mahasiswa\CapaianMahasiswaController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
 use App\Http\Controllers\ProfilController;
@@ -58,11 +59,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/ubah-password', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('/ubah-password', [PasswordController::class, 'update'])->name('password.update');
     });
-
-    // Halaman utama Mahasiswa. Untuk sementara berupa halaman sambutan dan diganti di iterasi 9.
-    Route::view('/mahasiswa', 'beranda.sementara', ['judul' => 'Capaian Pembelajaran', 'iterasi' => 9])
-        ->middleware('peran:'.Role::MAHASISWA)
-        ->name('mahasiswa.capaian');
 });
 
 // Halaman Admin (bagian 3 dan 7.5 spesifikasi).
@@ -136,4 +132,9 @@ Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.
 
     // Laporan capaian kelas yang diampu (KF-14, KF-16).
     Route::get('laporan', LaporanCapaianController::class)->name('laporan');
+});
+
+// Halaman Mahasiswa: read-only, hanya data miliknya sendiri (bagian 3 spesifikasi).
+Route::middleware(['auth', 'peran:'.Role::MAHASISWA])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    Route::get('/', CapaianMahasiswaController::class)->name('capaian');
 });
