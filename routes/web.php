@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\SubCpmkController;
 use App\Http\Controllers\Admin\SubCpmkPenilaianController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
 use App\Http\Controllers\ProfilController;
@@ -92,4 +93,9 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
     // Akun pengguna: daftar, tambah/ubah, atur peran, dan reset password (bagian 7.6.4).
     Route::resource('akun', AkunController::class)->except('show')->parameters(['akun' => 'user']);
     Route::put('akun/{user}/password', [AkunPasswordController::class, 'update'])->name('akun.password.update');
+});
+
+// Halaman Koprodi: read-only seluruh prodi (bagian 3 spesifikasi).
+Route::middleware(['auth', 'peran:'.Role::KOPRODI])->prefix('koprodi')->name('koprodi.')->group(function () {
+    Route::get('kurikulum', DataKurikulumController::class)->name('kurikulum');
 });

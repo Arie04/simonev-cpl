@@ -46,6 +46,7 @@ return [
 
     'KOPRODI' => [
         ['label' => 'Dashboard', 'route' => 'koprodi.dashboard', 'aktif' => 'koprodi.dashboard', 'ikon' => 'heroicon-o-chart-pie'],
+        ['label' => 'Data Kurikulum', 'route' => 'koprodi.kurikulum', 'aktif' => 'koprodi.kurikulum', 'ikon' => 'heroicon-o-book-open'],
     ],
 
     'DOSEN' => [
