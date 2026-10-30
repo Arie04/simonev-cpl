@@ -14,6 +14,7 @@ flowchart LR
     C -->|belum login| L[Halaman login]
     C -->|peran tidak sesuai| E[Halaman 403]
     C -->|lolos| D[Controller]
+    D -->|Policy menolak| E
     D --> F[Form Request<br/>validasi]
     F -->|tidak valid| A
     D --> G[Model Eloquent]
@@ -45,12 +46,14 @@ app/
     Controllers/          controller tipis (Auth/LoginController, PeranAktifController, ...)
       Admin/              halaman Admin: data master, pemetaan, akun pengguna, beranda
       Koprodi/            halaman Koprodi (read-only)
+      Dosen/              halaman Dosen: dashboard, mata kuliah, rencana asesmen
       Controller.php      method bersama: kurikulum terpilih, pencarian, jumlah per halaman
     Middleware/CekPeran.php
-    Requests/             Form Request untuk validasi (Admin/ untuk form Admin)
+    Requests/             Form Request untuk validasi (Admin/ dan Dosen/)
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
     Concerns/BisaDicari.php  trait pencarian "Cari data..."
-  Services/               MatriksPemetaan; CapaianService (mulai iterasi 7)
+  Policies/               KelasKuliahPolicy, MataKuliahPolicy (hak akses dosen)
+  Services/               MatriksPemetaan, MatriksBobotKelas; CapaianService (mulai iterasi 7)
   Support/Angka.php       format angka berkoma desimal ("78,40")
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
 config/
@@ -69,9 +72,10 @@ resources/
                           paginasi, modal-hapus, select, badge, kartu-statistik, ...
     admin/                halaman Admin, satu folder per data (index + form), pemetaan
     koprodi/              halaman Koprodi
+    dosen/                halaman Dosen
     auth/, peran-aktif/, profil/, password/, beranda/, errors/
 routes/web.php            semua route halaman
-tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Database)
+tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Database)
 docs/                     spesifikasi, keputusan desain, catatan kode
 ```
 
