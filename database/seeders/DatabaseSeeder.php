@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             DataMasterDemoSeeder::class,
             PemetaanDemoSeeder::class,
             PerkuliahanDemoSeeder::class,
+            AsesmenDemoSeeder::class,
         ]);
     }
 }
