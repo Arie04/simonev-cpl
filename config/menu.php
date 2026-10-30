@@ -60,6 +60,7 @@ return [
 
     'DOSEN' => [
         ['label' => 'Dashboard', 'route' => 'dosen.dashboard', 'aktif' => 'dosen.dashboard', 'ikon' => 'heroicon-o-squares-2x2'],
+        ['label' => 'Mata Kuliah', 'route' => 'dosen.mata-kuliah.index', 'aktif' => 'dosen.mata-kuliah.*', 'ikon' => 'heroicon-o-book-open'],
         [
             'label' => 'Asesmen',
             'ikon' => 'heroicon-o-clipboard-document-list',
