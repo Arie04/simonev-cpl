@@ -53,7 +53,8 @@ app/
   Models/                 29 model Eloquent (19 model biasa + 10 model pivot)
     Concerns/BisaDicari.php  trait pencarian "Cari data..."
   Policies/               KelasKuliahPolicy, MataKuliahPolicy (hak akses dosen)
-  Services/               CapaianService (semua rumus capaian), MatriksPemetaan, MatriksBobotKelas
+  Services/               CapaianService (semua rumus capaian), LaporanCapaian, FilterLaporan,
+                          MatriksPemetaan, MatriksBobotKelas
   Support/Angka.php       format angka berkoma desimal ("78,40")
 bootstrap/app.php         pendaftaran middleware 'peran' dan arah redirect login
 config/
@@ -66,13 +67,14 @@ database/
 lang/id/                  pesan validasi dan login berbahasa Indonesia
 resources/
   css/app.css             Tailwind CSS v4 + token warna (bagian 7.2 spesifikasi)
-  js/app.js               Alpine.js (sidebar/drawer)
+  js/app.js               Alpine.js (sidebar/drawer, form) dan grafik Chart.js
   views/
     components/           Blade component: layouts, top-bar, sidebar, kartu, tombol, input, tabel,
                           paginasi, modal-hapus, select, badge, kartu-statistik, ...
     admin/                halaman Admin, satu folder per data (index + form), pemetaan
     koprodi/              halaman Koprodi
     dosen/                halaman Dosen
+    laporan/              Laporan Capaian (dipakai Koprodi dan Dosen)
     auth/, peran-aktif/, profil/, password/, beranda/, errors/
 routes/web.php            semua route halaman
 tests/Feature/            test fitur (Auth, Akun, Admin, Koprodi, Dosen, Database)

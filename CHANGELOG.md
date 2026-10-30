@@ -7,6 +7,32 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 8: Dashboard Koprodi dan laporan capaian] - 2026-10-30
+
+### Ditambahkan
+
+- Dashboard Monitoring Koprodi:
+  - dropdown kurikulum dan enam kartu statistik;
+  - Ringkasan Capaian CPL kumulatif berisi donut dan tabel Tercapai, Tidak Tercapai, dan Belum ada
+    nilai, dengan filter angkatan;
+  - pemberitahuan jika ambang belum ditetapkan.
+- Laporan Capaian Pembelajaran untuk Koprodi (seluruh prodi) dan Dosen (kelas yang diampu):
+  - sembilan filter dengan tombol Terapkan Filter, dan panel filter bisa dibuka-tutup di mobile;
+  - informasi ambang yang berlaku dan tab CPL | CPMK | Sub-CPMK;
+  - empat kartu ringkasan;
+  - tabel rata-rata, % mahasiswa Lulus, dan status;
+  - grafik batang dengan label angka dan garis Ambang Batas Ketercapaian.
+- Keterangan cakupan periode (KD-23) dan label pasangan "CPMK063 · MK04" yang diurutkan per kode
+  (KD-25).
+- Chart.js 4 untuk donut dan grafik batang, dengan warna dari token CSS.
+- Menu Laporan Capaian untuk Koprodi dan Dosen.
+- 12 test baru (total 265).
+
+### Diubah
+
+- Halaman utama Koprodi bukan lagi halaman sambutan sementara.
+- Blok `@theme` Tailwind menjadi `@theme static` supaya semua token warna tersedia untuk grafik.
+
 ## [Iterasi 7: Perhitungan capaian] - 2026-10-30
 
 ### Ditambahkan

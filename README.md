@@ -33,7 +33,7 @@ Dicatat dari laptop pengembangan pada 30 Oktober 2026.
 | `@fontsource/plus-jakarta-sans` | 5.3.0 |
 | PHPUnit | 12.5.42 |
 
-Chart.js 4 baru dipasang saat fitur laporan dibuat (iterasi 8).
+Chart.js 4.6.1 dipasang di iterasi 8 untuk grafik dashboard dan laporan.
 
 ## Persiapan database
 
