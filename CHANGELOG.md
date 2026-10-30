@@ -25,6 +25,11 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 - Test capaian dari data contoh (skenario uji 11).
 - 17 test baru (total 253).
 
+### Diperbaiki
+
+- Test filter Input Nilai yang kadang gagal: nama MK dari factory yang acak sesekali sama dengan nama
+  MK kelas dosen lain.
+
 ## [Iterasi 6: Input nilai asesmen] - 2026-10-30
 
 ### Ditambahkan

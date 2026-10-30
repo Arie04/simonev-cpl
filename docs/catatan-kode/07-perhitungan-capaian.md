@@ -215,7 +215,11 @@ php artisan test --filter=CapaianDataContohTest   # capaian dari data contoh
   - status tanpa pembulatan;
   - CPL tanpa bobot;
   - agregat memakai rata-rata.
-- **Kendala:** tidak ada. Uji 1–6 langsung sesuai angka di bagian 5.5.
+- **Kendala:**
+  - Uji 1–6 langsung sesuai angka di bagian 5.5.
+  - Satu test Input Nilai dari iterasi 6 ternyata kadang gagal, karena `MataKuliahFactory` memilih
+    nama MK secara acak dari lima nama. Nama di test itu kini ditulis langsung, dan seluruh test
+    lulus tiga kali berturut-turut.
 - **Perlu diputuskan:** tidak ada. KD-65 dan KD-66 adalah keputusan teknis.
 
 ## 9. Pertanyaan yang mungkin diajukan penguji
