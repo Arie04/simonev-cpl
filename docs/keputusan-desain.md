@@ -416,3 +416,31 @@ diumumkan bersamaan.
   - Penambahan per angkatan melewati mahasiswa yang sudah mengikuti MK itu pada periode yang sama, lalu melaporkan jumlah yang ditambahkan dan dilewati.
 - **Alasan:** Mengikuti bagian 7.6.6 tanpa memblokir seluruh angkatan hanya karena beberapa mahasiswa sudah terdaftar di kelas paralel (KD-37).
 - **Dampak:** Pesan sukses menyebut jumlah mahasiswa yang ditambahkan dan yang dilewati.
+
+## Keputusan teknis iterasi 5
+
+### KD-60 · Hak akses dosen lewat Policy
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - `KelasKuliahPolicy::kelola` mengizinkan sebuah kelas hanya untuk dosen yang terdaftar di `dosen_kelas` kelas itu.
+  - `MataKuliahPolicy::lihatSebagaiDosen` mengizinkan sebuah MK hanya untuk dosen yang pernah atau sedang mengampu kelasnya.
+  - Controller memanggil `Gate::authorize(...)`, dan Form Request memakai `can(...)` di `authorize()`.
+- **Alasan:** Bagian 6 meminta pembatasan dosen dicek lewat Policy. Middleware `peran:DOSEN` hanya memastikan peran aktif, bukan kepemilikan kelas.
+- **Dampak:** Dosen yang membuka kelas atau MK yang tidak diampunya mendapat 403.
+
+### KD-61 · Form rencana asesmen dengan bobot kontribusi per Sub-CPMK
+- **Tanggal:** 2026-10-30
+- **Keputusan:**
+  - Form asesmen menampilkan semua Sub-CPMK milik MK kelas itu. Setiap Sub-CPMK yang dicentang diberi bobot kontribusi, dikirim sebagai `kontribusi[id Sub-CPMK]`.
+  - Jumlah kontribusi dihitung langsung di browser (Alpine) sebagai bantuan. Pemeriksaan yang memblokir tetap di server (`RencanaAsesmenRequest`).
+- **Alasan:** Bagian 6 meminta Σ bobot kontribusi = bobot asesmen diblokir karena keduanya diisi di form yang sama. Penghitung langsung membantu dosen sebelum menyimpan.
+- **Dampak:** Asesmen tanpa Sub-CPMK, atau dengan Sub-CPMK dari MK lain, ditolak.
+
+### KD-62 · Matriks bobot dan peringatan kelas dihitung di `MatriksBobotKelas`
+- **Tanggal:** 2026-10-30
+- **Keputusan:** Class `App\Services\MatriksBobotKelas` menyusun matriks Sub-CPMK × asesmen beserta tiga peringatan bagian 6:
+  - Σ bobot asesmen ≠ 100;
+  - Σ kontribusi per Sub-CPMK ≠ bobot_sub_cpmk;
+  - metode asesmen tidak termasuk metode yang direncanakan di `sub_cpmk_penilaian`.
+- **Alasan:** Peringatan ini menyangkut validasi bobot, bukan perhitungan capaian. Karena itu tempatnya di luar CapaianService, tetapi tetap di satu class supaya tidak tersebar di view.
+- **Dampak:** Revisi target bobot di kurikulum langsung memunculkan peringatan di kelas yang sudah berjalan (Uji 5), tanpa mengubah rencana asesmen kelas itu.

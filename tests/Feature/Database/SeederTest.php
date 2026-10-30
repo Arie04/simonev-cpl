@@ -3,12 +3,14 @@
 namespace Tests\Feature\Database;
 
 use App\Models\Dosen;
+use App\Models\KelasKuliah;
 use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use App\Models\PeriodeAkademik;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\MatriksBobotKelas;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -125,6 +127,23 @@ class SeederTest extends TestCase
         );
     }
 
+    public function test_rencana_asesmen_contoh_memenuhi_aturan_5_1(): void
+    {
+        $this->seed();
+
+        foreach (KelasKuliah::all() as $kelas) {
+            $matriks = new MatriksBobotKelas($kelas);
+            $namaKelas = $kelas->nama();
+
+            $this->assertNotEmpty($matriks->daftarAsesmen, "Kelas {$namaKelas} belum punya rencana asesmen.");
+            $this->assertSame([], $matriks->peringatan(), "Rencana asesmen {$namaKelas} memunculkan peringatan.");
+
+            foreach ($matriks->daftarAsesmen as $asesmen) {
+                $this->assertEqualsWithDelta((float) $asesmen->bobot_asesmen, $matriks->totalAsesmen($asesmen), 0.001);
+            }
+        }
+    }
+
     public function test_seeder_bisa_dijalankan_ulang_tanpa_membuat_data_ganda(): void
     {
         $this->seed();
@@ -149,7 +168,7 @@ class SeederTest extends TestCase
             'evaluasi_kurikulum', 'profil_lulusan', 'profesi', 'profil_lulusan_profesi', 'cpl',
             'bahan_kajian', 'mata_kuliah', 'cpmk', 'metode_penilaian', 'pemetaan_cpl_pl', 'pemetaan_cpl_bk',
             'pemetaan_bk_mk', 'pemetaan_cpmk_mk', 'sub_cpmk', 'sub_cpmk_penilaian', 'periode_akademik',
-            'kelas_kuliah', 'dosen_kelas', 'peserta_kelas',
+            'kelas_kuliah', 'dosen_kelas', 'peserta_kelas', 'rencana_asesmen', 'rencana_asesmen_sub_cpmk',
         ];
 
         return collect($daftarTabel)->mapWithKeys(fn (string $tabel) => [$tabel => DB::table($tabel)->count()])->all();

@@ -25,6 +25,10 @@ use App\Http\Controllers\Admin\SubCpmkController;
 use App\Http\Controllers\Admin\SubCpmkPenilaianController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\Dosen\DashboardDosenController;
+use App\Http\Controllers\Dosen\KelasDiampuController;
+use App\Http\Controllers\Dosen\MataKuliahDosenController;
+use App\Http\Controllers\Dosen\RencanaAsesmenController;
 use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
@@ -53,13 +57,10 @@ Route::middleware('auth')->group(function () {
     });
 
     // Halaman utama peran lain. Untuk sementara berupa halaman sambutan dan
-    // diganti di iterasi 5 (Dosen), 8 (Koprodi), dan 9 (Mahasiswa).
+    // diganti di iterasi 8 (Koprodi) dan 9 (Mahasiswa).
     Route::view('/koprodi', 'beranda.sementara', ['judul' => 'Dashboard', 'iterasi' => 8])
         ->middleware('peran:'.Role::KOPRODI)
         ->name('koprodi.dashboard');
-    Route::view('/dosen', 'beranda.sementara', ['judul' => 'Dashboard', 'iterasi' => 5])
-        ->middleware('peran:'.Role::DOSEN)
-        ->name('dosen.dashboard');
     Route::view('/mahasiswa', 'beranda.sementara', ['judul' => 'Capaian Pembelajaran', 'iterasi' => 9])
         ->middleware('peran:'.Role::MAHASISWA)
         ->name('mahasiswa.capaian');
@@ -112,4 +113,19 @@ Route::middleware(['auth', 'peran:'.Role::ADMIN])->prefix('admin')->name('admin.
 // Halaman Koprodi: read-only seluruh prodi (bagian 3 spesifikasi).
 Route::middleware(['auth', 'peran:'.Role::KOPRODI])->prefix('koprodi')->name('koprodi.')->group(function () {
     Route::get('kurikulum', DataKurikulumController::class)->name('kurikulum');
+});
+
+// Halaman Dosen: hanya kelas yang ia ampu, dicek lewat KelasKuliahPolicy (bagian 3 dan 6 spesifikasi).
+Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.')->group(function () {
+    Route::get('/', DashboardDosenController::class)->name('dashboard');
+
+    // Mata kuliah yang diampu beserta CPL, CPMK, dan Sub-CPMK-nya (KF-07).
+    Route::get('mata-kuliah', [MataKuliahDosenController::class, 'index'])->name('mata-kuliah.index');
+    Route::get('mata-kuliah/{mataKuliah}', [MataKuliahDosenController::class, 'show'])->name('mata-kuliah.show');
+
+    // Rencana asesmen per kelas (KF-08, KF-09).
+    Route::get('rencana-asesmen', KelasDiampuController::class)->name('rencana-asesmen');
+    Route::resource('kelas.rencana-asesmen', RencanaAsesmenController::class)
+        ->except('show')
+        ->parameters(['kelas' => 'kelasKuliah', 'rencana-asesmen' => 'rencanaAsesmen']);
 });

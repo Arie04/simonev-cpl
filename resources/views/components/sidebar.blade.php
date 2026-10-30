@@ -40,7 +40,7 @@
             @foreach ($daftarMenu as $menu)
                 @isset($menu['anak'])
                     {{-- Grup menu yang bisa dibuka-tutup; terbuka otomatis jika salah satu anaknya aktif. --}}
-                    @php($grupAktif = collect($menu['anak'])->contains(fn ($anak) => request()->routeIs($anak['aktif'])))
+                    @php($grupAktif = collect($menu['anak'])->contains(fn ($anak) => request()->routeIs(...(array) $anak['aktif'])))
                     <li x-data="{ terbuka: @js($grupAktif) }">
                         <button
                             type="button"
@@ -54,7 +54,7 @@
                         </button>
                         <ul x-show="terbuka" @unless ($grupAktif) x-cloak @endunless class="pb-1">
                             @foreach ($menu['anak'] as $anak)
-                                @php($aktif = request()->routeIs($anak['aktif']))
+                                @php($aktif = request()->routeIs(...(array) $anak['aktif']))
                                 <li>
                                     <a
                                         href="{{ route($anak['route']) }}"
@@ -75,7 +75,7 @@
                         </ul>
                     </li>
                 @else
-                    @php($aktif = request()->routeIs($menu['aktif']))
+                    @php($aktif = request()->routeIs(...(array) $menu['aktif']))
                     <li>
                         <a
                             href="{{ route($menu['route']) }}"

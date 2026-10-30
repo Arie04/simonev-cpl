@@ -22,5 +22,35 @@ Alpine.data('tataLetak', () => ({
     },
 }));
 
+/*
+ * Form rencana asesmen (bagian 7.6.7): menghitung Σ bobot kontribusi secara langsung, supaya
+ * dosen tahu apakah jumlahnya sudah sama dengan bobot asesmen sebelum menyimpan. Validasi
+ * sebenarnya tetap dilakukan di server (RencanaAsesmenRequest).
+ */
+Alpine.data('formAsesmen', (awal) => ({
+    bobotAsesmen: awal.bobotAsesmen,
+    subCpmk: awal.subCpmk, // { idSubCpmk: { dipilih: true/false, kontribusi: '10' } }
+
+    angka(teks) {
+        const nilai = parseFloat(String(teks ?? '').replace(',', '.'));
+
+        return Number.isNaN(nilai) ? 0 : nilai;
+    },
+
+    get totalKontribusi() {
+        return Object.values(this.subCpmk)
+            .filter((baris) => baris.dipilih)
+            .reduce((jumlah, baris) => jumlah + this.angka(baris.kontribusi), 0);
+    },
+
+    get sesuai() {
+        return Math.abs(this.totalKontribusi - this.angka(this.bobotAsesmen)) < 0.005;
+    },
+
+    format(nilai) {
+        return nilai.toLocaleString('id-ID', { maximumFractionDigits: 2 });
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();

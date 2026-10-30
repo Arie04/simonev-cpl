@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\KelasKuliahFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -111,5 +112,20 @@ class KelasKuliah extends Model
         return $this->rencanaAsesmen()->exists()
             ? 'Kelas tidak bisa dihapus karena sudah punya rencana asesmen.'
             : null;
+    }
+
+    /**
+     * Sub-CPMK yang boleh dipetakan ke asesmen kelas ini: hanya Sub-CPMK milik MK kelas ini
+     * (bagian 6 spesifikasi).
+     *
+     * @return Collection<int, SubCpmk>
+     */
+    public function daftarSubCpmk(): Collection
+    {
+        return SubCpmk::with('pemetaanCpmkMk.cpmk')
+            ->whereHas('pemetaanCpmkMk', fn (Builder $query) => $query->where('mata_kuliah_id', $this->mata_kuliah_id))
+            ->get()
+            ->sortBy(fn (SubCpmk $subCpmk) => $subCpmk->pemetaanCpmkMk->cpmk->kode_cpmk.' '.$subCpmk->kode_sub_cpmk)
+            ->values();
     }
 }

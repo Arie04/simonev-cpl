@@ -7,6 +7,35 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+## [Iterasi 5: Rencana asesmen dan halaman dosen] - 2026-10-30
+
+### Ditambahkan
+
+- Kelola Rencana Asesmen per kelas yang diampu:
+  - metode, nama, bobot, nilai maksimum, dan tanggal;
+  - Sub-CPMK yang diukur beserta bobot kontribusinya;
+  - jumlah kontribusi dihitung langsung di form.
+- Validasi rencana asesmen:
+  - Σ kontribusi harus sama dengan bobot asesmen;
+  - Sub-CPMK harus milik MK kelas itu;
+  - nilai maksimum tidak bisa diturunkan di bawah nilai yang sudah diinput (KD-48);
+  - asesmen yang sudah punya nilai tidak bisa dihapus.
+- Matriks bobot seperti bagian Penilaian RPS APTIKOM (Sub-CPMK × asesmen), dengan total, target, dan
+  sel kuning.
+- Peringatan untuk Σ bobot asesmen ≠ 100, kontribusi Sub-CPMK ≠ target, dan metode yang tidak
+  direncanakan.
+- Dashboard Dosen: kartu kelas yang diampu pada periode aktif.
+- Halaman Mata Kuliah Dosen: CPL, CPMK, dan Sub-CPMK MK yang diampu (KF-07).
+- Policy dosen: kelas dan MK yang tidak diampu menghasilkan 403.
+- Menu Dosen: Mata Kuliah dan Asesmen › Rencana Asesmen.
+- Data contoh rencana asesmen kelima kelas, semuanya memenuhi aturan 5.1.
+- 20 test baru (total 225).
+
+### Diubah
+
+- Halaman utama Dosen bukan lagi halaman sambutan sementara.
+- Pola menu aktif di `config/menu.php` boleh berupa daftar.
+
 ## [Iterasi 4: Periode akademik dan kelas kuliah] - 2026-10-30
 
 ### Ditambahkan
