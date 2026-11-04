@@ -23,7 +23,7 @@ class PeranAktifTest extends TestCase
             'Admin' => [Role::ADMIN, 'admin.beranda'],
             'Koprodi' => [Role::KOPRODI, 'koprodi.dashboard'],
             'Dosen' => [Role::DOSEN, 'dosen.dashboard'],
-            'Mahasiswa' => [Role::MAHASISWA, 'mahasiswa.capaian'],
+            'Mahasiswa' => [Role::MAHASISWA, 'mahasiswa.dashboard'],
         ];
     }
 
