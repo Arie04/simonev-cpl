@@ -577,3 +577,96 @@ diumumkan bersamaan.
 - **Dampak:**
   - Skrip butuh Google Chrome, data demo, dan aplikasi yang sedang berjalan.
   - Pemeriksaan pertama menemukan tombol Keluar di Pilih Peran yang hanya 42×20 px; tombol itu sudah diperbesar.
+
+## Revisi setelah iterasi 10
+
+### KD-74 · Dashboard Mahasiswa dan menu Mahasiswa
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - Menu Mahasiswa menjadi **Dashboard · Capaian Pembelajaran**. Bagian 7.5 spesifikasi semula hanya
+    menyebut Capaian Pembelajaran.
+  - Dashboard menjadi halaman utama Mahasiswa setelah login, di alamat `/mahasiswa` (route
+    `mahasiswa.dashboard`).
+  - Halaman Capaian Pembelajaran (bagian 7.6.10) tidak berubah isinya. Alamatnya pindah ke
+    `/mahasiswa/capaian`; nama route `mahasiswa.capaian` tetap.
+  - Dashboard read-only dan hanya memuat data mahasiswa yang login. Alamatnya tidak memuat id
+    mahasiswa, sama seperti halaman Capaian Pembelajaran (bagian 6, KD-71).
+- **Alasan:**
+  - Revisi dari pemilik proyek: dengan satu menu saja, sidebar Mahasiswa tidak berguna. Mahasiswa butuh
+    ringkasan capaian dalam bentuk grafik yang interaktif.
+  - Bagian 5.3 menyebut CPL mahasiswa bisa dipantau setiap tingkat sampai lulus. Grafik perkembangan
+    per periode di dashboard menunjukkan hal itu.
+  - Peran lain juga membuka Dashboard atau Beranda lebih dulu, lalu halaman rinci.
+- **Dampak:**
+  - Bagian 7.5 dan 7.6 spesifikasi belum menyebut Dashboard Mahasiswa. Keputusan ini yang menjadi
+    acuannya.
+  - Hasil yang diharapkan skenario uji 1 berubah: Mahasiswa diarahkan ke Dashboard. Skenario 15 kini
+    memeriksa Capaian Pembelajaran dan Dashboard, dan skenario 16 ikut membuka Dashboard.
+  - Bookmark lama ke `/mahasiswa` kini membuka Dashboard; halaman Capaian Pembelajaran tinggal satu
+    klik dari menu.
+
+### KD-75 · Isi dan perhitungan Dashboard Mahasiswa
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - **Per kurikulum.** Semua isi dashboard dihitung dari kelas pada satu kurikulum, karena CPL dari
+    kurikulum berbeda tidak pernah digabung (bagian 5.4). Bawaannya kurikulum terbaru yang mata
+    kuliahnya diikuti. Pilihan kurikulum hanya muncul jika mahasiswa mengikuti MK dari dua kurikulum.
+    Kurikulum yang tidak diikuti tidak bisa dipilih lewat alamat.
+  - **Kartu ringkasan:**
+    - Rata-rata CPL: rata-rata capaian CPL kumulatif yang sudah punya nilai, sama dengan kartu
+      "Rata-rata CPL Kumulatif" di halaman Capaian Pembelajaran.
+    - CPL Lulus: jumlah CPL dengan capaian ≥ AM dari semua CPL kurikulum itu, termasuk CPL yang belum
+      punya nilai. Jika AM belum ditetapkan, kartu menampilkan "–" dan "Ambang belum ditetapkan".
+    - Mata Kuliah Diikuti: jumlah MK berbeda beserta jumlah periodenya.
+  - **Rincian CPL.** Rincian berisi pasangan CPMK–MK penyusun CPL itu (k pada rumus 4), dengan capaian
+    CPMK dan bobotnya (BCPMK, yaitu bobot kontribusi yang sudah bernilai). Kelas per MK dipilih
+    dengan aturan yang sama dengan perhitungan CPL (kelas terbaru yang sudah bernilai, bagian 5.4).
+  - **Perkembangan per periode.** Untuk setiap periode P, CPL dihitung kumulatif dari semua kelas
+    sampai periode P dengan aturan yang sama. Grafiknya hanya tampil jika kelas di kurikulum itu
+    tersebar di minimal dua periode, karena satu titik belum menunjukkan perkembangan.
+  - Tidak ada rumus baru. Semua angka berasal dari `CapaianService` (`pilihKelasPerMataKuliah()`,
+    `hitungCapaianCpl()`, `hitungCapaianPeserta()`, `lulus()`). Penyusunannya ada di service
+    `DashboardMahasiswa`, seperti `CapaianMahasiswa` untuk halaman Capaian Pembelajaran.
+- **Alasan:**
+  - Rincian CPMK penyusun membuat mahasiswa (dan penguji) bisa menelusuri asal angka CPL. Rata-rata
+    tertimbang di rinciannya sama persis dengan capaian CPL, dan ini diperiksa test.
+  - Memakai ulang aturan bagian 5.3 dan 5.4 menjaga angka dashboard selalu sama dengan halaman
+    Capaian Pembelajaran dan laporan.
+- **Dampak:**
+  - Mahasiswa Demo hanya punya kelas di satu periode per kurikulum, jadi grafik perkembangannya tidak
+    tampil. Contoh grafik perkembangan ada di akun Hendra Kurniawan (NPM 9992400001).
+  - Dashboard menghitung CPL sekali untuk setiap periode. Untuk satu mahasiswa jumlahnya kecil (paling
+    banyak ±14 periode), jadi tidak perlu cache.
+
+### KD-76 · Grafik interaktif di Dashboard Mahasiswa
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - **Grafik batang Capaian CPL Kumulatif.**
+    - Batang hijau jika Lulus, merah jika Belum Lulus, dan biru jika ambang belum ditetapkan
+      (bagian 7.2), dengan angka di ujung batang dan garis putus-putus AM.
+    - CPL yang belum punya nilai ditandai "–".
+    - Di mobile dengan lebih dari 6 CPL, batang dibuat mendatar seperti grafik laporan.
+  - **Memilih CPL.** Mengeklik kolom CPL di area grafik, atau tombol kode CPL di bawahnya, memilih CPL
+    itu. Label kode di sumbu tidak bisa diklik, karena Chart.js hanya meneruskan klik di area grafik.
+    Batangnya diberi garis tepi dan kodenya ditebalkan. Kartu Rincian dan grafik perkembangan ikut
+    berganti. Tombol kode CPL adalah cara memilih dengan keyboard dan sentuhan (target 44×44 px).
+  - **Tooltip** menampilkan kode, deskripsi CPL, capaian, dan status, termasuk untuk CPL yang belum
+    punya nilai ("Capaian: belum ada nilai").
+  - **Grafik garis perkembangan** memakai bentuk penekanan: CPL terpilih biru dan tebal, CPL lain abu
+    tipis sebagai pembanding. Mengeklik titik garis memilih CPL itu. Di bawah grafik ada tabel CPL ×
+    periode, supaya semua angka terbaca tanpa mengarahkan kursor. Kolom CPL di tabel menempel saat
+    digeser di layar kecil (bagian 7.4).
+  - Isi rincian dibuat di Blade dan hanya ditampilkan atau disembunyikan dengan Alpine (`x-show`).
+    JavaScript tidak menyusun HTML dari data.
+  - Tidak ada paket baru: tetap Chart.js (KD-70) dan Alpine.js. Fungsi label angka di ujung batang
+    dipakai bersama dengan grafik laporan (`pluginLabelAngka()`).
+- **Alasan:**
+  - Pemilik proyek meminta grafik atau diagram yang interaktif.
+  - Status tidak boleh hanya lewat warna (bagian 7.2), dan setiap grafik perlu padanan tabel atau
+    teks supaya tetap bisa dibaca tanpa hover (aksesibilitas).
+- **Dampak:**
+  - Interaksi grafik tidak bisa diuji PHPUnit. Interaksi itu diperiksa di Chrome: hover dan klik di
+    setiap kolom, termasuk CPL tanpa nilai, dan memilih CPL lewat tombol; tanpa error JavaScript dan
+    tanpa geser horizontal di 360/768/1280 px.
+  - Masukan grafik (`daftarCpl` dan `perkembangan`) diuji lewat `viewData()`. Status warna batang dan
+    CPL terpilih awal disusun di Blade, jadi diperiksa dari isi atribut `x-data` di HTML.

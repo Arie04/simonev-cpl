@@ -137,7 +137,7 @@ config sedang di-cache. Jika itu terjadi, jalankan `php artisan config:clear`.
 
 ## Pengecekan tampilan dan tangkapan layar
 
-`npm run cek:tampilan` membuka 51 halaman dari semua peran di Chrome tanpa jendela, pada lebar 360,
+`npm run cek:tampilan` membuka 53 halaman dari semua peran di Chrome tanpa jendela, pada lebar 360,
 768, dan 1280 px. Skrip ini memeriksa:
 
 - halaman tidak bergeser horizontal;

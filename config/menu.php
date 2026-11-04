@@ -73,7 +73,9 @@ return [
         ['label' => 'Laporan Capaian', 'route' => 'dosen.laporan', 'aktif' => 'dosen.laporan', 'ikon' => 'heroicon-o-chart-bar'],
     ],
 
+    // Dashboard ditambahkan atas permintaan revisi (KD-74); bagian 7.5 semula hanya Capaian Pembelajaran.
     'MAHASISWA' => [
+        ['label' => 'Dashboard', 'route' => 'mahasiswa.dashboard', 'aktif' => 'mahasiswa.dashboard', 'ikon' => 'heroicon-o-squares-2x2'],
         ['label' => 'Capaian Pembelajaran', 'route' => 'mahasiswa.capaian', 'aktif' => 'mahasiswa.capaian', 'ikon' => 'heroicon-o-academic-cap'],
     ],
 

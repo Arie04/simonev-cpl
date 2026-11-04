@@ -7,6 +7,34 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+### Ditambahkan
+
+- Dashboard Mahasiswa (KD-74 sampai KD-76), read-only dan hanya berisi data milik sendiri:
+  - kartu ringkasan: rata-rata CPL kumulatif, jumlah CPL Lulus, dan jumlah mata kuliah yang diikuti;
+  - grafik batang interaktif Capaian CPL Kumulatif dengan garis Ambang Batas Kelulusan Mahasiswa.
+    Mengeklik batang atau tombol kode CPL membuka rincian CPL itu: CPMK penyusun, capaian, dan
+    bobotnya;
+  - grafik garis Perkembangan CPL per Periode beserta tabelnya, untuk mahasiswa yang kelasnya
+    tersebar di lebih dari satu periode;
+  - daftar mata kuliah yang diikuti, dengan jumlah asesmen yang sudah dinilai dan tautan ke halaman
+    Capaian Pembelajaran;
+  - pilihan kurikulum untuk mahasiswa yang mengikuti mata kuliah dari dua kurikulum.
+- Service `DashboardMahasiswa` yang menyusun isi dashboard dari `CapaianService` (tanpa rumus baru).
+- 16 test baru di `DashboardMahasiswaTest` (total 305), termasuk hak akses halaman mahasiswa.
+  Skenario uji 15 kini juga memeriksa dashboard, dan skenario 16 ikut membuka Dashboard Mahasiswa.
+- `npm run cek:tampilan` ikut memeriksa Dashboard Mahasiswa (53 halaman, 159 tangkapan layar).
+
+### Diubah
+
+- Menu Mahasiswa menjadi Dashboard · Capaian Pembelajaran (semula hanya Capaian Pembelajaran).
+  Setelah login, mahasiswa diarahkan ke Dashboard (`/mahasiswa`).
+- Halaman Capaian Pembelajaran pindah ke `/mahasiswa/capaian`. Nama route-nya tetap
+  `mahasiswa.capaian`.
+- Label angka di ujung batang grafik laporan memakai fungsi bersama `pluginLabelAngka()`.
+  Tampilannya tidak berubah.
+- Dokumen hasil pengujian (`docs/pengujian/black-box.md`) diperbarui: hasil skenario 1, 15, dan 16,
+  jumlah test, uji mutasi dashboard, dan daftar tangkapan layar.
+
 ## [Iterasi 10: Pengujian black box dan tampilan mobile] - 2026-10-30
 
 ### Ditambahkan

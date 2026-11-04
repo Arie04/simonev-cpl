@@ -48,7 +48,7 @@ class SkenarioBlackBoxTest extends TestCase
             ['admin@simonev.test', 'admin123', 'admin.beranda'],
             ['koprodi@simonev.test', 'koprodi123', 'koprodi.dashboard'],
             ['9990000001', 'dosen123', 'dosen.dashboard'],
-            ['9992300001', 'mahasiswa123', 'mahasiswa.capaian'],
+            ['9992300001', 'mahasiswa123', 'mahasiswa.dashboard'],
         ];
 
         foreach ($daftarAkun as [$identitas, $password, $halamanUtama]) {
@@ -360,9 +360,18 @@ class SkenarioBlackBoxTest extends TestCase
             ->assertDontSee('Putra Wijaya')
             ->assertDontSee('9992600001');
 
+        // Dashboard Mahasiswa (KD-74) juga hanya memuat capaian miliknya: CPL kumulatif Kurikulum
+        // OBE 2026 (bawaan) dengan rata-rata yang sama dengan halaman Capaian Pembelajaran.
+        $this->get(route('mahasiswa.dashboard'))
+            ->assertOk()
+            ->assertSee('Selamat datang, Mahasiswa Demo')
+            ->assertSeeInOrder(['Rata-rata CPL', '90,63', 'CPL Lulus', '2 dari 5'])
+            ->assertDontSee('Putra Wijaya');
+
         // Sebaliknya, mahasiswa lain tidak melihat data Mahasiswa Demo.
         $this->masukSebagaiAkunDemo('9992600001', Role::MAHASISWA);
         $this->get(route('mahasiswa.capaian'))->assertSee('Putra Wijaya')->assertDontSee('Mahasiswa Demo');
+        $this->get(route('mahasiswa.dashboard'))->assertSee('Putra Wijaya')->assertDontSee('Mahasiswa Demo');
     }
 
     /**
@@ -427,7 +436,7 @@ class SkenarioBlackBoxTest extends TestCase
                 route('dosen.nilai.edit', ['kelas' => $kelasInf102->kelas_kuliah_id, 'asesmen' => $utsInf102->rencana_asesmen_id]),
                 route('dosen.laporan'),
             ]],
-            ['9992300001', Role::MAHASISWA, [route('mahasiswa.capaian')]],
+            ['9992300001', Role::MAHASISWA, [route('mahasiswa.dashboard'), route('mahasiswa.capaian')]],
         ];
     }
 

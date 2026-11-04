@@ -20,7 +20,7 @@ class HakAksesTest extends TestCase
         Role::ADMIN => 'admin.beranda',
         Role::KOPRODI => 'koprodi.dashboard',
         Role::DOSEN => 'dosen.dashboard',
-        Role::MAHASISWA => 'mahasiswa.capaian',
+        Role::MAHASISWA => 'mahasiswa.dashboard',
     ];
 
     public static function aksesLintasPeran(): array
