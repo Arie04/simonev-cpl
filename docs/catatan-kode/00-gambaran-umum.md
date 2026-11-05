@@ -64,7 +64,8 @@ config/
 database/
   migrations/             satu file per tabel
   factories/              pembuat data palsu untuk test
-  seeders/                data awal: peran dan akun demo
+  seeders/                data awal: peran, akun demo, dan data contoh (DatabaseSeeder);
+                          data simulasi dua tahun yang opsional (SimulasiSeeder, catatan 12)
 lang/id/                  pesan validasi dan login berbahasa Indonesia
 resources/
   css/app.css             Tailwind CSS v4 + token warna (bagian 7.2 spesifikasi)

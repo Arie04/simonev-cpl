@@ -670,3 +670,118 @@ diumumkan bersamaan.
     tanpa geser horizontal di 360/768/1280 px.
   - Masukan grafik (`daftarCpl` dan `perkembangan`) diuji lewat `viewData()`. Status warna batang dan
     CPL terpilih awal disusun di Blade, jadi diperiksa dari isi atribut `x-data` di HTML.
+
+## Data simulasi dua tahun
+
+### KD-77 · Data simulasi sebagai seeder terpisah yang opsional
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - Riwayat perkuliahan dua tahun dibuat oleh `SimulasiSeeder`, yang **tidak** dipanggil
+    `DatabaseSeeder`. Seeder ini dijalankan setelah data demo ada:
+    `php artisan db:seed --class=SimulasiSeeder`.
+  - Simulasi hanya menambah data. Data demo, termasuk nilai dan peserta kelas demo, tidak berubah.
+  - **Pengaman.** Seeder hanya berjalan jika penanda data demo ada: akun Dosen Demo (NIDN
+    9990000001), akun Mahasiswa Demo (NPM 9992300001), dan kelima kelas demo. Jika tidak, seeder
+    berhenti dengan pesan "Data demo belum ada atau tidak lengkap. Jalankan "php artisan
+    migrate:fresh --seed" terlebih dahulu."
+  - **Satu transaksi.** Ketiga seeder simulasi dijalankan dalam satu transaksi database. Jika satu
+    langkah gagal (mis. bahan kajian demo sudah dihapus), semua perubahan dibatalkan.
+  - **Hanya data contoh.** Peserta kelas simulasi hanya mahasiswa contoh (NPM diawali 999), dan nilai
+    hanya diisi untuk asesmen dari rencana simulasi dan untuk mahasiswa contoh. Mahasiswa lain dan
+    asesmen yang ditambahkan lewat aplikasi tidak disentuh.
+  - Data simulasi dihapus dengan `php artisan migrate:fresh --seed`, yang mengembalikan data demo saja.
+- **Alasan:**
+  - Pemilik proyek ingin melihat grafik seolah sistem sudah berjalan beberapa semester, sampai dua
+    tahun. Data demo (bagian 10) hanya punya dua periode.
+  - Test, dokumen pengujian black box (KD-72), dan angka di catatan kode memakai data demo. Jika
+    simulasi masuk ke `DatabaseSeeder`, semua angka itu berubah.
+  - Pengaman, transaksi, dan batasan data contoh mencegah data karangan tercampur dengan data asli
+    prodi yang kelak dimasukkan sendiri (bagian 10), atau tersimpan setengah jadi.
+- **Dampak:**
+  - Grafik Perkembangan CPL per Periode di Dashboard Mahasiswa kini terisi untuk banyak mahasiswa,
+    termasuk Mahasiswa Demo setelah memilih Kurikulum 2021 (lihat catatan KD-75).
+  - Jika kelak simulasi ingin dijadikan data demo bawaan, cukup tambahkan `SimulasiSeeder` ke
+    `DatabaseSeeder`. Setelah itu angka di test dan dokumen black box perlu diperbarui.
+
+### KD-78 · Isi data simulasi
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - **Rentang waktu.** Periode 2024/2025 Ganjil, 2024/2025 Genap, dan 2025/2026 Ganjil ditambahkan.
+    Bersama 2025/2026 Genap yang sudah ada, simulasi mengisi dua tahun akademik sebelum periode aktif
+    2026/2027 Ganjil. Periode aktif tidak berubah.
+  - **Kurikulum.** Semua kelas simulasi memakai Kurikulum 2021, karena Kurikulum 2026 baru berlaku
+    untuk angkatan 2026. Kurikulum 2021 di data demo hanya punya tiga MK, jadi simulasi menambah enam
+    MK (INF103, INF105, INF203, INF204, INF302, INF303) dan tiga CPMK (CPMK023, CPMK033, CPMK034),
+    lengkap dengan pemetaan BK–MK, CPMK–MK, dan Sub-CPMK yang memenuhi aturan 5.1.
+  - **Mahasiswa.** Ditambah angkatan 2022 dan 2025, masing-masing 8 mahasiswa tanpa email (NPM
+    99922000xx dan 99925000xx, password `mahasiswa123`, KD-43).
+  - **Kelas.** Ada 14 kelas, 3–5 kelas per periode, semuanya bernama A dan diampu dosen demo. Jadwalnya
+    menyambung dengan kelas demo: angkatan 2024 mengambil Struktur Data di 2025/2026 Genap dan Basis
+    Data di 2026/2027 Ganjil, sedangkan angkatan 2023 mengambil Pemrograman Web di 2026/2027 Ganjil.
+    Karena itu kelas MK tersebut tidak dibuat lagi untuk angkatan yang sama.
+  - **Kasus khusus.** Dua mahasiswa angkatan 2024 mengulang INF103 dan satu mahasiswa angkatan 2022
+    mengulang INF302, untuk memperlihatkan aturan kelas terbaru yang sudah bernilai (bagian 5.4). Dua
+    nilai sengaja kosong karena mahasiswanya tidak ikut asesmen (nilai kosong diabaikan, bagian 5.4).
+  - Tanggal asesmen dihitung dari minggu kuliah. Kuliah dimulai Senin pertama sejak 1 September
+    (Ganjil) atau 16 Februari (Genap), jadi asesmen selalu jatuh pada hari Senin seperti kelas demo.
+- **Alasan:**
+  - Dengan enam MK baru, angkatan 2023 dan 2024 punya kelas di setiap semester, sehingga grafik
+    perkembangan mereka punya lima titik (2024/2025 Ganjil sampai 2026/2027 Ganjil).
+  - Semua isi tetap karangan, bukan data asli prodi (bagian 10).
+- **Dampak:**
+  - Dengan data simulasi, Kurikulum 2021 punya 9 MK, 11 CPMK, dan 4 CPL. Jumlah mahasiswa menjadi 40
+    dan jumlah kelas 19.
+  - Angkatan 2022 hanya punya riwayat sejak semester 5, karena simulasi dimulai 2024/2025. Kelas
+    mereka ada di 2024/2025 Ganjil dan Genap, ditambah satu mahasiswa yang mengulang di 2025/2026
+    Ganjil. CPL02 mereka "Belum ada nilai", sebab MK semester 5–6 tidak mendukung CPL02.
+  - Simulasi tidak menambah kelas di periode aktif 2026/2027 Ganjil, jadi angkatan 2025 (semester 3)
+    belum punya kelas di periode itu dan grafik perkembangannya berisi dua titik.
+  - INF201, INF202, dan INF301 diambil angkatan 2023 dan 2024 pada semester yang berbeda dari kolom
+    semester MK-nya, karena periode kelas demo sudah ditetapkan. Mengubahnya akan mengubah angka test
+    dan dokumen black box.
+
+### KD-79 · Nilai simulasi dari rumus tetap
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - Nilai simulasi tidak diacak, tetapi dihitung dengan rumus tetap di `SimulasiNilaiSeeder`:
+
+    ```text
+    persen = kemampuan dasar − perubahan per semester × jarak semester ke 2025/2026 Genap
+             + penyesuaian MK + penyesuaian metode + tambahan mengulang + variasi
+    nilai  = persen (dibatasi 0–100) × nilai maksimum / 100, dibulatkan satu desimal
+    ```
+
+  - Kemampuan dasar memakai daftar yang sama dengan `NilaiDemoSeeder` sesuai urutan NPM dalam
+    angkatan, jadi pada 2025/2026 Genap nilai simulasi menyambung dengan nilai kelas demo.
+  - Perubahan per semester berbeda untuk setiap mahasiswa: ada yang naik (mis. Hendra Kurniawan, +4
+    poin per semester), tetap, atau turun (mis. Kartika Sari, −2 poin per semester). Karena MK awal
+    lebih sulit, nilai Kartika tampak datar, tetapi ia makin tertinggal dari Hendra.
+  - Profil kemampuan setiap angkatan sama, mengikuti urutan NPM. Karena itu banyak kelas berisi 8
+    mahasiswa dengan satu mahasiswa yang belum lulus (87,50%). Profil ini dipertahankan supaya
+    laporan per periode memperlihatkan prodi yang membaik: 0 dari 4 CPL Tercapai di 2024/2025 Ganjil
+    menjadi 4 dari 4 di 2025/2026 Genap. Membuat angkatan 2025 lebih lemah, misalnya, membuat
+    ringkasan kumulatif Kurikulum 2021 menjadi 0 dari 4 CPL Tercapai.
+  - Tugas dan proyek cenderung lebih tinggi daripada ujian. MK yang lebih sulit (mis. Algoritma dan
+    Pemrograman) cenderung lebih rendah. Mahasiswa yang mengulang mendapat tambahan 12 poin.
+  - Variasi −6 sampai +6 poin dihitung dari `crc32` atas NPM, MK, periode, dan nama asesmen.
+- **Alasan:**
+  - Hasilnya selalu sama setiap kali seeder dijalankan, seperti `NilaiDemoSeeder`. Grafik bisa
+    dijelaskan, angka bisa diuji, dan dokumen tidak perlu diperbarui setiap kali seeder diulang.
+  - Rumus ini hanya pembangkit data contoh dan tidak dipakai aplikasi. Perhitungan capaian tetap
+    hanya di `CapaianService` (bagian 14).
+- **Dampak:** Mengubah satu konstanta di `SimulasiNilaiSeeder` mengubah seluruh nilai simulasi. Test
+  di `SimulasiSeederTest` memeriksa cerita utamanya: semua CPL Hendra naik, jaraknya dengan Kartika
+  melebar, dan Nanda lulus CPL02 setelah mengulang.
+
+### KD-80 · Seeder demo hanya mengisi kelas demo
+- **Tanggal:** 2026-11-05
+- **Keputusan:** `PerkuliahanDemoSeeder` menyimpan daftar kelas demo di konstanta `DAFTAR_KELAS`, dan
+  `idKelasDemo()` mengembalikan id kelas-kelas itu. `AsesmenDemoSeeder` dan `NilaiDemoSeeder` hanya
+  mengisi kelas tersebut, tidak lagi semua kelas di database.
+- **Alasan:** Sebelumnya, menjalankan ulang `php artisan db:seed` setelah simulasi akan memberi kelas
+  simulasi INF201, INF202, dan INF301 rencana asesmen demo, lalu menimpa semua nilai simulasi dengan
+  rumus nilai demo.
+- **Dampak:**
+  - Data demo tetap sama persis; ini diperiksa test seeder yang sudah ada dan `SimulasiSeederTest`.
+  - Kelas yang dibuat lewat aplikasi juga tidak lagi ikut terisi atau tertimpa saat seeder demo
+    dijalankan ulang.

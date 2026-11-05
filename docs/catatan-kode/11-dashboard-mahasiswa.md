@@ -208,6 +208,9 @@ Setelah `php artisan migrate:fresh --seed` dan `npm run build`:
    Perkembangan CPL per Periode tampil. Klik tombol CPL lain dan perhatikan garis birunya berpindah.
 3. **Menu.** Klik **Capaian Pembelajaran** di sidebar, atau ikon mata di tabel Mata Kuliah yang
    Diikuti.
+4. **Data simulasi dua tahun** (opsional, catatan 12). Setelah `php artisan db:seed
+   --class=SimulasiSeeder`, grafik perkembangan Hendra dan Mahasiswa Demo (Kurikulum 2021) punya lima
+   titik, dari 2024/2025 Ganjil sampai 2026/2027 Ganjil.
 
 ```bash
 php artisan test --filter=DashboardMahasiswaTest
@@ -264,6 +267,7 @@ npm run cek:tampilan                               # aplikasi harus berjalan
 4. **Mengapa grafik perkembangan Mahasiswa Demo tidak tampil?**
    Di setiap kurikulum, kelas Mahasiswa Demo baru ada di satu periode. Satu titik belum menunjukkan
    perkembangan, jadi yang tampil adalah keterangan. Akun Hendra Kurniawan punya kelas di dua periode.
+   Dengan data simulasi dua tahun (catatan 12), Mahasiswa Demo punya lima periode di Kurikulum 2021.
 5. **Bisakah mahasiswa melihat dashboard mahasiswa lain?**
    Tidak. Alamat dashboard tidak memuat id mahasiswa, dan datanya diambil dari akun yang login. Id
    kurikulum di alamat juga hanya diterima jika mahasiswa itu mengikuti MK dari kurikulum tersebut.

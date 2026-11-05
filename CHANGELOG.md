@@ -23,6 +23,16 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 - 16 test baru di `DashboardMahasiswaTest` (total 305), termasuk hak akses halaman mahasiswa.
   Skenario uji 15 kini juga memeriksa dashboard, dan skenario 16 ikut membuka Dashboard Mahasiswa.
 - `npm run cek:tampilan` ikut memeriksa Dashboard Mahasiswa (53 halaman, 159 tangkapan layar).
+- Data simulasi dua tahun yang opsional (KD-77 sampai KD-80). `php artisan db:seed --class=SimulasiSeeder`
+  menambah riwayat 2024/2025 dan 2025/2026 di atas data demo:
+  - periode 2024/2025 Ganjil, 2024/2025 Genap, dan 2025/2026 Ganjil;
+  - 6 MK dan 3 CPMK Kurikulum 2021 beserta pemetaan BK–MK, CPMK–MK, dan Sub-CPMK;
+  - 16 mahasiswa angkatan 2022 dan 2025, serta 14 kelas, termasuk mahasiswa yang mengulang MK;
+  - rencana asesmen dan nilai dari rumus tetap, sehingga hasilnya selalu sama setiap dijalankan.
+  Seeder hanya berjalan di atas data demo, memakai satu transaksi, dan tidak menyentuh mahasiswa
+  selain mahasiswa contoh maupun asesmen yang ditambahkan lewat aplikasi.
+- 11 test baru di `SimulasiSeederTest` (total 316).
+- Catatan kode `12-simulasi-dua-tahun.md` dan bagian Data simulasi di README.
 
 ### Diubah
 
@@ -34,6 +44,11 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
   Tampilannya tidak berubah.
 - Dokumen hasil pengujian (`docs/pengujian/black-box.md`) diperbarui: hasil skenario 1, 15, dan 16,
   jumlah test, uji mutasi dashboard, dan daftar tangkapan layar.
+- `AsesmenDemoSeeder` dan `NilaiDemoSeeder` hanya mengisi kelas demo yang terdaftar di
+  `PerkuliahanDemoSeeder::DAFTAR_KELAS` (KD-80). Menjalankan ulang `php artisan db:seed` tidak lagi
+  menimpa kelas simulasi atau kelas yang dibuat lewat aplikasi. Isi data demo tidak berubah.
+- Keterangan grafik perkembangan yang kosong di Dashboard Mahasiswa kini menyebut kurikulum terpilih,
+  dan menyebut pilihan kurikulum lain jika ada.
 
 ## [Iterasi 10: Pengujian black box dan tampilan mobile] - 2026-10-30
 
