@@ -183,7 +183,8 @@ class DashboardMahasiswaTest extends TestCase
         $this->beriNilai($this->kelasGenap, $mahasiswaBaru = Mahasiswa::factory()->create(), ['UTS' => 70]);
 
         $response = $this->bukaDashboard(mahasiswa: $mahasiswaBaru)
-            ->assertSee('Grafik perkembangan tampil setelah Anda mengikuti kelas di lebih dari satu periode.');
+            ->assertSee('Grafik perkembangan tampil jika kelas Anda di kurikulum ini tersebar di lebih dari satu periode.')
+            ->assertDontSee('Kurikulum lain bisa dipilih');
 
         $this->assertNull($response->viewData('perkembangan'));
     }
@@ -264,7 +265,9 @@ class DashboardMahasiswaTest extends TestCase
         $this->assertSame('Kurikulum OBE 2026', $response->viewData('kurikulum')->nama_kurikulum);
         $this->assertSame([66.67, true], $this->ringkasCpl($response)['CPL01']);
 
-        $response = $this->bukaDashboard(['kurikulum' => $kurikulumLama->kurikulum_id]);
+        // Di kurikulum 2021 kelasnya baru satu periode; keterangannya menyebut pilihan kurikulum lain.
+        $response = $this->bukaDashboard(['kurikulum' => $kurikulumLama->kurikulum_id])
+            ->assertSee('Kurikulum lain bisa dipilih di bagian atas halaman.');
         $this->assertSame(['CPL01' => [30.0, false]], $this->ringkasCpl($response));
         $response->assertSeeInOrder(['Mata Kuliah Diikuti', '>1</p>', '1 periode'], false);
         $this->assertSame(1, $response->viewData('ringkasan')['jumlah_mata_kuliah']);

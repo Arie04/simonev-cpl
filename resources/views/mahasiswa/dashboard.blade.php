@@ -142,7 +142,9 @@
                 {{-- Perkembangan CPL kumulatif per periode (bagian 5.3: dipantau setiap tingkat sampai lulus). --}}
                 <x-kartu judul="Perkembangan CPL per Periode" class="xl:col-span-2">
                     @if ($perkembangan === null)
-                        <x-kosong pesan="Grafik perkembangan tampil setelah Anda mengikuti kelas di lebih dari satu periode." />
+                        {{-- Kelas di kurikulum lain tidak ikut dihitung, jadi sebutkan pilihan kurikulumnya jika ada. --}}
+                        <x-kosong :pesan="'Grafik perkembangan tampil jika kelas Anda di kurikulum ini tersebar di lebih dari satu periode.'
+                            .(count($pilihanKurikulum) > 1 ? ' Kurikulum lain bisa dipilih di bagian atas halaman.' : '')" />
                     @else
                         <p class="mb-4 text-xs text-text-muted">
                             Capaian CPL kumulatif pada akhir setiap periode. Garis biru adalah
