@@ -99,7 +99,15 @@ const SKENARIO = [
     },
     {
         akun: { identitas: '9992300001', password: 'mahasiswa123' },
-        halaman: [{ nama: 'mahasiswa-capaian', alamat: '/mahasiswa' }],
+        halaman: [
+            { nama: 'mahasiswa-dashboard', alamat: '/mahasiswa' },
+            { nama: 'mahasiswa-capaian', alamat: '/mahasiswa/capaian' },
+        ],
+    },
+    {
+        // Hendra Kurniawan punya kelas di dua periode, jadi grafik perkembangan CPL-nya tampil.
+        akun: { identitas: '9992400001', password: 'mahasiswa123' },
+        halaman: [{ nama: 'mahasiswa-dashboard-perkembangan', alamat: '/mahasiswa' }],
     },
 ];
 

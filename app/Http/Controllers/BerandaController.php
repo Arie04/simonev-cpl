@@ -18,7 +18,7 @@ class BerandaController extends Controller
             Role::ADMIN => 'admin.beranda',
             Role::KOPRODI => 'koprodi.dashboard',
             Role::DOSEN => 'dosen.dashboard',
-            Role::MAHASISWA => 'mahasiswa.capaian',
+            Role::MAHASISWA => 'mahasiswa.dashboard',
         });
     }
 }

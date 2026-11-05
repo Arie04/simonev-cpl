@@ -34,6 +34,7 @@ use App\Http\Controllers\Koprodi\DashboardKoprodiController;
 use App\Http\Controllers\Koprodi\DataKurikulumController;
 use App\Http\Controllers\LaporanCapaianController;
 use App\Http\Controllers\Mahasiswa\CapaianMahasiswaController;
+use App\Http\Controllers\Mahasiswa\DashboardMahasiswaController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PeranAktifController;
 use App\Http\Controllers\ProfilController;
@@ -136,5 +137,7 @@ Route::middleware(['auth', 'peran:'.Role::DOSEN])->prefix('dosen')->name('dosen.
 
 // Halaman Mahasiswa: read-only, hanya data miliknya sendiri (bagian 3 spesifikasi).
 Route::middleware(['auth', 'peran:'.Role::MAHASISWA])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-    Route::get('/', CapaianMahasiswaController::class)->name('capaian');
+    // Dashboard berisi ringkasan dan grafik capaian CPL (KD-74).
+    Route::get('/', DashboardMahasiswaController::class)->name('dashboard');
+    Route::get('capaian', CapaianMahasiswaController::class)->name('capaian');
 });

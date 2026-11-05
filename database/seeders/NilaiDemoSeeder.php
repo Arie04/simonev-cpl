@@ -15,12 +15,18 @@ use Illuminate\Database\Seeder;
  */
 class NilaiDemoSeeder extends Seeder
 {
-    /** Kemampuan dasar mahasiswa (skala 0–100), dipakai bergiliran sesuai urutan NPM. */
-    private const KEMAMPUAN = [88, 82, 76, 71, 64, 58, 52, 47, 91, 67];
+    /**
+     * Kemampuan dasar mahasiswa (skala 0–100), dipakai bergiliran sesuai urutan NPM. Daftar yang
+     * sama dipakai SimulasiNilaiSeeder supaya nilai simulasi menyambung dengan nilai demo.
+     */
+    public const KEMAMPUAN = [88, 82, 76, 71, 64, 58, 52, 47, 91, 67];
 
     public function run(): void
     {
-        $daftarKelas = KelasKuliah::with(['mataKuliah.kurikulum', 'rencanaAsesmen', 'pesertaKelas.mahasiswa'])->get();
+        // Hanya kelas demo: nilai kelas simulasi diisi SimulasiNilaiSeeder (KD-80).
+        $daftarKelas = KelasKuliah::with(['mataKuliah.kurikulum', 'rencanaAsesmen', 'pesertaKelas.mahasiswa'])
+            ->whereIn('kelas_kuliah_id', PerkuliahanDemoSeeder::idKelasDemo())
+            ->get();
 
         foreach ($daftarKelas as $kelas) {
             $daftarPeserta = $kelas->pesertaKelas->sortBy('mahasiswa.nim')->values();

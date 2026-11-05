@@ -56,7 +56,12 @@ class AsesmenDemoSeeder extends Seeder
 
     public function run(): void
     {
-        foreach (KelasKuliah::with('mataKuliah.kurikulum')->get() as $kelas) {
+        // Hanya kelas demo, supaya kelas simulasi dengan MK yang sama tidak ikut diubah (KD-80).
+        $daftarKelas = KelasKuliah::with('mataKuliah.kurikulum')
+            ->whereIn('kelas_kuliah_id', PerkuliahanDemoSeeder::idKelasDemo())
+            ->get();
+
+        foreach ($daftarKelas as $kelas) {
             $kunci = $kelas->mataKuliah->kode_mata_kuliah.'-'.$kelas->mataKuliah->kurikulum->tahun_berlaku;
 
             foreach (self::RENCANA[$kunci] ?? [] as [$nama, $kodeMetode, $bobot, $nilaiMaksimum, $tanggal, $kontribusiPerKode]) {

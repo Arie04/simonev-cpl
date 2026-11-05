@@ -18,7 +18,7 @@ Kebutuhan yang dipenuhi:
 | File | Peran |
 |---|---|
 | `app/Services/CapaianMahasiswa.php` | Menyusun pilihan periode/MK, rincian satu MK, dan CPL kumulatif per kurikulum |
-| `app/Http/Controllers/Mahasiswa/CapaianMahasiswaController.php` | Halaman `/mahasiswa` |
+| `app/Http/Controllers/Mahasiswa/CapaianMahasiswaController.php` | Halaman `/mahasiswa/capaian` (semula `/mahasiswa`; sejak KD-74 alamat itu dipakai Dashboard Mahasiswa) |
 | `resources/views/mahasiswa/capaian.blade.php`, `_tabel-capaian.blade.php` | Tampilan halaman |
 | `resources/views/components/status-lulus.blade.php` | Badge Lulus / Belum Lulus / Belum ada nilai / Ambang belum ditetapkan |
 | `routes/web.php` | Grup route Mahasiswa; halaman sambutan sementara dihapus |
@@ -32,7 +32,7 @@ sequenceDiagram
     participant C as CapaianMahasiswaController
     participant R as CapaianMahasiswa
     participant S as CapaianService
-    M->>C: GET /mahasiswa?periode=…&mata_kuliah=…
+    M->>C: GET /mahasiswa/capaian?periode=…&mata_kuliah=…
     C->>C: $mahasiswa = user()->mahasiswa (tanpa id di alamat)
     C->>R: susun(mahasiswa, periode, mata kuliah)
     R->>R: peserta_kelas milik mahasiswa ini saja
@@ -105,7 +105,8 @@ kelas. Keduanya memakai rumus 4 yang sama.
 ## 7. Cara mencoba dan menjalankan test
 
 Setelah `php artisan migrate:fresh --seed`, login sebagai `mahasiswa@simonev.test` / `mahasiswa123`
-atau dengan NPM `9992300001`:
+atau dengan NPM `9992300001`, lalu buka menu **Capaian Pembelajaran**. Sejak revisi KD-74, halaman
+pertama setelah login adalah Dashboard Mahasiswa (lihat [11-dashboard-mahasiswa.md](11-dashboard-mahasiswa.md)).
 
 1. **Periode berjalan.** Pilih periode 2026/2027 Ganjil dan MK INF101 atau INF301.
 2. **Dua kurikulum.** Di bagian bawah tampil CPL Kumulatif Kurikulum OBE 2026 dan Kurikulum 2021,
