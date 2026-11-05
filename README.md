@@ -115,6 +115,31 @@ php artisan migrate:fresh --seed
 
 Perintah ini **menghapus seluruh isi** database `simonev_cpl`, lalu mengisinya lagi dengan data demo.
 
+## Data simulasi dua tahun (opsional)
+
+Data demo hanya berisi dua periode. Untuk melihat grafik seolah sistem sudah dipakai sejak
+2024/2025 Ganjil, tambahkan data simulasi setelah data demo ada:
+
+```bash
+php artisan db:seed --class=SimulasiSeeder
+```
+
+Simulasi menambah periode 2024/2025 Ganjil, 2024/2025 Genap, dan 2025/2026 Ganjil; 6 MK dan 3 CPMK
+Kurikulum 2021; 16 mahasiswa angkatan 2022 dan 2025 (NPM `9992200001`–`9992200008` dan
+`9992500001`–`9992500008`, password `mahasiswa123`); serta 14 kelas beserta rencana asesmen dan
+nilainya. Data demo tidak berubah (KD-77 sampai KD-80).
+
+| Akun | Yang dilihat |
+|---|---|
+| Hendra Kurniawan (`9992400001`) | Dashboard: grafik perkembangan CPL dari 2024/2025 Ganjil sampai 2026/2027 Ganjil |
+| Nanda Firmansyah (`9992400007`) | Dashboard: mengulang INF103, lalu CPL02 naik melewati ambang |
+| Mahasiswa Demo | Dashboard: pilih **Kurikulum 2021** di kanan atas |
+| Koprodi | Dashboard dan Laporan Capaian: pilih **Kurikulum 2021**, lalu saring per periode atau angkatan |
+| Dosen Demo | Laporan Capaian: pilih **Kurikulum 2021** |
+
+Data simulasi hilang setelah `php artisan migrate:fresh --seed`. Penjelasan lengkapnya ada di
+[docs/catatan-kode/12-simulasi-dua-tahun.md](docs/catatan-kode/12-simulasi-dua-tahun.md).
+
 ## Ambang batas capaian
 
 Ambang Batas Kelulusan Mahasiswa dan Ambang Batas Ketercapaian diisi di `.env`
@@ -137,7 +162,7 @@ config sedang di-cache. Jika itu terjadi, jalankan `php artisan config:clear`.
 
 ## Pengecekan tampilan dan tangkapan layar
 
-`npm run cek:tampilan` membuka 51 halaman dari semua peran di Chrome tanpa jendela, pada lebar 360,
+`npm run cek:tampilan` membuka 53 halaman dari semua peran di Chrome tanpa jendela, pada lebar 360,
 768, dan 1280 px. Skrip ini memeriksa:
 
 - halaman tidak bergeser horizontal;

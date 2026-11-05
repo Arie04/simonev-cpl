@@ -7,7 +7,7 @@ bagian 12 spesifikasi, ditambah daftar tangkapan layar yang perlu diambil.
 
 | Butir | Keterangan |
 |---|---|
-| Tanggal pengujian | 30 Oktober 2026 |
+| Tanggal pengujian | 30 Oktober 2026; diulang 5 November 2026 setelah revisi Dashboard Mahasiswa (KD-74), penambahan data simulasi (KD-77), dan revisi menu akun (KD-81) |
 | Perangkat lunak | Laravel 13, PHP 8.3.6, MySQL 8.0.46, Google Chrome 156 (mode headless) |
 | Data uji | Data demo dari seeder (`php artisan migrate:fresh --seed`). Semua data fiktif, tidak ada data mahasiswa asli. |
 | Skenario 1–15 | Feature test `tests/Feature/SkenarioBlackBoxTest.php`, satu test per skenario. Langkah dan datanya sama dengan tabel di bagian 3. |
@@ -34,15 +34,18 @@ npm run cek:tampilan
   `php artisan migrate:fresh --seed` sebelum skenario 11 supaya angka capaian sama dengan tabel.
   Skenario 11–16 hanya membaca data.
 - **Ambang.** Ambang yang dipakai sama dengan `.env.example`: AM = 50,01 dan AK = 85%.
+- **Data simulasi.** Pengujian black box hanya memakai data demo. Jika database berisi data simulasi
+  dua tahun (`SimulasiSeeder`, KD-77), jumlah data dan angka capaian berbeda dari tabel. Jalankan
+  `php artisan migrate:fresh --seed` dulu.
 
 ## 2. Ringkasan hasil
 
 | Butir | Hasil |
 |---|---|
 | Skenario berhasil | 16 dari 16 |
-| Test skenario (`SkenarioBlackBoxTest`) | 16 test, 216 assertion, semua lulus (±25 detik) |
-| Seluruh test proyek (`php artisan test`) | 289 test, 1.968 assertion, semua lulus |
-| Pengecekan tampilan (`npm run cek:tampilan`) | 51 halaman × 3 lebar layar = 153 tangkapan layar, tanpa masalah |
+| Test skenario (`SkenarioBlackBoxTest`) | 16 test, 224 assertion, semua lulus (±25 detik) |
+| Seluruh test proyek (`php artisan test`) | 317 test, 5.092 assertion, semua lulus |
+| Pengecekan tampilan (`npm run cek:tampilan`) | 53 halaman × 3 lebar layar = 159 tangkapan layar, tanpa masalah |
 
 Keluaran test (`vendor/bin/phpunit --filter SkenarioBlackBoxTest --testdox`):
 
@@ -65,13 +68,13 @@ Skenario Black Box (Tests\Feature\SkenarioBlackBox)
  ✔ Skenario 15 mahasiswa hanya melihat nilai dan capaian miliknya
  ✔ Skenario 16 semua halaman bisa dibuka dan siap untuk layar mobile
 
-OK (16 tests, 216 assertions)
+OK (16 tests, 224 assertions)
 ```
 
 Keluaran pengecekan tampilan (`npm run cek:tampilan`):
 
 ```text
-153 tangkapan layar disimpan di storage/app/tangkapan-layar/.
+159 tangkapan layar disimpan di storage/app/tangkapan-layar/.
 Semua halaman lolos: tidak bergeser horizontal, status benar, tanpa error JavaScript,
 font input di mobile minimal 16px, dan target sentuh minimal 44×44 px.
 ```
@@ -80,7 +83,7 @@ font input di mobile minimal 16px, dan target sentuh minimal 44×44 px.
 
 | No | Fitur | Skenario | Langkah | Data uji | Hasil yang diharapkan | Hasil pengujian | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | Login | Pengguna memasukkan data login yang valid | 1. Buka halaman login.<br>2. Isi Email/NPM/NIDN dan password.<br>3. Klik **Login**.<br>4. Untuk akun dua peran, pilih peran Dosen. | Admin: `admin@simonev.test` / `admin123`<br>Koprodi: `koprodi@simonev.test` / `koprodi123`<br>Dosen: NIDN `9990000001` / `dosen123`<br>Mahasiswa: NPM `9992300001` / `mahasiswa123`<br>Dua peran: `koprodi.dosen@simonev.test` / `koprodi.dosen123` | Diarahkan ke halaman sesuai hak akses | Admin diarahkan ke Beranda Admin, Koprodi ke Dashboard Koprodi, Dosen ke Dashboard Dosen, dan Mahasiswa ke Capaian Pembelajaran. Akun dua peran masuk ke halaman Pilih Peran (Dosen dan Koordinator Program Studi), lalu ke Dashboard Dosen setelah memilih Dosen. | Berhasil |
+| 1 | Login | Pengguna memasukkan data login yang valid | 1. Buka halaman login.<br>2. Isi Email/NPM/NIDN dan password.<br>3. Klik **Login**.<br>4. Untuk akun dua peran, pilih peran Dosen. | Admin: `admin@simonev.test` / `admin123`<br>Koprodi: `koprodi@simonev.test` / `koprodi123`<br>Dosen: NIDN `9990000001` / `dosen123`<br>Mahasiswa: NPM `9992300001` / `mahasiswa123`<br>Dua peran: `koprodi.dosen@simonev.test` / `koprodi.dosen123` | Diarahkan ke halaman sesuai hak akses | Admin diarahkan ke Beranda Admin, Koprodi ke Dashboard Koprodi, Dosen ke Dashboard Dosen, dan Mahasiswa ke Dashboard Mahasiswa. Akun dua peran masuk ke halaman Pilih Peran (Dosen dan Koordinator Program Studi), lalu ke Dashboard Dosen setelah memilih Dosen. | Berhasil |
 | 2 | Login | Pengguna memasukkan data login yang salah | 1. Buka halaman login.<br>2. Isi email yang terdaftar dengan password yang salah.<br>3. Klik **Login**. | `admin@simonev.test` / `salah123` | Login ditolak dan muncul pesan kesalahan | Pengguna kembali ke halaman login dan belum masuk. Di bawah field muncul pesan "Email/NPM/NIDN atau password salah." | Berhasil |
 | 3 | Hak akses | Pengguna membuka fitur di luar kewenangannya | 1. Tanpa login, buka `/admin`.<br>2. Login sebagai Dosen, buka `/admin` dan `/koprodi/laporan`.<br>3. Masih sebagai Dosen, buka Rencana Asesmen kelas INF101 A lewat alamat `/dosen/kelas/{id}/rencana-asesmen`. Id kelas disalin dari alamat detail kelas di akun Admin.<br>4. Login sebagai Mahasiswa, buka `/dosen/nilai` dan `/koprodi`. | Dosen `9990000001` (tidak mengampu INF101 A), Mahasiswa `9992300001` | Akses ditolak | Tamu diarahkan ke halaman login. Semua alamat lain menampilkan halaman 403 "Akses Ditolak". | Berhasil |
 | 4 | Data master kurikulum | Admin menambahkan data master | 1. Login sebagai Admin.<br>2. Buka **Data Master → CPL** dan pilih Kurikulum OBE 2026.<br>3. Klik **Tambah**, isi form, lalu **Simpan**. | Kode: `CPL06`<br>Kategori: Keterampilan Khusus<br>Deskripsi: "Mampu menerapkan prinsip keamanan informasi dalam pengembangan perangkat lunak." | Data tersimpan dan tampil | Muncul pesan "CPL berhasil ditambahkan." CPL06 tersimpan di Kurikulum OBE 2026 dan tampil di daftar CPL. | Berhasil |
@@ -94,8 +97,8 @@ font input di mobile minimal 16px, dan target sentuh minimal 44×44 px.
 | 12 | Dashboard | Koprodi membuka dashboard | 1. Login sebagai Koprodi.<br>2. Buka **Dashboard**. | Kurikulum OBE 2026 (bawaan), semua angkatan | Ringkasan capaian tampil | Kartu statistik tampil: 24 mahasiswa, 3 mata kuliah, 2 kelas aktif, 10 CPMK, dan 5 CPL. Ringkasan Capaian CPL tampil: 3 Tercapai, 1 Tidak Tercapai, 1 Belum ada nilai. | Berhasil |
 | 13 | Filter laporan | Koprodi/Dosen memilih kriteria laporan | 1. Login sebagai Koprodi, buka **Laporan Capaian**, tab CPMK.<br>2. Pilih Kurikulum OBE 2026 dan periode 2026/2027 Ganjil.<br>3. Pilih MK INF101, lalu **Terapkan Filter**.<br>4. Kosongkan MK, pilih mahasiswa Mahasiswa Demo, lalu **Terapkan Filter**. | Filter mata kuliah: INF101 Matematika Diskrit<br>Filter mahasiswa: Mahasiswa Demo (9992300001) | Data tampil sesuai filter | Tanpa filter MK tampil 6 baris CPMK dari INF101 dan INF102.<br>Filter INF101 hanya menampilkan CPMK021 (69,97), CPMK022 (70,06), dan CPMK031 (69,78).<br>Filter Mahasiswa Demo hanya menghitung nilainya: CPMK021 85,25; CPMK022 91,71; CPMK031 93,00. | Berhasil |
 | 14 | Laporan dosen | Dosen membuka laporan kelas yang diampu | 1. Login sebagai Dosen.<br>2. Buka **Laporan Capaian** (bawaan Kurikulum OBE 2026).<br>3. Lihat tab CPMK dan CPL.<br>4. Ketik id kelas INF101 A di alamat (`?kelas=...`). | Dosen Demo (9990000001), di kurikulum ini hanya mengampu INF102 A | Capaian kelas tersebut tampil | Tab CPMK hanya berisi CPMK INF102: CPMK011 67,38; CPMK041 66,69; CPMK042 67,62. Tab CPL hanya berisi CPL01 (67,38) dan CPL04 (67,49). Data kelas INF101 A milik dosen lain tidak tampil walaupun id-nya diketik di alamat. | Berhasil |
-| 15 | Capaian mahasiswa | Mahasiswa membuka halaman capaian pribadi | 1. Login sebagai Mahasiswa Demo. Halaman Capaian Pembelajaran terbuka (periode 2026/2027 Ganjil, MK INF101).<br>2. Logout, lalu login sebagai mahasiswa lain dan buka halaman yang sama. | Mahasiswa Demo: NPM `9992300001` / `mahasiswa123`<br>Putra Wijaya: NPM `9992600001` / `mahasiswa123` | Hanya nilai dan capaian mahasiswa itu yang tampil | Tampil identitas Mahasiswa Demo (NPM 9992300001), nilai Kuis 1 41,5 dari 50, Tugas 1 90, UTS 86, dan UAS 93. Ringkasan: Sub-CPMK 89,30; CPMK 89,99; CPL kumulatif 90,63. Nama teman sekelas di INF101 A tidak tampil, dan Putra Wijaya tidak melihat data Mahasiswa Demo. | Berhasil |
-| 16 | Tampilan mobile | Pengguna membuka setiap halaman di layar selebar 360px | 1. Isi data demo, build aset, dan jalankan aplikasi.<br>2. Jalankan `npm run cek:tampilan`.<br>3. Periksa tangkapan layar di `storage/app/tangkapan-layar/360/`.<br>4. (Manual) Buka halaman di HP atau DevTools mode perangkat 360px. | 51 halaman dari semua peran (Login, Pilih Peran, 31 halaman Admin, 8 Koprodi, 9 Dosen, 1 Mahasiswa) di lebar 360, 768, dan 1280 px | Halaman tampil utuh dan bisa dipakai tanpa geser horizontal (kecuali isi matriks) | Semua halaman tampil tanpa geser horizontal di tingkat halaman dan tanpa error JavaScript. Font input di mobile 16px, dan semua tombol, tautan ikon, serta lingkaran matriks berukuran minimal 44×44 px. Matriks digeser di dalam kartunya sendiri. Satu temuan diperbaiki: tombol Keluar di Pilih Peran semula hanya 42×20 px. | Berhasil |
+| 15 | Capaian mahasiswa | Mahasiswa membuka halaman capaian pribadi | 1. Login sebagai Mahasiswa Demo, lalu buka menu **Capaian Pembelajaran** (periode 2026/2027 Ganjil, MK INF101).<br>2. Buka menu **Dashboard**.<br>3. Logout, lalu login sebagai mahasiswa lain dan buka kedua halaman yang sama. | Mahasiswa Demo: NPM `9992300001` / `mahasiswa123`<br>Putra Wijaya: NPM `9992600001` / `mahasiswa123` | Hanya nilai dan capaian mahasiswa itu yang tampil | Tampil identitas Mahasiswa Demo (NPM 9992300001), nilai Kuis 1 41,5 dari 50, Tugas 1 90, UTS 86, dan UAS 93. Ringkasan: Sub-CPMK 89,30; CPMK 89,99; CPL kumulatif 90,63. Dashboard menampilkan rata-rata CPL 90,63 dan 2 dari 5 CPL Lulus (Kurikulum OBE 2026). Nama teman sekelas di INF101 A tidak tampil, dan Putra Wijaya tidak melihat data Mahasiswa Demo di kedua halaman. | Berhasil |
+| 16 | Tampilan mobile | Pengguna membuka setiap halaman di layar selebar 360px | 1. Isi data demo, build aset, dan jalankan aplikasi.<br>2. Jalankan `npm run cek:tampilan`.<br>3. Periksa tangkapan layar di `storage/app/tangkapan-layar/360/`.<br>4. (Manual) Buka halaman di HP atau DevTools mode perangkat 360px. | 53 halaman dari semua peran (Login, Pilih Peran, 31 halaman Admin, 8 Koprodi, 9 Dosen, 3 Mahasiswa) di lebar 360, 768, dan 1280 px | Halaman tampil utuh dan bisa dipakai tanpa geser horizontal (kecuali isi matriks) | Semua halaman tampil tanpa geser horizontal di tingkat halaman dan tanpa error JavaScript. Font input di mobile 16px, dan semua tombol, tautan ikon, serta lingkaran matriks berukuran minimal 44×44 px. Matriks digeser di dalam kartunya sendiri. Satu temuan diperbaiki: tombol Keluar di Pilih Peran semula hanya 42×20 px. | Berhasil |
 
 ### Catatan
 
@@ -123,12 +126,12 @@ font input di mobile minimal 16px, dan target sentuh minimal 44×44 px.
 | 12 | `test_skenario_12_koprodi_membuka_dashboard_dan_ringkasan_capaian_tampil` | `LaporanCapaianTest` |
 | 13 | `test_skenario_13_laporan_tampil_sesuai_filter` | `LaporanCapaianTest` |
 | 14 | `test_skenario_14_dosen_membuka_laporan_kelas_yang_diampu` | `LaporanCapaianTest` |
-| 15 | `test_skenario_15_mahasiswa_hanya_melihat_nilai_dan_capaian_miliknya` | `Mahasiswa/CapaianMahasiswaTest` |
+| 15 | `test_skenario_15_mahasiswa_hanya_melihat_nilai_dan_capaian_miliknya` | `Mahasiswa/CapaianMahasiswaTest`, `Mahasiswa/DashboardMahasiswaTest` |
 | 16 | `test_skenario_16_semua_halaman_bisa_dibuka_dan_siap_untuk_layar_mobile` dan `npm run cek:tampilan` | – |
 
 ### Bukti bahwa test bisa mendeteksi kesalahan (uji mutasi)
 
-Untuk memastikan test skenario tidak selalu lulus, lima aturan penting sengaja dirusak satu per satu,
+Untuk memastikan test skenario tidak selalu lulus, enam aturan penting sengaja dirusak satu per satu,
 lalu `SkenarioBlackBoxTest` dijalankan. Setiap aturan dikembalikan sesudahnya.
 
 | Aturan yang dirusak | Test yang gagal |
@@ -138,6 +141,7 @@ lalu `SkenarioBlackBoxTest` dijalankan. Setiap aturan dikembalikan sesudahnya.
 | Nilai tidak dinormalisasi ke skala 0–100 (rumus 1) | Skenario 12, 13, 14, 15 |
 | Laporan dosen tidak dibatasi kelas yang diampu | Skenario 14 |
 | Halaman mahasiswa memuat kelas semua mahasiswa | Skenario 15 |
+| Dashboard Mahasiswa memuat kelas semua mahasiswa (revisi KD-74) | Skenario 15 |
 
 Skenario 11 tidak menangkap kesalahan normalisasi, karena semua asesmen INF201 bernilai maksimum 100
 sehingga hasilnya sama. Kesalahan itu tertangkap oleh skenario 15 (Kuis 1 bernilai maksimum 50) dan
@@ -156,7 +160,7 @@ langsung.
 
 | No | Tangkapan layar yang perlu diambil | Sudah tersedia otomatis |
 |---|---|---|
-| 1 | Form login terisi data valid; halaman tujuan setiap peran; halaman Pilih Peran akun dua peran | `login`, `admin-beranda`, `koprodi-dashboard`, `dosen-dashboard`, `mahasiswa-capaian`, `pilih-peran` |
+| 1 | Form login terisi data valid; halaman tujuan setiap peran; halaman Pilih Peran akun dua peran | `login`, `admin-beranda`, `koprodi-dashboard`, `dosen-dashboard`, `mahasiswa-dashboard`, `pilih-peran` |
 | 2 | Halaman login dengan pesan "Email/NPM/NIDN atau password salah." | – |
 | 3 | Halaman 403 "Akses Ditolak" saat Dosen membuka `/admin` | `error-403` |
 | 4 | Form Tambah CPL terisi; daftar CPL dengan pesan sukses dan baris CPL06 | `admin-cpl-form` (form kosong) |
@@ -170,7 +174,7 @@ langsung.
 | 12 | Dashboard Koprodi dengan Ringkasan Capaian CPL | `koprodi-dashboard` |
 | 13 | Laporan tab CPMK dengan filter MK INF101, dan dengan filter Mahasiswa Demo | – |
 | 14 | Laporan Capaian akun Dosen pada tab CPMK dan CPL | `dosen-laporan` (tab CPMK) |
-| 15 | Capaian Pembelajaran Mahasiswa Demo; halaman yang sama untuk Putra Wijaya | `mahasiswa-capaian` |
+| 15 | Capaian Pembelajaran dan Dashboard Mahasiswa Demo; kedua halaman yang sama untuk Putra Wijaya | `mahasiswa-capaian`, `mahasiswa-dashboard` |
 | 16 | Keluaran terminal `npm run cek:tampilan`; contoh beberapa halaman di lebar 360 px | Semua file di folder `360/` |
 
 ### 5.2 Tampilan setiap halaman (otomatis)
@@ -215,6 +219,8 @@ membuatnya kembali.
 | 31 | Input Nilai (pilih kelas dan tabel nilai) | Dosen | `dosen-input-nilai`, `dosen-input-nilai-tabel` |
 | 32 | Laporan Capaian Dosen | Dosen | `dosen-laporan` |
 | 33 | Capaian Pembelajaran Mahasiswa | Mahasiswa | `mahasiswa-capaian` |
+| 34 | Dashboard Mahasiswa | Mahasiswa | `mahasiswa-dashboard` |
+| 35 | Dashboard Mahasiswa dengan grafik Perkembangan CPL per Periode | Hendra Kurniawan (NPM `9992400001`) | `mahasiswa-dashboard-perkembangan` |
 
 Halaman detail dan form asesmen diambil dari tautan pertama di daftarnya, mis. detail mata kuliah
 pertama di daftar Mata Kuliah.

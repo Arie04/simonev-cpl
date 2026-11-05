@@ -300,7 +300,8 @@ Mencoba manual (setelah `php artisan migrate --seed`, `npm run dev`, dan `php ar
 4. Buka <http://localhost:8000/admin>. Halaman 403 "Akses Ditolak" muncul.
 5. Keluar, lalu login sebagai `koprodi.dosen@simonev.test` / `koprodi.dosen123`. Pilih salah satu
    peran, lalu coba menu akun → **Ganti Peran**.
-6. Buka **Profil** dan **Ubah Password** dari menu akun.
+6. Buka **Profil** dari menu akun, lalu klik **Ubah Password** di halaman Profil. Sejak revisi KD-81,
+   Ubah Password tidak lagi ada di menu akun (lihat [13-revisi-menu-akun.md](13-revisi-menu-akun.md)).
 7. Perkecil jendela peramban sampai di bawah 1024px. Sidebar berubah menjadi drawer yang dibuka
    dengan tombol hamburger.
 

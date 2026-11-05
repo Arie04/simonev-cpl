@@ -7,6 +7,54 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
 
 ## [Belum dirilis]
 
+### Ditambahkan
+
+- Dashboard Mahasiswa (KD-74 sampai KD-76), read-only dan hanya berisi data milik sendiri:
+  - kartu ringkasan: rata-rata CPL kumulatif, jumlah CPL Lulus, dan jumlah mata kuliah yang diikuti;
+  - grafik batang interaktif Capaian CPL Kumulatif dengan garis Ambang Batas Kelulusan Mahasiswa.
+    Mengeklik batang atau tombol kode CPL membuka rincian CPL itu: CPMK penyusun, capaian, dan
+    bobotnya;
+  - grafik garis Perkembangan CPL per Periode beserta tabelnya, untuk mahasiswa yang kelasnya
+    tersebar di lebih dari satu periode;
+  - daftar mata kuliah yang diikuti, dengan jumlah asesmen yang sudah dinilai dan tautan ke halaman
+    Capaian Pembelajaran;
+  - pilihan kurikulum untuk mahasiswa yang mengikuti mata kuliah dari dua kurikulum.
+- Service `DashboardMahasiswa` yang menyusun isi dashboard dari `CapaianService` (tanpa rumus baru).
+- 16 test baru di `DashboardMahasiswaTest` (total 305), termasuk hak akses halaman mahasiswa.
+  Skenario uji 15 kini juga memeriksa dashboard, dan skenario 16 ikut membuka Dashboard Mahasiswa.
+- `npm run cek:tampilan` ikut memeriksa Dashboard Mahasiswa (53 halaman, 159 tangkapan layar).
+- Data simulasi dua tahun yang opsional (KD-77 sampai KD-80). `php artisan db:seed --class=SimulasiSeeder`
+  menambah riwayat 2024/2025 dan 2025/2026 di atas data demo:
+  - periode 2024/2025 Ganjil, 2024/2025 Genap, dan 2025/2026 Ganjil;
+  - 6 MK dan 3 CPMK Kurikulum 2021 beserta pemetaan BK–MK, CPMK–MK, dan Sub-CPMK;
+  - 16 mahasiswa angkatan 2022 dan 2025, serta 14 kelas, termasuk mahasiswa yang mengulang MK;
+  - rencana asesmen dan nilai dari rumus tetap, sehingga hasilnya selalu sama setiap dijalankan.
+  Seeder hanya berjalan di atas data demo, memakai satu transaksi, dan tidak menyentuh mahasiswa
+  selain mahasiswa contoh maupun asesmen yang ditambahkan lewat aplikasi.
+- 11 test baru di `SimulasiSeederTest` (total 316).
+- Catatan kode `12-simulasi-dua-tahun.md` dan bagian Data simulasi di README.
+- 1 test baru di `ProfilTest` (total 317): Ubah Password dibuka dari halaman Profil, bukan dari
+  menu akun. Catatan kode `13-revisi-menu-akun.md`.
+
+### Diubah
+
+- Menu Mahasiswa menjadi Dashboard · Capaian Pembelajaran (semula hanya Capaian Pembelajaran).
+  Setelah login, mahasiswa diarahkan ke Dashboard (`/mahasiswa`).
+- Halaman Capaian Pembelajaran pindah ke `/mahasiswa/capaian`. Nama route-nya tetap
+  `mahasiswa.capaian`.
+- Label angka di ujung batang grafik laporan memakai fungsi bersama `pluginLabelAngka()`.
+  Tampilannya tidak berubah.
+- Dokumen hasil pengujian (`docs/pengujian/black-box.md`) diperbarui: hasil skenario 1, 15, dan 16,
+  jumlah test, uji mutasi dashboard, dan daftar tangkapan layar.
+- `AsesmenDemoSeeder` dan `NilaiDemoSeeder` hanya mengisi kelas demo yang terdaftar di
+  `PerkuliahanDemoSeeder::DAFTAR_KELAS` (KD-80). Menjalankan ulang `php artisan db:seed` tidak lagi
+  menimpa kelas simulasi atau kelas yang dibuat lewat aplikasi. Isi data demo tidak berubah.
+- Keterangan grafik perkembangan yang kosong di Dashboard Mahasiswa kini menyebut kurikulum terpilih,
+  dan menyebut pilihan kurikulum lain jika ada.
+- Menu akun di top bar tidak lagi memuat Ubah Password (KD-81). Halaman Ubah Password dibuka lewat
+  tombol di halaman Profil. Keterangan Password Awal di form Dosen dan Mahasiswa ikut menyebut
+  halaman Profil.
+
 ## [Iterasi 10: Pengujian black box dan tampilan mobile] - 2026-10-30
 
 ### Ditambahkan

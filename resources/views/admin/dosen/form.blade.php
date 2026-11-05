@@ -14,7 +14,7 @@
                 <x-input label="Email" name="email" type="email" :value="$dosen->user?->email" keterangan="Boleh kosong. Dosen bisa login dengan NIDN." />
                 @unless ($dosen->exists)
                     <div class="md:col-span-2">
-                        <x-input label="Password Awal" name="password" type="password" autocomplete="new-password" keterangan="Minimal 8 karakter. Dosen bisa menggantinya lewat menu Ubah Password." />
+                        <x-input label="Password Awal" name="password" type="password" autocomplete="new-password" keterangan="Minimal 8 karakter. Dosen bisa menggantinya lewat halaman Profil." />
                     </div>
                 @endunless
             </div>

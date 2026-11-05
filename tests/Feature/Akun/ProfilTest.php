@@ -50,6 +50,43 @@ class ProfilTest extends TestCase
             ->assertSee('–');
     }
 
+    /**
+     * KD-81: menu akun hanya berisi Profil (dan Ganti Peran/Keluar). Halaman Ubah Password dibuka
+     * lewat tombol di halaman Profil. Diperiksa di halaman utama keempat peran karena menu akun
+     * ada di top bar semua halaman.
+     */
+    public function test_ubah_password_dibuka_dari_profil_bukan_dari_menu_akun(): void
+    {
+        $dosen = User::factory()->denganPeran(Role::DOSEN)->create();
+        Dosen::factory()->for($dosen)->create();
+        $mahasiswa = User::factory()->tanpaEmail()->denganPeran(Role::MAHASISWA)->create();
+        Mahasiswa::factory()->for($mahasiswa)->create();
+
+        $halamanUtama = [
+            Role::ADMIN => [User::factory()->denganPeran(Role::ADMIN)->create(), 'admin.beranda'],
+            Role::KOPRODI => [User::factory()->denganPeran(Role::KOPRODI)->create(), 'koprodi.dashboard'],
+            Role::DOSEN => [$dosen, 'dosen.dashboard'],
+            Role::MAHASISWA => [$mahasiswa, 'mahasiswa.dashboard'],
+        ];
+
+        foreach ($halamanUtama as $peran => [$user, $route]) {
+            $this->actingAs($user)
+                ->withSession(['peran_aktif' => $peran])
+                ->get(route($route))
+                ->assertOk()
+                ->assertSee(route('profil'))
+                ->assertDontSee(route('password.edit'))
+                ->assertDontSee('Ubah Password');
+
+            $this->actingAs($user)
+                ->withSession(['peran_aktif' => $peran])
+                ->get(route('profil'))
+                ->assertOk()
+                ->assertSee(route('password.edit'))
+                ->assertSee('Ubah Password');
+        }
+    }
+
     public function test_password_bisa_diubah_dengan_password_lama_yang_benar(): void
     {
         $user = $this->penggunaDosen();
