@@ -8,6 +8,7 @@ use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use App\Models\PeriodeAkademik;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Seeder;
 
 /**
@@ -19,21 +20,23 @@ use Illuminate\Database\Seeder;
  */
 class PerkuliahanDemoSeeder extends Seeder
 {
+    /**
+     * Kelas demo: [tahun kurikulum, kode MK, tahun akademik, semester, nama kelas, NIDN dosen,
+     * angkatan peserta, NPM tambahan].
+     */
+    public const DAFTAR_KELAS = [
+        [2021, 'INF201', '2025/2026', PeriodeAkademik::GENAP, 'A', ['9990000001'], 2024, []],
+        [2021, 'INF202', '2026/2027', PeriodeAkademik::GANJIL, 'A', ['9990000001'], 2024, []],
+        [2021, 'INF301', '2026/2027', PeriodeAkademik::GANJIL, 'A', ['9990000002', '9990000003'], 2023, []],
+        [2026, 'INF101', '2026/2027', PeriodeAkademik::GANJIL, 'A', ['9990000004'], 2026, ['9992300001']],
+        [2026, 'INF102', '2026/2027', PeriodeAkademik::GANJIL, 'A', ['9990000001', '9990000005'], 2026, []],
+    ];
+
     public function run(): void
     {
-        $periodeLalu = PeriodeAkademik::firstOrCreate(['tahun_akademik' => '2025/2026', 'semester_periode' => PeriodeAkademik::GENAP]);
-        $periodeAktif = PeriodeAkademik::firstOrCreate(['tahun_akademik' => '2026/2027', 'semester_periode' => PeriodeAkademik::GANJIL]);
+        foreach (self::DAFTAR_KELAS as [$tahunKurikulum, $kodeMataKuliah, $tahunAkademik, $semester, $namaKelas, $daftarNidn, $angkatan, $nimTambahan]) {
+            $periode = PeriodeAkademik::firstOrCreate(['tahun_akademik' => $tahunAkademik, 'semester_periode' => $semester]);
 
-        $daftarKelas = [
-            // [tahun kurikulum, kode MK, periode, nama kelas, NIDN dosen, angkatan peserta, NPM tambahan]
-            [2021, 'INF201', $periodeLalu, 'A', ['9990000001'], 2024, []],
-            [2021, 'INF202', $periodeAktif, 'A', ['9990000001'], 2024, []],
-            [2021, 'INF301', $periodeAktif, 'A', ['9990000002', '9990000003'], 2023, []],
-            [2026, 'INF101', $periodeAktif, 'A', ['9990000004'], 2026, ['9992300001']],
-            [2026, 'INF102', $periodeAktif, 'A', ['9990000001', '9990000005'], 2026, []],
-        ];
-
-        foreach ($daftarKelas as [$tahunKurikulum, $kodeMataKuliah, $periode, $namaKelas, $daftarNidn, $angkatan, $nimTambahan]) {
             $mataKuliah = MataKuliah::where('kode_mata_kuliah', $kodeMataKuliah)
                 ->where('kurikulum_id', Kurikulum::where('tahun_berlaku', $tahunKurikulum)->value('kurikulum_id'))
                 ->firstOrFail();
@@ -51,5 +54,32 @@ class PerkuliahanDemoSeeder extends Seeder
                 Mahasiswa::where('angkatan', $angkatan)->orWhereIn('nim', $nimTambahan)->pluck('mahasiswa_id')
             );
         }
+    }
+
+    /**
+     * Id kelas demo di atas. AsesmenDemoSeeder dan NilaiDemoSeeder hanya mengisi kelas-kelas ini,
+     * jadi kelas lain (mis. kelas dari SimulasiSeeder) tidak berubah jika seeder demo dijalankan
+     * ulang (KD-80).
+     *
+     * @return list<string>
+     */
+    public static function idKelasDemo(): array
+    {
+        return collect(self::DAFTAR_KELAS)
+            ->map(function (array $data) {
+                [$tahunKurikulum, $kodeMataKuliah, $tahunAkademik, $semester, $namaKelas] = $data;
+
+                return KelasKuliah::where('nama_kelas', $namaKelas)
+                    ->whereHas('mataKuliah', fn (Builder $query) => $query
+                        ->where('kode_mata_kuliah', $kodeMataKuliah)
+                        ->whereHas('kurikulum', fn (Builder $query) => $query->where('tahun_berlaku', $tahunKurikulum)))
+                    ->whereHas('periodeAkademik', fn (Builder $query) => $query
+                        ->where('tahun_akademik', $tahunAkademik)
+                        ->where('semester_periode', $semester))
+                    ->value('kelas_kuliah_id');
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 }

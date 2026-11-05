@@ -146,9 +146,11 @@ class PemetaanDemoSeeder extends Seeder
     }
 
     /**
+     * Method protected di bawah ini dipakai juga oleh SimulasiKurikulumSeeder (turunan class ini).
+     *
      * @param  array<string, array<string, int>>  $pemetaan  kode MK => [kode BK => bobot]
      */
-    private function petakanBahanKajian(Kurikulum $kurikulum, array $pemetaan): void
+    protected function petakanBahanKajian(Kurikulum $kurikulum, array $pemetaan): void
     {
         foreach ($pemetaan as $kodeMataKuliah => $daftarBobot) {
             $mataKuliah = $this->mataKuliah($kurikulum, $kodeMataKuliah);
@@ -163,7 +165,10 @@ class PemetaanDemoSeeder extends Seeder
         }
     }
 
-    private function petakanCpmkDanSubCpmk(Kurikulum $kurikulum, array $pemetaan): void
+    /**
+     * @param  array<string, array<string, array>>  $pemetaan  kode MK => [kode CPMK => [bobot CPMK, [kode Sub-CPMK => [bobot, deskripsi, metode]]]]
+     */
+    protected function petakanCpmkDanSubCpmk(Kurikulum $kurikulum, array $pemetaan): void
     {
         foreach ($pemetaan as $kodeMataKuliah => $daftarCpmk) {
             $mataKuliah = $this->mataKuliah($kurikulum, $kodeMataKuliah);
@@ -195,7 +200,7 @@ class PemetaanDemoSeeder extends Seeder
         }
     }
 
-    private function mataKuliah(Kurikulum $kurikulum, string $kodeMataKuliah): MataKuliah
+    protected function mataKuliah(Kurikulum $kurikulum, string $kodeMataKuliah): MataKuliah
     {
         return MataKuliah::where('kurikulum_id', $kurikulum->kurikulum_id)->where('kode_mata_kuliah', $kodeMataKuliah)->firstOrFail();
     }
