@@ -27,13 +27,10 @@
             <p class="text-xs text-text-muted">{{ $peranAktif->nama_role }}</p>
         </div>
 
+        {{-- Ubah Password tidak ada di menu ini; tombolnya ada di halaman Profil (KD-81). --}}
         <a href="{{ route('profil') }}" class="flex min-h-11 items-center gap-3 px-4 hover:bg-bg">
             <x-heroicon-o-user-circle class="size-5 text-text-muted" />
             Profil
-        </a>
-        <a href="{{ route('password.edit') }}" class="flex min-h-11 items-center gap-3 px-4 hover:bg-bg">
-            <x-heroicon-o-key class="size-5 text-text-muted" />
-            Ubah Password
         </a>
         @if ($user->roles->count() > 1)
             <a href="{{ route('peran-aktif.create') }}" class="flex min-h-11 items-center gap-3 px-4 hover:bg-bg">
