@@ -7,7 +7,7 @@ bagian 12 spesifikasi, ditambah daftar tangkapan layar yang perlu diambil.
 
 | Butir | Keterangan |
 |---|---|
-| Tanggal pengujian | 30 Oktober 2026; diulang 5 November 2026 setelah revisi Dashboard Mahasiswa (KD-74) dan penambahan data simulasi (KD-77) |
+| Tanggal pengujian | 30 Oktober 2026; diulang 5 November 2026 setelah revisi Dashboard Mahasiswa (KD-74), penambahan data simulasi (KD-77), dan revisi menu akun (KD-81) |
 | Perangkat lunak | Laravel 13, PHP 8.3.6, MySQL 8.0.46, Google Chrome 156 (mode headless) |
 | Data uji | Data demo dari seeder (`php artisan migrate:fresh --seed`). Semua data fiktif, tidak ada data mahasiswa asli. |
 | Skenario 1–15 | Feature test `tests/Feature/SkenarioBlackBoxTest.php`, satu test per skenario. Langkah dan datanya sama dengan tabel di bagian 3. |
@@ -44,7 +44,7 @@ npm run cek:tampilan
 |---|---|
 | Skenario berhasil | 16 dari 16 |
 | Test skenario (`SkenarioBlackBoxTest`) | 16 test, 224 assertion, semua lulus (±25 detik) |
-| Seluruh test proyek (`php artisan test`) | 316 test, 5.064 assertion, semua lulus |
+| Seluruh test proyek (`php artisan test`) | 317 test, 5.092 assertion, semua lulus |
 | Pengecekan tampilan (`npm run cek:tampilan`) | 53 halaman × 3 lebar layar = 159 tangkapan layar, tanpa masalah |
 
 Keluaran test (`vendor/bin/phpunit --filter SkenarioBlackBoxTest --testdox`):

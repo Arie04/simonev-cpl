@@ -33,6 +33,8 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
   selain mahasiswa contoh maupun asesmen yang ditambahkan lewat aplikasi.
 - 11 test baru di `SimulasiSeederTest` (total 316).
 - Catatan kode `12-simulasi-dua-tahun.md` dan bagian Data simulasi di README.
+- 1 test baru di `ProfilTest` (total 317): Ubah Password dibuka dari halaman Profil, bukan dari
+  menu akun. Catatan kode `13-revisi-menu-akun.md`.
 
 ### Diubah
 
@@ -49,6 +51,9 @@ spesifikasi) selesai, catatannya dipindah ke judul iterasi itu beserta tanggalny
   menimpa kelas simulasi atau kelas yang dibuat lewat aplikasi. Isi data demo tidak berubah.
 - Keterangan grafik perkembangan yang kosong di Dashboard Mahasiswa kini menyebut kurikulum terpilih,
   dan menyebut pilihan kurikulum lain jika ada.
+- Menu akun di top bar tidak lagi memuat Ubah Password (KD-81). Halaman Ubah Password dibuka lewat
+  tombol di halaman Profil. Keterangan Password Awal di form Dosen dan Mahasiswa ikut menyebut
+  halaman Profil.
 
 ## [Iterasi 10: Pengujian black box dan tampilan mobile] - 2026-10-30
 

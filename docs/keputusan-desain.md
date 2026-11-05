@@ -785,3 +785,23 @@ diumumkan bersamaan.
   - Data demo tetap sama persis; ini diperiksa test seeder yang sudah ada dan `SimulasiSeederTest`.
   - Kelas yang dibuat lewat aplikasi juga tidak lagi ikut terisi atau tertimpa saat seeder demo
     dijalankan ulang.
+
+## Revisi menu akun
+
+### KD-81 · Ubah Password dibuka dari halaman Profil
+- **Tanggal:** 2026-11-05
+- **Keputusan:**
+  - Menu akun di top bar berisi **Profil**, **Ganti Peran** (hanya untuk pengguna yang punya lebih
+    dari satu peran), dan **Keluar**. Butir **Ubah Password** dihapus dari menu ini.
+  - Halaman Ubah Password tetap ada di alamat yang sama (`/ubah-password`, route `password.edit`).
+    Halaman itu dibuka lewat tombol **Ubah Password** di halaman Profil, yang sudah ada sejak
+    iterasi 1.
+  - Keterangan Password Awal di form Dosen dan form Mahasiswa (Admin) kini menyebut halaman Profil,
+    bukan menu Ubah Password.
+- **Alasan:** Revisi dari pemilik proyek: tombol Ubah Password sudah ada di halaman Profil, jadi butir
+  yang sama di menu akun tidak perlu.
+- **Dampak:**
+  - Bagian 7.1, 7.5, dan 7.6 butir 13 spesifikasi masih menyebut Ubah Password di menu akun.
+    Keputusan ini yang menjadi acuannya.
+  - Mengubah password kini butuh satu klik lagi: menu akun → Profil → Ubah Password.
+  - Route, controller, validasi, dan hak akses Ubah Password tidak berubah.
